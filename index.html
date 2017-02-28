@@ -325,6 +325,9 @@
         
           
             <p><img src="http://jbcdn2.b0.upaiyun.com/2016/05/22ea6b11f2efeff41cc8b84c96c231f5.jpg" alt="Effective Objective-C 2.0"></p>
+<h3 id="第一条：-了解-Objective-C-语言的起源"><a href="#第一条：-了解-Objective-C-语言的起源" class="headerlink" title="第一条： 了解 Objective-C 语言的起源"></a>第一条： 了解 Objective-C 语言的起源</h3><p>Objective-C 语言使用“消息结构”(message structure) 而非“函数调用”（function calling）。其关键的区别在于：消息结构的语言，其运行时所用的代码是由运行环境来决定；而使用函数调用的语言，则由编译器决定。   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">NSString *someString = @&quot;The string&quot;;</div><div class="line">NSString *anotherString = someString;</div></pre></td></tr></table></figure>
+<p>所有 Objective-C 的对象所占用的内存都必须分配在“<strong>堆空间</strong>”（heap space）中，而绝不会分配在“<strong>栈</strong>”（stack）上，上面两个变量指向同一内存地址。</p>
 
           
         
