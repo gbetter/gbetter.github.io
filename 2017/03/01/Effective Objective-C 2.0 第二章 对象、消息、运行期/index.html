@@ -87,12 +87,25 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="gbetter">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="用 Objective-C 等面向对象语言编程时，“对象”就是“基本构造单元”，开发者可以通过对象来存储并传递数据，在对象之间传递数据并执行任务的过程就叫做“消息传递”（Messaging）。
+第一条：理解“属性”这一概念“属性”（property）是Objective-C的一项特性，用于封装对象中的数据  
+
+通过@synthesize语法来指定实例变量的名称：@synthesize first">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective Objective-C 2.0 第二章 对象、消息、运行期">
+<meta property="og:url" content="http://yoursite.com/2017/03/01/Effective Objective-C 2.0 第二章 对象、消息、运行期/index.html">
 <meta property="og:site_name" content="gbetter">
+<meta property="og:description" content="用 Objective-C 等面向对象语言编程时，“对象”就是“基本构造单元”，开发者可以通过对象来存储并传递数据，在对象之间传递数据并执行任务的过程就叫做“消息传递”（Messaging）。
+第一条：理解“属性”这一概念“属性”（property）是Objective-C的一项特性，用于封装对象中的数据  
+
+通过@synthesize语法来指定实例变量的名称：@synthesize first">
+<meta property="og:updated_time" content="2017-03-02T12:37:24.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="gbetter">
+<meta name="twitter:title" content="Effective Objective-C 2.0 第二章 对象、消息、运行期">
+<meta name="twitter:description" content="用 Objective-C 等面向对象语言编程时，“对象”就是“基本构造单元”，开发者可以通过对象来存储并传递数据，在对象之间传递数据并执行任务的过程就叫做“消息传递”（Messaging）。
+第一条：理解“属性”这一概念“属性”（property）是Objective-C的一项特性，用于封装对象中的数据  
+
+通过@synthesize语法来指定实例变量的名称：@synthesize first">
 
 
 
@@ -120,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/03/01/Effective Objective-C 2.0 第二章 对象、消息、运行期/"/>
 
 
 
 
 
-  <title> gbetter </title>
+  <title> Effective Objective-C 2.0 第二章 对象、消息、运行期 | gbetter </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -151,9 +164,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -236,9 +247,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -268,10 +279,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2017/03/01/Effective Objective-C 2.0 第二章 对象、消息、运行期/" itemprop="url">
-                  Effective Objective-C 2.0 第二章 对象、消息、运行期
-                </a>
+                Effective Objective-C 2.0 第二章 对象、消息、运行期
               
             
           </h1>
@@ -322,9 +330,7 @@
       
 
       
-        
-          
-            <p>用 Objective-C 等面向对象语言编程时，“<strong>对象</strong>”就是“<strong>基本构造单元</strong>”，开发者可以通过对象来存储并传递数据，在对象之间传递数据并执行任务的过程就叫做“<strong>消息传递</strong>”（Messaging）。</p>
+        <p>用 Objective-C 等面向对象语言编程时，“<strong>对象</strong>”就是“<strong>基本构造单元</strong>”，开发者可以通过对象来存储并传递数据，在对象之间传递数据并执行任务的过程就叫做“<strong>消息传递</strong>”（Messaging）。</p>
 <h3 id="第一条：理解“属性”这一概念"><a href="#第一条：理解“属性”这一概念" class="headerlink" title="第一条：理解“属性”这一概念"></a>第一条：理解“属性”这一概念</h3><p>“属性”（property）是Objective-C的一项特性，用于封装对象中的数据  </p>
 <ul>
 <li>通过<code>@synthesize</code>语法来指定实例变量的名称：<code>@synthesize firstName = _myFirstName</code>;</li>
@@ -365,16 +371,20 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    UIButton *loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];</div><div class="line">    [loginBtn setFrame:CGRectMake(0.0, 0.0, 100.0, 44)];</div><div class="line">    [loginBtn setCenter:self.view.center];</div><div class="line">    [loginBtn setBackgroundColor:[UIColor purpleColor]];</div><div class="line">    [loginBtn addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];</div><div class="line">    [self.view addSubview:loginBtn];</div><div class="line">    //设置关联对象</div><div class="line">    objc_setAssociatedObject(loginBtn, (__bridge const void *)(EXOLoginManagerDidLoginNotification), @&quot;hello&quot;, OBJC_ASSOCIATION_RETAIN);</div><div class="line">&#125;</div><div class="line">- (void)login:(id)sender &#123;</div><div class="line">    //获取所关联的对象值   </div><div class="line">    NSString *name = objc_getAssociatedObject(sender, (__bridge const void *)(EXOLoginManagerDidLoginNotification));</div><div class="line">    </div><div class="line">    NSLog(@&quot;=======%@&quot;,name);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 
-          
+      
+    </div>
+
+    <div>
+      
         
+
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
@@ -383,410 +393,38 @@
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/01/Effective Objective-C 2.0 第一章 熟悉Objective-C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhenyue">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gbetter">
-    </span>
-
-    
-      <header class="post-header">
-
         
-        
-          <h1 class="post-title" itemprop="name headline">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
+              <a href="/2017/03/01/Effective Objective-C 2.0 第一章 熟悉Objective-C/" rel="next" title="Effective Objective-C 2.0 第一章 熟悉Objective-C">
+                <i class="fa fa-chevron-left"></i> Effective Objective-C 2.0 第一章 熟悉Objective-C
+              </a>
             
-              
-                
-                <a class="post-title-link" href="/2017/03/01/Effective Objective-C 2.0 第一章 熟悉Objective-C/" itemprop="url">
-                  Effective Objective-C 2.0 第一章 熟悉Objective-C
-                </a>
-              
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-01T01:17:54+08:00">
-                2017-03-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <h3 id="第一条：-了解-Objective-C-语言的起源"><a href="#第一条：-了解-Objective-C-语言的起源" class="headerlink" title="第一条： 了解 Objective-C 语言的起源"></a>第一条： 了解 Objective-C 语言的起源</h3><p>Objective-C 语言使用“消息结构”(message structure) 而非“函数调用”（function calling）。其关键的区别在于：消息结构的语言，其运行时所用的代码是由运行环境来决定；而使用函数调用的语言，则由编译器决定。   </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">NSString *someString = @&quot;The string&quot;;</div><div class="line">NSString *anotherString = someString;</div></pre></td></tr></table></figure>
-<p>所有 Objective-C 的对象所占用的内存都必须分配在“<strong>堆空间</strong>”（heap space）中，而绝不会分配在“<strong>栈</strong>”（stack）上，上面两个变量指向同一内存地址。</p>
-<h3 id="第二条：-在类的头文件中尽量少引用其他头文件"><a href="#第二条：-在类的头文件中尽量少引用其他头文件" class="headerlink" title="第二条： 在类的头文件中尽量少引用其他头文件"></a>第二条： 在类的头文件中尽量少引用其他头文件</h3><p>除非有必要，否则不要引入头文件： </p>
-<ul>
-<li><strong>向前声明</strong>（forward declaring）并在实现文件中引用哪些类的头文件，这样可以减少类使用者所需引入头文件的数量，也解决了两个类互相引用的问题。</li>
-<li>若因为要实现属性、实例变量或者遵循协议而必须引入头文件，则应尽量将其移至“<strong>class-continuation</strong>”分类中。如果不行的话（<strong>什么情况下会不行？</strong>），就把协议单独放在一个头文件中，然后将其引用。</li>
-<li>若你写的类继承自某个超类，则必须引入哪个超类的头文件。</li>
-</ul>
-<h3 id="第三条：多用类型常量，少用-define预处理指令"><a href="#第三条：多用类型常量，少用-define预处理指令" class="headerlink" title="第三条：多用类型常量，少用#define预处理指令"></a>第三条：多用类型常量，少用#define预处理指令</h3><p><code>static const NSTimeInterval kAnimationDuration = 0.3;</code><br>用此方法定义的常量包含类型信息，其好处是清楚的描述了常量的含义。</p>
-<ul>
-<li>还要注意常量名称：若常量局限于某‘编译单元’（也就是实现文件）之内，则在前面加字母k；若常量在类之外可见，则通常以类名为前缀。  </li>
-<li>变量一定要同时使用 static 与 const 来声明，如果视图修改 const 修饰符所声明的变量，那么编译器就会报错。若声明此变量时不加 static，则编译器会为他创建一个‘外部符号’（external symbol），此时若另一个编译单元中也声明了同名变量，那么编译器就抛出一条错误信息。</li>
-<li>在头文件中使用 extern来声明全局常量，并在先关实现文件中定义其值。这种常量要出现在全局符号表中，所以其名称要加以区隔，通常用与之相关的类名做前缀。</li>
-</ul>
-<h3 id="第四条：用枚举表示状态、选项、状态吗"><a href="#第四条：用枚举表示状态、选项、状态吗" class="headerlink" title="第四条：用枚举表示状态、选项、状态吗"></a>第四条：用枚举表示状态、选项、状态吗</h3><ul>
-<li>定义选项的时候，若这些选项可以彼此组合，只要枚举定义的对，各选项之间可通过‘<strong>按位或操作符</strong>’来组合多个选项，并用‘<strong>按位与操作符</strong>’即可判断是否启用某选项；</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">typedef enum : NSUInteger &#123;</div><div class="line">    EOCConnectionStateDisconnected = 0,</div><div class="line">    EOCConnectionStateConnecting   = 1 &lt;&lt; 0,</div><div class="line">    EOCConnectionStateConnted      = 1 &lt;&lt; 1,</div><div class="line">&#125; EOCConnectionState;</div><div class="line"></div><div class="line">EOCConnectionState state = EOCConnectionStateConnecting | EOCConnectionStateConnted;</div><div class="line">if (state &amp; EOCConnectionStateConnted) &#123;</div><div class="line">	NSLog(@&quot;state 中包含 EOCConnectionStateConnted&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&amp;运算：相当于十进制 相同位做加法的1/2</div><div class="line">0101 &amp; 0011   结果：二进制0001    </div><div class="line">        </div><div class="line">|运算：相当于十进制 相同位做加法的1/2与不同位做加法求和</div><div class="line">0101 | 0011   结果：二进制0111    </div><div class="line">         </div><div class="line">^运算：相当于十进制不同位做加法</div><div class="line">0101 ^ 0011  结果：二进制0110</div></pre></td></tr></table></figure>
-<ul>
-<li>凡是需要按位或操作来组合的枚举都应使用 NS_OPTIONS 宏，若枚举不需要组合，则应使用NS_ENUM来定义（原因：若按C++编译 C++不允许将底层类型“隐式转换”为枚举类型本身）</li>
-<li>在处理枚举类型的 switch 语句中不要实现 default 分支。这样的话，加入新枚举之后，编译器就会提示开发者：switch 语句并未处理所有枚举。</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-      
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/28/FirstNight/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhenyue">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gbetter">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/28/FirstNight/" itemprop="url">
-                  First Night
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-28T17:08:05+08:00">
-                2017-02-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>我有一头<strong>小毛驴</strong>，可是我从来都不骑。</p>
-</blockquote>
-<p> Node.js安装</p>
-<p>nvm istall<br>输入命令 <code>curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash</code><br>如果你希望卸载nvm，你可以输入命令<code>$ npm uninstall -g a_module</code><br>输入命令<code>nvm install node &amp;&amp; nvm</code><br>使nvm生效：<code>. ~/.nvm/nvm.sh</code><br>安装Node.js <code>nvm install node &amp;&amp; nvm alias default node</code></p>
-
-          
-        
+    <div class="post-spread">
       
     </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/28/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhenyue">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gbetter">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/28/hello-world/" itemprop="url">
-                  Hello World
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-28T16:44:26+08:00">
-                2017-02-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-  </section>
-
-  
+  </div>
 
           
           </div>
@@ -794,6 +432,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -813,8 +455,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -858,6 +509,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一条：理解“属性”这一概念"><span class="nav-number">1.</span> <span class="nav-text">第一条：理解“属性”这一概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二条：在对象内部尽量直接访问实例变量"><span class="nav-number">2.</span> <span class="nav-text">第二条：在对象内部尽量直接访问实例变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三条：-以“类簇模式”-隐藏实现细节"><span class="nav-number">3.</span> <span class="nav-text">第三条： 以“类簇模式” 隐藏实现细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四条-在既有类中使用关联对象存放自定义数据"><span class="nav-number">4.</span> <span class="nav-text">第四条: 在既有类中使用关联对象存放自定义数据</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -963,6 +630,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
