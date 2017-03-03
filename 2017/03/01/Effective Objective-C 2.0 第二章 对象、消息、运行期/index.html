@@ -99,13 +99,15 @@
 第一条：理解“属性”这一概念“属性”（property）是Objective-C的一项特性，用于封装对象中的数据  
 
 通过@synthesize语法来指定实例变量的名称：@synthesize first">
-<meta property="og:updated_time" content="2017-03-02T12:37:24.000Z">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1642566-c4389a0a0fe7c108.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-03-03T07:48:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective Objective-C 2.0 第二章 对象、消息、运行期">
 <meta name="twitter:description" content="用 Objective-C 等面向对象语言编程时，“对象”就是“基本构造单元”，开发者可以通过对象来存储并传递数据，在对象之间传递数据并执行任务的过程就叫做“消息传递”（Messaging）。
 第一条：理解“属性”这一概念“属性”（property）是Objective-C的一项特性，用于封装对象中的数据  
 
 通过@synthesize语法来指定实例变量的名称：@synthesize first">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1642566-c4389a0a0fe7c108.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 
 
 
@@ -358,7 +360,7 @@
 <p>规则： </p>
 <ul>
 <li>子类应该继承自类簇中的抽象基类。</li>
-<li>子类英爱定义自己的数据存储方式。</li>
+<li>子类应该定义自己的数据存储方式。</li>
 <li>子类应当覆写超类文档中指明需要覆写的方法。</li>
 </ul>
 <h3 id="第四条-在既有类中使用关联对象存放自定义数据"><a href="#第四条-在既有类中使用关联对象存放自定义数据" class="headerlink" title="第四条: 在既有类中使用关联对象存放自定义数据"></a>第四条: 在既有类中使用关联对象存放自定义数据</h3><p>有时需要在对象中存放相关信息，这时通常会采用继承子类的方式，但是 有时候实例可能是由某种机制所创建（类簇）而开发者无法创建自己所写的子类实例，就使用“关联对象”<br>下列方法可以管理关联对象：</p>
@@ -370,6 +372,62 @@
 <li>只有在其他做法不可行时才应选择关联对象，因为这种做法通常会引入难以查找的bug。</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    UIButton *loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];</div><div class="line">    [loginBtn setFrame:CGRectMake(0.0, 0.0, 100.0, 44)];</div><div class="line">    [loginBtn setCenter:self.view.center];</div><div class="line">    [loginBtn setBackgroundColor:[UIColor purpleColor]];</div><div class="line">    [loginBtn addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];</div><div class="line">    [self.view addSubview:loginBtn];</div><div class="line">    //设置关联对象</div><div class="line">    objc_setAssociatedObject(loginBtn, (__bridge const void *)(EXOLoginManagerDidLoginNotification), @&quot;hello&quot;, OBJC_ASSOCIATION_RETAIN);</div><div class="line">&#125;</div><div class="line">- (void)login:(id)sender &#123;</div><div class="line">    //获取所关联的对象值   </div><div class="line">    NSString *name = objc_getAssociatedObject(sender, (__bridge const void *)(EXOLoginManagerDidLoginNotification));</div><div class="line">    </div><div class="line">    NSLog(@&quot;=======%@&quot;,name);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="第五条：理解-objc-msgSend-的作用"><a href="#第五条：理解-objc-msgSend-的作用" class="headerlink" title="第五条：理解 objc_msgSend 的作用"></a>第五条：理解 objc_msgSend 的作用</h3><p>由于 Objective-C 是 C 的超集，所以最好先理解 C 语言的函数调用方式，C 语言使用”静态绑定（static binding）” ，也就是说，在编译期就决定运行时所调用的函数。</p>
+<ul>
+<li><code>id objc_msgSend(id self, SEL op, ...)</code>  <code>self</code>: 接收者  <code>op</code>:选择子 <code>...</code>：参数</li>
+<li><code>objc_msdSend_stret</code> 如果待发送的消息返回结构体，那么可交于此函数处理。</li>
+<li><code>objc_msgSend_fpret</code> 如果消息返回的是浮点数，那么可交由此函数处理,<code>objc_msgSend_fpret</code> 只能在i386处理器上运行,否则返回 Nan</li>
+<li><code>objc_msgSendSuper</code>     如果要给超类发消息，交于此函数处理，也有与上两个函数等效的函数。  </li>
+</ul>
+<p><code>objc_msgSend</code> 报错解决方案(Too many arguments to function call, expected 0, have 3)<br>选中项目 - Project - Build Settings - ENABLE_STRICT_OBJC_MSGSEND  将其设置为 NO 即可</p>
+<h3 id="第六条：理解消息转发机制"><a href="#第六条：理解消息转发机制" class="headerlink" title="第六条：理解消息转发机制"></a>第六条：理解消息转发机制</h3><p>若想令类能理解某条消息，我们必须以程序码实现出对应的方法才行。但是，在编译期间向类发送了其无法解读的消息并不会报错，因为在运行期间可以继续向类中添加方法，所以编译器在编译时还无法确知类中到底会不会有某个方法的实现，当对象接收到一个无法解读的消息时，就会启动‘消息转发’机制，此时可以告诉对象应该如何处理未知消息。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1642566-c4389a0a0fe7c108.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<hr>
+<p>消息转发分为两大阶段：</p>
+<ol>
+<li><p>动态方法解析：对象在收到无法解读的消息后，首先将调用其所属类的下列方法<br> <code>+ (BOOL)resolveInstanceMethod:(SEL)sel</code> 其返回值为 Boolean 类型，表示这个类能否新增加一个实例方法用以处理此选择子，若未实现的方法是类方法，那么运行期就会调用另一个方法 <code>+ (BOOL)resolveClassMethod:(SEL)sel</code> (使用这种办法的前提是：相关方法的实现代码已经写好，只等运行的时候动态插在类里面就可以)  </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (float)returnFloat &#123;</div><div class="line">   return 1.2f;</div><div class="line">&#125;</div><div class="line">+ (BOOL)resolveInstanceMethod:(SEL)sel &#123;</div><div class="line">   NSLog(@&quot;%s&quot;,__FUNCTION__);</div><div class="line">   NSString *methodString = NSStringFromSelector(sel);</div><div class="line">   if ([methodString isEqualToString:@&quot;creatFloatValue&quot;]) &#123;</div><div class="line">       class_addMethod([EXOLoginViewController class], sel, class_getMethodImplementation([EXOLoginViewController class], @selector(returnFloat)), &quot;i@:&quot;);</div><div class="line">       return YES;</div><div class="line">   &#125;</div><div class="line">   return [super resolveInstanceMethod:sel];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> `BOOL class_addMethod(Class cls, SEL name, IMP imp, </p>
+<pre><code>const char *types)`   
+</code></pre><p> types:</p>
+<ul>
+<li>比如：”v@:”意思就是这已是一个void类型的方法，没有参数传入。</li>
+<li>再比如 “i@:”就是说这是一个int类型的方法，没有参数传入。</li>
+<li>再再比如”i@:@”就是说这是一个int类型的方法，又一个参数传入。</li>
+</ul>
+</li>
+<li><p>完整的消息转发机制：  </p>
+<ul>
+<li><p>请接收者看看有没有其他对象能处理这条消息（“备援的接收者” replacement receiver） </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (id)forwardingTargetForSelector:(SEL)aSelector &#123;</div><div class="line">   NSString *methodString = NSStringFromSelector(aSelector);</div><div class="line">   if ([methodString isEqualToString:@&quot;creatFloatValue&quot;]) &#123;</div><div class="line">       </div><div class="line">       return [ForwardingTarget new];</div><div class="line">   &#125;</div><div class="line">   return nil;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@interface ForwardingTarget : NSObject</div><div class="line">- (float)creatFloatValue;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation ForwardingTarget</div><div class="line">- (float)creatFloatValue &#123;</div><div class="line">   	return 999.0f;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+
+
+- 启用完整的消息转发机制  
+首先创建 `NSInvovation` 对象，把尚未处理的那条消息有关的全部细节都封装与其中，比较有用的实现方式为：在触发消息前，先以某种方式改变消息内容，比如追加另外一个参数，或者改换选择子等。(?????)
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">	-(NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</div><div class="line">	&#123;</div><div class="line">    NSMethodSignature *signature = [super methodSignatureForSelector:aSelector];</div><div class="line">    if (!signature) &#123;</div><div class="line">        if([ForwardingTarget instancesRespondToSelector:aSelector])</div><div class="line">        &#123;</div><div class="line">            signature = [ForwardingTarget instanceMethodSignatureForSelector:aSelector];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return signature;</div><div class="line">&#125;</div><div class="line"></div><div class="line">	-(void)forwardInvocation:(NSInvocation *)anInvocation</div><div class="line">	&#123;</div><div class="line">    	if ([ForwardingTarget instancesRespondToSelector:anInvocation.selector]) &#123;</div><div class="line">        [anInvocation invokeWithTarget:[[ForwardingTarget alloc] 	init]];</div><div class="line">    	&#125;</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
+</code></pre><h3 id="第七条：用“方法调配技术”-调试-“黑盒方法”"><a href="#第七条：用“方法调配技术”-调试-“黑盒方法”" class="headerlink" title="第七条：用“方法调配技术” 调试 “黑盒方法”"></a>第七条：用“方法调配技术” 调试 “黑盒方法”</h3><p>类的方法列表会把选择子的名称映射到相关的方法实现之上，使得“动态消息派发系统”能够据此找到应该调用的方法。这些方法均已函数指针的形式来表示，这种指针叫 IMP，其原型如下 <code>id
+ (*IMP) (id,SEL,...)</code>  </p>
+<ul>
+<li><p>如何交换两个方法实现：</p>
+<pre><code> Method originalMethod = class_getInstanceMethod([NSString class], @selector(lowercaseString));
+
+Method swppedMethod   = class_getInstanceMethod([NSString class], @selector(uppercaseString));
+
+method_exchangeImplementations(originalMethod, swppedMethod);
+</code></pre></li>
+</ul>
+<p>我们可以通过新编写一个方法，通过交换可以向类中新增或替换选择子，一般调试的时候才会在运行期修改方法实现，不宜滥用。</p>
+<ul>
+<li>每个实例都有一个指向 Class 对象的指针，用以表明其类型，而这些 Class 对象则构成了累的继承体系（isa）。</li>
+<li>如果对象类型无法再编译器确定，那么就应该使用类型查询方法来探知。</li>
+<li>尽量使用类型查询方法来确定对象的类型，而不是直接比较类对象，因为某些对象可能实现了消息转发功能。</li>
+</ul>
 
       
     </div>
@@ -409,6 +467,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/03/《富爸爸投资指南》第二阶段 你想成为那种类型的投资者/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -480,7 +542,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -519,7 +581,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一条：理解“属性”这一概念"><span class="nav-number">1.</span> <span class="nav-text">第一条：理解“属性”这一概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二条：在对象内部尽量直接访问实例变量"><span class="nav-number">2.</span> <span class="nav-text">第二条：在对象内部尽量直接访问实例变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三条：-以“类簇模式”-隐藏实现细节"><span class="nav-number">3.</span> <span class="nav-text">第三条： 以“类簇模式” 隐藏实现细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四条-在既有类中使用关联对象存放自定义数据"><span class="nav-number">4.</span> <span class="nav-text">第四条: 在既有类中使用关联对象存放自定义数据</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一条：理解“属性”这一概念"><span class="nav-number">1.</span> <span class="nav-text">第一条：理解“属性”这一概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二条：在对象内部尽量直接访问实例变量"><span class="nav-number">2.</span> <span class="nav-text">第二条：在对象内部尽量直接访问实例变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三条：-以“类簇模式”-隐藏实现细节"><span class="nav-number">3.</span> <span class="nav-text">第三条： 以“类簇模式” 隐藏实现细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四条-在既有类中使用关联对象存放自定义数据"><span class="nav-number">4.</span> <span class="nav-text">第四条: 在既有类中使用关联对象存放自定义数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第五条：理解-objc-msgSend-的作用"><span class="nav-number">5.</span> <span class="nav-text">第五条：理解 objc_msgSend 的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第六条：理解消息转发机制"><span class="nav-number">6.</span> <span class="nav-text">第六条：理解消息转发机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第七条：用“方法调配技术”-调试-“黑盒方法”"><span class="nav-number">7.</span> <span class="nav-text">第七条：用“方法调配技术” 调试 “黑盒方法”</span></a></li></ol></div>
             
 
           </div>
