@@ -247,6 +247,179 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/05/iOS数据持久化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/05/iOS数据持久化/" itemprop="url">
+                  iOS数据持久化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-05T00:31:04+08:00">
+                2017-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>数据持久化就是将数据保存到本地，下次可以继续访问。一般有下列几种方式：</p>
+<h3 id="第一种：归档与解归档（NSKeyedArchiver）"><a href="#第一种：归档与解归档（NSKeyedArchiver）" class="headerlink" title="第一种：归档与解归档（NSKeyedArchiver）"></a>第一种：归档与解归档（NSKeyedArchiver）</h3><ul>
+<li>要归档的类必须遵守 NSCoding 协议，</li>
+<li>并实现里面的归档方法：  <code>- (void)encodeWithCoder:(NSCoder *)aCoder</code> </li>
+<li>解归档方法：  <code>- (nullable instancetype)initWithCoder:(NSCoder *)aDecoder</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">@interface EXORectangle : NSObject&lt;NSCoding&gt;</div><div class="line"></div><div class="line">@property (nonatomic, copy) NSString *userName;</div><div class="line">@property (nonatomic, copy) NSString *userDetail;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXORectangle</div><div class="line">/**</div><div class="line"> 解归档协议</div><div class="line"></div><div class="line"> @param aDecoder 数据</div><div class="line"> @return 对象</div><div class="line"> */</div><div class="line">- (nullable instancetype)initWithCoder:(NSCoder *)aDecoder &#123;</div><div class="line">    if (self=[super init]) &#123;</div><div class="line">        _userName = [aDecoder decodeObjectForKey:@&quot;userName&quot;];</div><div class="line">        _userDetail = [aDecoder decodeObjectForKey:@&quot;userDetail&quot;];</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> 归档 协议实现</div><div class="line"></div><div class="line"> @param aCoder 数据</div><div class="line"> */</div><div class="line">- (void)encodeWithCoder:(NSCoder *)aCoder &#123;</div><div class="line">    [aCoder encodeObject:_userName forKey:@&quot;userName&quot;];</div><div class="line">    [aCoder encodeObject:_userDetail forKey:@&quot;userDetail&quot;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>对系统的类进行归档解归档<ol>
+<li>指定对象放在哪个文件中，其后缀要求是 archiver  <code>[NSHomeDirectory() stringByAppendingPathComponent:@&quot;data.archiver&quot;];</code></li>
+<li>将对象归档到指定的路径中   <code>[NSKeyedArchiver archiveRootObject:name toFile:path];</code></li>
+<li>将归档后的数据提取出来  <code>[NSKeyedUnarchiver unarchiveObjectWithFile:path];</code></li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">EXORectangle *rectangle = [[EXORectangle alloc] init];</div><div class="line">   rectangle.userName = @&quot;zhangsan&quot;;</div><div class="line">   rectangle.userDetail = @&quot;good person&quot;;</div><div class="line">   NSString *path = [NSHomeDirectory() stringByAppendingString:@&quot;exoArch.archiver&quot;];</div><div class="line">   BOOL isArchive = [NSKeyedArchiver archiveRootObject:rectangle toFile:path];//归档</div><div class="line">   if (isArchive) &#123;</div><div class="line">       id byData = [NSKeyedUnarchiver unarchiveObjectWithFile:path];</div><div class="line">       if ([byData isKindOfClass:[EXORectangle class]]) &#123;</div><div class="line">           EXORectangle *rectArchiver = (EXORectangle*)byData;</div><div class="line">           NSLog(@&quot;--%@---%@&quot;,rectArchiver.userName,rectArchiver.userDetail);</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>同时对多个对象归档与解归档<ol>
+<li>准备一个可变的data对象，通过归档对象将多个数据存在一个data对象里，最终将这个data写入文件  <code>NSMutableData *data = [NSMutableData data];</code></li>
+<li>archiver初始化的时候包装一个可变的data对象  <code>NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc]initForWritingWithMutableData:data];</code></li>
+<li>通过归档对象将这些数据转化成二进制，并保存在一个data对象里  <code>[archiver encodeObject:name forKey:@&quot;name&quot;];[archiver encodeInteger:age forKey:@&quot;age&quot;];</code></li>
+<li>转化完毕，意思是结束使用归档对象将上面的数据保存在了data里面  <code>[archiver finishEncoding];</code></li>
+<li>将转化好的data写入文件  <code>[data writeToFile:path atomically:YES];</code></li>
+</ol>
+</li>
+<li>就归档<ol>
+<li>将路径里的二进制数据给取出来  <code>NSMutableData *data = [NSMutableData dataWithContentsOfFile:path];</code></li>
+<li>将二进制数据包装在一个解归档对象中  <code>NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc]initForReadingWithData:data];</code> </li>
+<li>通过解归档对象将二进制数据分别给反序列化  <pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">NSString *name = [unarchiver decodeObjectForKey:@&quot;name&quot;];  </div><div class="line">   NSInteger age = [unarchiver decodeIntegerForKey:@&quot;age&quot;];</div><div class="line">```</div></pre></td></tr></table></figure>
+</code></pre></li>
+</ol>
+</li>
+</ul>
+<p>//将多个对象归档与解归档</p>
+<pre><code>NSString *path = [NSHomeDirectory() stringByAppendingString:@&quot;exoArchs.archiver&quot;];
+EXORectangle *rectangle = [[EXORectangle alloc] init];
+rectangle.userName = @&quot;zhangsan&quot;;
+rectangle.userDetail = @&quot;good person&quot;;
+
+NSMutableData *data = [NSMutableData data];
+NSKeyedArchiver *archivers = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+[archivers encodeObject:rectangle forKey:@&quot;key_EXORectangle&quot;];
+[archivers encodeInt:18 forKey:@&quot;key_userAge&quot;];
+[archivers encodeBool:YES forKey:@&quot;key_Finsh&quot;];
+[archivers finishEncoding];
+
+[data writeToFile:path atomically:YES];
+
+//解归档
+NSMutableData *unData = [NSMutableData dataWithContentsOfFile:path];
+NSKeyedUnarchiver *unArchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:unData];
+EXORectangle *unRectangle = [unArchiver decodeObjectForKey:@&quot;key_EXORectangle&quot;];
+NSInteger userAge = [unArchiver decodeIntForKey:@&quot;key_userAge&quot;];
+
+NSLog(@&quot;=====%@---%li&quot;,unRectangle.userDetail,(long)userAge);     
+</code></pre><p>```</p>
+<h3 id="第二种：CoreData"><a href="#第二种：CoreData" class="headerlink" title="第二种：CoreData"></a>第二种：CoreData</h3><h3 id="第三种：数据库（SQLite）"><a href="#第三种：数据库（SQLite）" class="headerlink" title="第三种：数据库（SQLite）"></a>第三种：数据库（SQLite）</h3><h3 id="第五种：属性列表（plist）"><a href="#第五种：属性列表（plist）" class="headerlink" title="第五种：属性列表（plist）"></a>第五种：属性列表（plist）</h3>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/03/Effective Objective-C 2.0 第三章 接口与API设计/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -324,7 +497,31 @@
       
         
           
-            
+            <h3 id="第三条：尽量使用不可变对象"><a href="#第三条：尽量使用不可变对象" class="headerlink" title="第三条：尽量使用不可变对象"></a>第三条：尽量使用不可变对象</h3><ul>
+<li>尽量创建不可变对象。</li>
+<li>若某属性仅可于对象内部修改，则在 “class-continuation 分类” 中将其由 <code>readonly</code> 属性扩展为 <code>readwrite</code> 属性。</li>
+<li>不要把可变的 collection（容器类）作为属性公开，而应提供相应的方法，以此修改对象中的可变 collection。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">@interface EXOPerson : NSObject</div><div class="line"></div><div class="line">@property (nonatomic, copy, readonly) NSString *userFirstName;</div><div class="line">@property (nonatomic, copy, readonly) NSString *userLastName;</div><div class="line">@property (nonatomic, strong, readonly) NSArray *userLike;</div><div class="line"></div><div class="line">- (instancetype)initWithFirstName:(NSString*)firstName WithLastName:(NSString*)lastName;</div><div class="line"></div><div class="line">//提供相应的方法，以此修改对象中的可变 collection</div><div class="line">- (void)addUserLike:(NSArray *)userLike;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import &quot;EXOPerson.h&quot;</div><div class="line"></div><div class="line">@interface EXOPerson ()</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userFirstName;</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userLastName;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXOPerson</div><div class="line"></div><div class="line">- (instancetype)initWithFirstName:(NSString*)firstName WithLastName:(NSString*)lastName</div><div class="line">&#123;</div><div class="line">    self = [super init];</div><div class="line">    if (self) &#123;</div><div class="line">        _userFirstName = [firstName copy];</div><div class="line">        _userLastName  = [lastName copy];</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line">- (void)addUserLike:(NSArray *)userLike &#123;</div><div class="line">    _userLike = [userLike copy];</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<h3 id="第四条：为私有方法加前缀"><a href="#第四条：为私有方法加前缀" class="headerlink" title="第四条：为私有方法加前缀"></a>第四条：为私有方法加前缀</h3><ul>
+<li>给私有方法的名称加上前缀，这样可以很容易的将其同公共的方法区分开来。（笔者喜欢用 p_ 为前缀） <code>- (void)p_privateMethod{}</code></li>
+<li>不要单用一个下划线做私有方法的前缀，因为这种做法是苹果公司预留的。</li>
+</ul>
+<h3 id="理解-Objective-C-的错误类型"><a href="#理解-Objective-C-的错误类型" class="headerlink" title="理解 Objective-C 的错误类型"></a>理解 Objective-C 的错误类型</h3><ul>
+<li>只有发生了可使整个应用程序崩溃的严重错误时，才应使用异常。</li>
+<li><p>在错误不那么严重的情况下，可指派委托方法来处理错误，也可以把错误信息放在<code>NSError</code>对象中，经由“输出参数”返回给调用者。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">NSError *error = [[NSError alloc]</div><div class="line">                         initWithDomain:NSCocoaErrorDomain</div><div class="line">                         code:9998</div><div class="line">                         userInfo:@&#123;NSLocalizedDescriptionKey:@&quot;错误描述&quot;,</div><div class="line">                         NSLocalizedFailureReasonErrorKey:@&quot;错误原因&quot;,</div><div class="line">                         NSLocalizedRecoverySuggestionErrorKey:@&quot;解决建议&quot;,</div><div class="line">                         NSLocalizedRecoveryOptionsErrorKey:@[@&quot;解决建议可选1&quot;,@&quot;解决建议可选2&quot;]&#125;];</div><div class="line">       </div><div class="line">       // Domain 错误域：产生错误的地方（系统提供了一些定义的域）</div><div class="line">       /*</div><div class="line">        FOUNDATION_EXPORT NSString *const NSCocoaErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSPOSIXErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSOSStatusErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSMachErrorDomain;</div><div class="line">        */</div><div class="line">       NSString *domain = error.domain;</div><div class="line">       </div><div class="line">       // code：错误码</div><div class="line">       NSInteger code = error.code;</div><div class="line">       </div><div class="line">       // userInfo：错误信息（系统提供了很多定义的key）</div><div class="line">       NSDictionary *userInfo = error.userInfo;</div><div class="line">       </div><div class="line">       NSString *localizedDescription = userInfo[NSLocalizedDescriptionKey];</div><div class="line">       NSString *localizedFailureReason = userInfo[NSLocalizedFailureReasonErrorKey];</div><div class="line">       NSString *localizedRecoverySuggestion = userInfo[NSLocalizedRecoverySuggestionErrorKey];</div><div class="line">       NSArray *localizedRecoveryOptions = userInfo[NSLocalizedRecoveryOptionsErrorKey];</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="第五条：立即-NSCopying-协议"><a href="#第五条：立即-NSCopying-协议" class="headerlink" title="第五条：立即 NSCopying 协议"></a>第五条：立即 NSCopying 协议</h3><ul>
+<li>若想让自己的类具有 <code>copy</code> 功能，那么要实现 NSCopying 协议：  <code>- (id)copyWithZone:(NSZone*)zone</code></li>
+<li>若想让自己的类具有 <code>mutableCopy</code> 功能，那么要实现 NSMutableCopying 协议：  <code>-(id)mutableCopyWithZone:(NSZone*)zone</code></li>
+<li>复制对象时需决定采用深拷贝还是浅拷贝，一般情况下应尽量考虑执行浅拷贝。</li>
+<li>如果你所写的对象需要深拷贝，那么可以考虑新增一个专门执行深拷贝的方法。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">#import &quot;EXOPerson.h&quot;</div><div class="line"></div><div class="line">@interface EXOPerson ()</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userFirstName;</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userLastName;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXOPerson</div><div class="line">&#123;</div><div class="line">    NSString *_fullName;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (instancetype)initWithFirstName:(NSString*)firstName WithLastName:(NSString*)lastName</div><div class="line">&#123;</div><div class="line">    self = [super init];</div><div class="line">    if (self) &#123;</div><div class="line">        _userFirstName = [firstName copy];</div><div class="line">        _userLastName  = [lastName copy];</div><div class="line">        _fullName = [NSString stringWithFormat:@&quot;%@%@&quot;,_userFirstName,_userLastName];</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">- (id)copyWithZone:(nullable NSZone *)zone &#123;</div><div class="line">    EXOPerson *copy = [[EXOPerson allocWithZone:zone] initWithFirstName:_userFirstName WithLastName:_userLastName];</div><div class="line">    //注意：这里使用-&gt;语法，因为_fullName 并非属性，只是在内部使用的实例变量</div><div class="line">    copy-&gt;_fullName = _fullName;</div><div class="line">    return copy;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><a href="http://www.jianshu.com/p/e6a7cdcc705d" target="_blank" rel="external">iOS 浅谈：深.浅拷贝与copy.strong</a></p>
+
           
         
       
@@ -1004,7 +1201,7 @@ method_exchangeImplementations(originalMethod, swppedMethod);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

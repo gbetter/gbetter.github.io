@@ -87,13 +87,31 @@
 
 
 
+<meta name="description" content="第三条：尽量使用不可变对象
+尽量创建不可变对象。
+若某属性仅可于对象内部修改，则在 “class-continuation 分类” 中将其由 readonly 属性扩展为 readwrite 属性。
+不要把可变的 collection（容器类）作为属性公开，而应提供相应的方法，以此修改对象中的可变 collection。
+
+1234567891011121314151617181920212223">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Effective Objective-C 2.0 第三章：接口与 API 设计">
 <meta property="og:url" content="http://yoursite.com/2017/03/03/Effective Objective-C 2.0 第三章 接口与API设计/index.html">
 <meta property="og:site_name" content="gbetter">
-<meta property="og:updated_time" content="2017-03-04T12:42:24.000Z">
+<meta property="og:description" content="第三条：尽量使用不可变对象
+尽量创建不可变对象。
+若某属性仅可于对象内部修改，则在 “class-continuation 分类” 中将其由 readonly 属性扩展为 readwrite 属性。
+不要把可变的 collection（容器类）作为属性公开，而应提供相应的方法，以此修改对象中的可变 collection。
+
+1234567891011121314151617181920212223">
+<meta property="og:updated_time" content="2017-03-08T01:08:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective Objective-C 2.0 第三章：接口与 API 设计">
+<meta name="twitter:description" content="第三条：尽量使用不可变对象
+尽量创建不可变对象。
+若某属性仅可于对象内部修改，则在 “class-continuation 分类” 中将其由 readonly 属性扩展为 readwrite 属性。
+不要把可变的 collection（容器类）作为属性公开，而应提供相应的方法，以此修改对象中的可变 collection。
+
+1234567891011121314151617181920212223">
 
 
 
@@ -318,7 +336,31 @@
       
 
       
-        
+        <h3 id="第三条：尽量使用不可变对象"><a href="#第三条：尽量使用不可变对象" class="headerlink" title="第三条：尽量使用不可变对象"></a>第三条：尽量使用不可变对象</h3><ul>
+<li>尽量创建不可变对象。</li>
+<li>若某属性仅可于对象内部修改，则在 “class-continuation 分类” 中将其由 <code>readonly</code> 属性扩展为 <code>readwrite</code> 属性。</li>
+<li>不要把可变的 collection（容器类）作为属性公开，而应提供相应的方法，以此修改对象中的可变 collection。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">@interface EXOPerson : NSObject</div><div class="line"></div><div class="line">@property (nonatomic, copy, readonly) NSString *userFirstName;</div><div class="line">@property (nonatomic, copy, readonly) NSString *userLastName;</div><div class="line">@property (nonatomic, strong, readonly) NSArray *userLike;</div><div class="line"></div><div class="line">- (instancetype)initWithFirstName:(NSString*)firstName WithLastName:(NSString*)lastName;</div><div class="line"></div><div class="line">//提供相应的方法，以此修改对象中的可变 collection</div><div class="line">- (void)addUserLike:(NSArray *)userLike;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import &quot;EXOPerson.h&quot;</div><div class="line"></div><div class="line">@interface EXOPerson ()</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userFirstName;</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userLastName;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXOPerson</div><div class="line"></div><div class="line">- (instancetype)initWithFirstName:(NSString*)firstName WithLastName:(NSString*)lastName</div><div class="line">&#123;</div><div class="line">    self = [super init];</div><div class="line">    if (self) &#123;</div><div class="line">        _userFirstName = [firstName copy];</div><div class="line">        _userLastName  = [lastName copy];</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line">- (void)addUserLike:(NSArray *)userLike &#123;</div><div class="line">    _userLike = [userLike copy];</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<h3 id="第四条：为私有方法加前缀"><a href="#第四条：为私有方法加前缀" class="headerlink" title="第四条：为私有方法加前缀"></a>第四条：为私有方法加前缀</h3><ul>
+<li>给私有方法的名称加上前缀，这样可以很容易的将其同公共的方法区分开来。（笔者喜欢用 p_ 为前缀） <code>- (void)p_privateMethod{}</code></li>
+<li>不要单用一个下划线做私有方法的前缀，因为这种做法是苹果公司预留的。</li>
+</ul>
+<h3 id="理解-Objective-C-的错误类型"><a href="#理解-Objective-C-的错误类型" class="headerlink" title="理解 Objective-C 的错误类型"></a>理解 Objective-C 的错误类型</h3><ul>
+<li>只有发生了可使整个应用程序崩溃的严重错误时，才应使用异常。</li>
+<li><p>在错误不那么严重的情况下，可指派委托方法来处理错误，也可以把错误信息放在<code>NSError</code>对象中，经由“输出参数”返回给调用者。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">NSError *error = [[NSError alloc]</div><div class="line">                         initWithDomain:NSCocoaErrorDomain</div><div class="line">                         code:9998</div><div class="line">                         userInfo:@&#123;NSLocalizedDescriptionKey:@&quot;错误描述&quot;,</div><div class="line">                         NSLocalizedFailureReasonErrorKey:@&quot;错误原因&quot;,</div><div class="line">                         NSLocalizedRecoverySuggestionErrorKey:@&quot;解决建议&quot;,</div><div class="line">                         NSLocalizedRecoveryOptionsErrorKey:@[@&quot;解决建议可选1&quot;,@&quot;解决建议可选2&quot;]&#125;];</div><div class="line">       </div><div class="line">       // Domain 错误域：产生错误的地方（系统提供了一些定义的域）</div><div class="line">       /*</div><div class="line">        FOUNDATION_EXPORT NSString *const NSCocoaErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSPOSIXErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSOSStatusErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSMachErrorDomain;</div><div class="line">        */</div><div class="line">       NSString *domain = error.domain;</div><div class="line">       </div><div class="line">       // code：错误码</div><div class="line">       NSInteger code = error.code;</div><div class="line">       </div><div class="line">       // userInfo：错误信息（系统提供了很多定义的key）</div><div class="line">       NSDictionary *userInfo = error.userInfo;</div><div class="line">       </div><div class="line">       NSString *localizedDescription = userInfo[NSLocalizedDescriptionKey];</div><div class="line">       NSString *localizedFailureReason = userInfo[NSLocalizedFailureReasonErrorKey];</div><div class="line">       NSString *localizedRecoverySuggestion = userInfo[NSLocalizedRecoverySuggestionErrorKey];</div><div class="line">       NSArray *localizedRecoveryOptions = userInfo[NSLocalizedRecoveryOptionsErrorKey];</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="第五条：立即-NSCopying-协议"><a href="#第五条：立即-NSCopying-协议" class="headerlink" title="第五条：立即 NSCopying 协议"></a>第五条：立即 NSCopying 协议</h3><ul>
+<li>若想让自己的类具有 <code>copy</code> 功能，那么要实现 NSCopying 协议：  <code>- (id)copyWithZone:(NSZone*)zone</code></li>
+<li>若想让自己的类具有 <code>mutableCopy</code> 功能，那么要实现 NSMutableCopying 协议：  <code>-(id)mutableCopyWithZone:(NSZone*)zone</code></li>
+<li>复制对象时需决定采用深拷贝还是浅拷贝，一般情况下应尽量考虑执行浅拷贝。</li>
+<li>如果你所写的对象需要深拷贝，那么可以考虑新增一个专门执行深拷贝的方法。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">#import &quot;EXOPerson.h&quot;</div><div class="line"></div><div class="line">@interface EXOPerson ()</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userFirstName;</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userLastName;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXOPerson</div><div class="line">&#123;</div><div class="line">    NSString *_fullName;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (instancetype)initWithFirstName:(NSString*)firstName WithLastName:(NSString*)lastName</div><div class="line">&#123;</div><div class="line">    self = [super init];</div><div class="line">    if (self) &#123;</div><div class="line">        _userFirstName = [firstName copy];</div><div class="line">        _userLastName  = [lastName copy];</div><div class="line">        _fullName = [NSString stringWithFormat:@&quot;%@%@&quot;,_userFirstName,_userLastName];</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">- (id)copyWithZone:(nullable NSZone *)zone &#123;</div><div class="line">    EXOPerson *copy = [[EXOPerson allocWithZone:zone] initWithFirstName:_userFirstName WithLastName:_userLastName];</div><div class="line">    //注意：这里使用-&gt;语法，因为_fullName 并非属性，只是在内部使用的实例变量</div><div class="line">    copy-&gt;_fullName = _fullName;</div><div class="line">    return copy;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><a href="http://www.jianshu.com/p/e6a7cdcc705d" target="_blank" rel="external">iOS 浅谈：深.浅拷贝与copy.strong</a></p>
+
       
     </div>
 
@@ -357,6 +399,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/05/iOS数据持久化/" rel="prev" title="iOS数据持久化">
+                iOS数据持久化 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -403,8 +449,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -419,7 +474,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -448,6 +503,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#第三条：尽量使用不可变对象"><span class="nav-number">1.</span> <span class="nav-text">第三条：尽量使用不可变对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四条：为私有方法加前缀"><span class="nav-number">2.</span> <span class="nav-text">第四条：为私有方法加前缀</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解-Objective-C-的错误类型"><span class="nav-number">3.</span> <span class="nav-text">理解 Objective-C 的错误类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第五条：立即-NSCopying-协议"><span class="nav-number">4.</span> <span class="nav-text">第五条：立即 NSCopying 协议</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
