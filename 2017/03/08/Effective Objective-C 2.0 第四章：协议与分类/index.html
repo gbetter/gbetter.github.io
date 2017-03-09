@@ -90,10 +90,8 @@
 <meta name="description" content="第一条：将类的实现胆码分散到便于管理的数个分类之中
 可以通过 Objective-C 的 “分类” 机制，把类代码按逻辑划入几个分区中，便于开发和调试。
 使用分类机制后若分类数量过多，可将每个分类提取到各自的文件中。
-可以通过创建名叫 Private 的分类，用于隐藏实现细节。
-向第三方类中添加分类，应该为其名称和其中的方法加上专用的前缀。
 
-123456789101112131415161718">
+12345678910111213141516171819202122232425262728#import &amp;lt;Foundation/Foundation.h&amp;gt;@int">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Effective Objective-C 2.0 第四章：协议与分类">
 <meta property="og:url" content="http://yoursite.com/2017/03/08/Effective Objective-C 2.0 第四章：协议与分类/index.html">
@@ -101,20 +99,16 @@
 <meta property="og:description" content="第一条：将类的实现胆码分散到便于管理的数个分类之中
 可以通过 Objective-C 的 “分类” 机制，把类代码按逻辑划入几个分区中，便于开发和调试。
 使用分类机制后若分类数量过多，可将每个分类提取到各自的文件中。
-可以通过创建名叫 Private 的分类，用于隐藏实现细节。
-向第三方类中添加分类，应该为其名称和其中的方法加上专用的前缀。
 
-123456789101112131415161718">
-<meta property="og:updated_time" content="2017-03-08T16:13:49.000Z">
+12345678910111213141516171819202122232425262728#import &amp;lt;Foundation/Foundation.h&amp;gt;@int">
+<meta property="og:updated_time" content="2017-03-09T01:33:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective Objective-C 2.0 第四章：协议与分类">
 <meta name="twitter:description" content="第一条：将类的实现胆码分散到便于管理的数个分类之中
 可以通过 Objective-C 的 “分类” 机制，把类代码按逻辑划入几个分区中，便于开发和调试。
 使用分类机制后若分类数量过多，可将每个分类提取到各自的文件中。
-可以通过创建名叫 Private 的分类，用于隐藏实现细节。
-向第三方类中添加分类，应该为其名称和其中的方法加上专用的前缀。
 
-123456789101112131415161718">
+12345678910111213141516171819202122232425262728#import &amp;lt;Foundation/Foundation.h&amp;gt;@int">
 
 
 
@@ -342,8 +336,6 @@
         <h3 id="第一条：将类的实现胆码分散到便于管理的数个分类之中"><a href="#第一条：将类的实现胆码分散到便于管理的数个分类之中" class="headerlink" title="第一条：将类的实现胆码分散到便于管理的数个分类之中"></a>第一条：将类的实现胆码分散到便于管理的数个分类之中</h3><ul>
 <li>可以通过 Objective-C 的 “分类” 机制，把类代码按逻辑划入几个分区中，便于开发和调试。</li>
 <li>使用分类机制后若分类数量过多，可将每个分类提取到各自的文件中。</li>
-<li>可以通过创建名叫 Private 的分类，用于隐藏实现细节。</li>
-<li>向第三方类中添加分类，应该为其名称和其中的方法加上专用的前缀。</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line">@interface EXOStudent : NSObject</div><div class="line">@end</div><div class="line"></div><div class="line">@interface EXOStudent (Friendship)</div><div class="line">- (void)addFriend:(EXOStudent*)student;</div><div class="line">- (void)removeFriend:(EXOStudent*)stuendt;</div><div class="line">@end</div><div class="line"></div><div class="line">@interface EXOStudent (Work)</div><div class="line">- (void)performDaysWork;</div><div class="line">- (void)takeVacationFromWork;</div><div class="line">@end  </div><div class="line"></div><div class="line">#import &quot;EXOStudent.h&quot;</div><div class="line"></div><div class="line">@implementation EXOStudent</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXOStudent (Friendship)</div><div class="line">- (void)addFriend:(EXOStudent*)student &#123;//do&#125;</div><div class="line">- (void)removeFriend:(EXOStudent*)stuendt &#123;//do&#125;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXOStudent (Work)</div><div class="line">- (void)performDaysWork &#123;//do&#125;</div><div class="line">- (void)takeVacationFromWork &#123;//do&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
 <h3 id="第二条：勿在分类中声明属性"><a href="#第二条：勿在分类中声明属性" class="headerlink" title="第二条：勿在分类中声明属性"></a>第二条：勿在分类中声明属性</h3><ul>
@@ -357,6 +349,11 @@
 <li>如果某些属性在主接口中声明为“只读”，而在类的内部又要用设置方法修改此属性，那么就在“class-continuation 分类” 中将其扩展为 “可读写”。</li>
 <li>把私有方法的原型声明在 “class-continuation 分类” 里面。</li>
 <li>若想使类所遵循的协议不为人所知，则可于 “class-continuation 分类”中声明。</li>
+</ul>
+<h3 id="第四条：通过协议提供匿名对象"><a href="#第四条：通过协议提供匿名对象" class="headerlink" title="第四条：通过协议提供匿名对象"></a>第四条：通过协议提供匿名对象</h3><ul>
+<li>我们可以用协议吧自己所写的API中的实现细节隐藏起来，将返回的对象设计为遵从此协议的 id 类型。<br><code>@property (nonatomic, weak)id&lt;ECODelegate&gt; delegate;</code><br><code>- (void)setObject:(ObjectType)anObject forKey:(KeyType &lt;NSCopying&gt;)aKey</code></li>
+<li>如果具体类型不重要，重要的是对象能响应（协议）方法，可以用匿名对象来表示。</li>
+<li>如果几个界面是相似的，那么就可以利用协议返回统一的数据来处理。</li>
 </ul>
 
       
@@ -507,7 +504,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一条：将类的实现胆码分散到便于管理的数个分类之中"><span class="nav-number">1.</span> <span class="nav-text">第一条：将类的实现胆码分散到便于管理的数个分类之中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二条：勿在分类中声明属性"><span class="nav-number">2.</span> <span class="nav-text">第二条：勿在分类中声明属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三条：使用-“class-continuation”-隐藏实现细节"><span class="nav-number">3.</span> <span class="nav-text">第三条：使用 “class-continuation” 隐藏实现细节</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一条：将类的实现胆码分散到便于管理的数个分类之中"><span class="nav-number">1.</span> <span class="nav-text">第一条：将类的实现胆码分散到便于管理的数个分类之中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二条：勿在分类中声明属性"><span class="nav-number">2.</span> <span class="nav-text">第二条：勿在分类中声明属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三条：使用-“class-continuation”-隐藏实现细节"><span class="nav-number">3.</span> <span class="nav-text">第三条：使用 “class-continuation” 隐藏实现细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四条：通过协议提供匿名对象"><span class="nav-number">4.</span> <span class="nav-text">第四条：通过协议提供匿名对象</span></a></li></ol></div>
             
 
           </div>
