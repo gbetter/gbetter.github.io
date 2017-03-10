@@ -87,13 +87,25 @@
 
 
 
+<meta name="description" content="第一条：在 dealloc 方法中释放引用并解除监听
+应该在 dealloc 中释放对象所拥有的引用，ARC 会自动为所有的 Objective-C 对象添加释放代码，其他非 Objective-C 对象需手动释放（CoreFoundation）。
+把原来配置过的观测行为（KVC）或 NSNotificationCenter，一般应该在这里注销。
+在 dealloc 中不要调用属性的存取方法，可能">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Effective Objective-C 2.0 第五章：内存管理">
 <meta property="og:url" content="http://yoursite.com/2017/03/09/Effective Objective-C 2.0 第五章：内存管理/index.html">
 <meta property="og:site_name" content="gbetter">
-<meta property="og:updated_time" content="2017-03-09T01:35:37.000Z">
+<meta property="og:description" content="第一条：在 dealloc 方法中释放引用并解除监听
+应该在 dealloc 中释放对象所拥有的引用，ARC 会自动为所有的 Objective-C 对象添加释放代码，其他非 Objective-C 对象需手动释放（CoreFoundation）。
+把原来配置过的观测行为（KVC）或 NSNotificationCenter，一般应该在这里注销。
+在 dealloc 中不要调用属性的存取方法，可能">
+<meta property="og:updated_time" content="2017-03-10T08:47:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective Objective-C 2.0 第五章：内存管理">
+<meta name="twitter:description" content="第一条：在 dealloc 方法中释放引用并解除监听
+应该在 dealloc 中释放对象所拥有的引用，ARC 会自动为所有的 Objective-C 对象添加释放代码，其他非 Objective-C 对象需手动释放（CoreFoundation）。
+把原来配置过的观测行为（KVC）或 NSNotificationCenter，一般应该在这里注销。
+在 dealloc 中不要调用属性的存取方法，可能">
 
 
 
@@ -318,7 +330,45 @@
       
 
       
-        
+        <h3 id="第一条：在-dealloc-方法中释放引用并解除监听"><a href="#第一条：在-dealloc-方法中释放引用并解除监听" class="headerlink" title="第一条：在 dealloc 方法中释放引用并解除监听"></a>第一条：在 dealloc 方法中释放引用并解除监听</h3><ul>
+<li>应该在 dealloc 中释放对象所拥有的引用，ARC 会自动为所有的 Objective-C 对象添加释放代码，其他非 Objective-C 对象需手动释放（CoreFoundation）。</li>
+<li>把原来配置过的观测行为（KVC）或 NSNotificationCenter，一般应该在这里注销。</li>
+<li>在 dealloc 中不要调用属性的存取方法，可能有人覆写过这些方法，并于其中做一些无法再回收阶段安全执行的操作，属性可能处于“键值观察”（KVC）机制的监控之下。</li>
+<li>执行异步任务的方法不应该在 dealloc 里调用，正常执行的方法也不应该在调用，因为对象正处于回收的状态了。</li>
+<li>如果对象持有文件描述符等系统资源，应专门写一个方法来释放资源，并于其他使用者约定，用完资源后必须调用 close 方法。</li>
+</ul>
+<h3 id="第二条：自动释放-autoreleasepool"><a href="#第二条：自动释放-autoreleasepool" class="headerlink" title="第二条：自动释放 @autoreleasepool"></a>第二条：自动释放 @autoreleasepool</h3><ul>
+<li>使用弱引用避免保留环（weak）</li>
+<li>是么时候使用 @autoreleasepool<ol>
+<li>写基于命令行的程序时，就是没有UI框架，如 AppKit 等 Cocoa 框架时。</li>
+<li>写循环，循环中包含大量临时创建的对象。</li>
+<li>创建了新的线程。（非 Cocoa 程序创建线程时才需要）</li>
+<li>长时间在后台运行的任务。</li>
+</ol>
+</li>
+<li><p>利用 @autoreleasepool 优化内存占用</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">	//来自Apple文档，见参考</div><div class="line">NSArray *urls = &lt;# An array of file URLs #&gt;;</div><div class="line">for (NSURL *url in urls) &#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        NSError *error;</div><div class="line">        NSString *fileContents = [NSString stringWithContentsOfURL:url</div><div class="line">                                        encoding:NSUTF8StringEncoding error:&amp;error];</div><div class="line">        /* Process the string, creating and autoreleasing more objects. */</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="第三条：用“僵尸对象”调试内存管理问题"><a href="#第三条：用“僵尸对象”调试内存管理问题" class="headerlink" title="第三条：用“僵尸对象”调试内存管理问题"></a>第三条：用“僵尸对象”调试内存管理问题</h3><ul>
+<li>开启方式：编辑应用程序的 Scheme，在对话框左侧选择 ”Run“，然后切换至 “Diagnostics”分页，最后勾选 “Enable Zombie（[‘zɑmbi]    行尸走肉；蛇神；木讷呆板的人）     Objects” 选项。</li>
+<li>开启后，系统在回收对象时，可以不将其真的回收，而是把它转化为僵尸对象（系统会修改对象的 isa 指针，令其指向特殊的僵尸类，从而使该对象的僵尸对象可以相应所有的选择子）。</li>
+<li>响应方式为：打印一条包含消息内容及其接收者的消息，然后终止应用程序。</li>
+</ul>
+<h3 id="第四条：iOS-定时器-NSTimer-中的循环引用"><a href="#第四条：iOS-定时器-NSTimer-中的循环引用" class="headerlink" title="第四条：iOS 定时器 NSTimer 中的循环引用"></a>第四条：iOS 定时器 NSTimer 中的循环引用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">+ (NSTimer *)timerWithTimeInterval:(NSTimeInterval)ti target:(id)aTarget selector:(SEL)aSelector userInfo:(nullable id)userInfo repeats:(BOOL)yesOrNo;</div><div class="line">+ (NSTimer *)scheduledTimerWithTimeInterval:(NSTimeInterval)ti target:(id)aTarget selector:(SEL)aSelector userInfo:(nullable id)userInfo repeats:(BOOL)yesOrNo;</div></pre></td></tr></table></figure>
+<ul>
+<li>由于循环引用的起因是target，则可以包装一个 target，让 target 指向另一个对象，而不是当前调用的对象，即可解决循环引用。</li>
+<li>在使用 NSTimer 时，可以使用不带有 target 的类方法（block）。</li>
+<li><code>timerWithTimeInterval</code>需要加入<code>RunLoop</code> <code>scheduledTimerWithTimeInterval</code> 不用</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">方法一</div><div class="line">#import &quot;EXOTimerBlock.h&quot;</div><div class="line"></div><div class="line">@interface EXOTimerBlock()</div><div class="line"></div><div class="line">@property (nonatomic, assign)SEL selector;</div><div class="line">@property (nonatomic, strong)  NSTimer *timer;</div><div class="line">@property (nonatomic, weak)  id target;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXOTimerBlock</div><div class="line"></div><div class="line">+ (NSTimer* _Nonnull)EXOTimerWithTimeInterval:(NSTimeInterval)ti</div><div class="line">                                       target:(id _Nonnull)aTarget</div><div class="line">                                     selector:(SEL _Nonnull)aSelector</div><div class="line">                                     userInfo:(nullable id)userInfo</div><div class="line">                                      repeats:(BOOL)yesOrNo&#123;</div><div class="line">    </div><div class="line">    EXOTimerBlock *timerBlock = [[EXOTimerBlock alloc] init];</div><div class="line">    timerBlock.selector = aSelector;</div><div class="line">    timerBlock.target = aTarget;</div><div class="line">    timerBlock.timer = [NSTimer timerWithTimeInterval:ti target:timerBlock selector:@selector(EXOFire:) userInfo:userInfo repeats:yesOrNo];</div><div class="line">    return timerBlock.timer;</div><div class="line">&#125;</div><div class="line">- (void)EXOFire:(NSTimer*)timer &#123;</div><div class="line">    if (self.target) &#123;</div><div class="line">        [self.target performSelector:self.selector withObject:timer.userInfo];</div><div class="line">    &#125;else &#123;</div><div class="line">        [timer invalidate];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">方法二</div><div class="line"></div><div class="line">#import &quot;NSTimer+EXOBlock.h&quot;</div><div class="line">@implementation NSTimer (EXOBlock)</div><div class="line"></div><div class="line">+ (NSTimer*)EXOTimerWithTimeInterval:(NSTimeInterval)ti block:(nullable void(^)()) block userInfo:(id)userInfo repeats:(BOOL)yesOrNo &#123;</div><div class="line">    return [self timerWithTimeInterval:ti target:self selector:@selector(p_exoTimerSelector:) userInfo:[block copy] repeats:yesOrNo];</div><div class="line">&#125;</div><div class="line">+ (void)p_exoTimerSelector:(NSTimer*)timer&#123;</div><div class="line">    void (^block)() = [timer userInfo];</div><div class="line">    if (block) &#123;</div><div class="line">        block();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<h3 id="第五条：performselector-的内存泄漏问题"><a href="#第五条：performselector-的内存泄漏问题" class="headerlink" title="第五条：performselector 的内存泄漏问题"></a>第五条：performselector 的内存泄漏问题</h3><ul>
+<li>performSelector关于内存管理的执行原理是这样的：执行 [self performSelector:@selector(method1:) withObject:self afterDelay:3]; 的时候，系统会将self的引用计数加1，执行完这个方法时，还会将self的引用计数减1，<strong>当方法还没有执行的时候，要返回父视图释放当前视图的时候，self的计数没有减少到0，而导致无法调用dealloc方法，出现了内存泄露</strong>。</li>
+<li>解决办法就是取消那些还没有来得及执行的延时函数，代码很简单：<br><code>[NSObject cancelPreviousPerformRequestsWithTarget:self]</code><br>当然你也可以一个一个得这样用：<br><code>[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(method1:) object:nil]</code><br>加上了这个以后，dealloc方法就会被调用，问题解决！ </li>
+</ul>
+<p> </p>
+
       
     </div>
 
@@ -403,8 +453,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -448,6 +507,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一条：在-dealloc-方法中释放引用并解除监听"><span class="nav-number">1.</span> <span class="nav-text">第一条：在 dealloc 方法中释放引用并解除监听</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二条：自动释放-autoreleasepool"><span class="nav-number">2.</span> <span class="nav-text">第二条：自动释放 @autoreleasepool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三条：用“僵尸对象”调试内存管理问题"><span class="nav-number">3.</span> <span class="nav-text">第三条：用“僵尸对象”调试内存管理问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四条：iOS-定时器-NSTimer-中的循环引用"><span class="nav-number">4.</span> <span class="nav-text">第四条：iOS 定时器 NSTimer 中的循环引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第五条：performselector-的内存泄漏问题"><span class="nav-number">5.</span> <span class="nav-text">第五条：performselector 的内存泄漏问题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
