@@ -479,7 +479,7 @@
       
         
           
-            <h3 id="第一条：将类的实现胆码分散到便于管理的数个分类之中"><a href="#第一条：将类的实现胆码分散到便于管理的数个分类之中" class="headerlink" title="第一条：将类的实现胆码分散到便于管理的数个分类之中"></a>第一条：将类的实现胆码分散到便于管理的数个分类之中</h3><ul>
+            <h3 id="第一条：将类的实现代码分散到便于管理的数个分类之中"><a href="#第一条：将类的实现代码分散到便于管理的数个分类之中" class="headerlink" title="第一条：将类的实现代码分散到便于管理的数个分类之中"></a>第一条：将类的实现代码分散到便于管理的数个分类之中</h3><ul>
 <li>可以通过 Objective-C 的 “分类” 机制，把类代码按逻辑划入几个分区中，便于开发和调试。</li>
 <li>使用分类机制后若分类数量过多，可将每个分类提取到各自的文件中。</li>
 <li>将应该视为“私有”的方法归入名叫 Private 的分类中，以隐藏实现细节</li>
@@ -814,7 +814,7 @@ NSLog(@&quot;=====%@---%li&quot;,unRectangle.userDetail,(long)userAge);
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">NSError *error = [[NSError alloc]</div><div class="line">                         initWithDomain:NSCocoaErrorDomain</div><div class="line">                         code:9998</div><div class="line">                         userInfo:@&#123;NSLocalizedDescriptionKey:@&quot;错误描述&quot;,</div><div class="line">                         NSLocalizedFailureReasonErrorKey:@&quot;错误原因&quot;,</div><div class="line">                         NSLocalizedRecoverySuggestionErrorKey:@&quot;解决建议&quot;,</div><div class="line">                         NSLocalizedRecoveryOptionsErrorKey:@[@&quot;解决建议可选1&quot;,@&quot;解决建议可选2&quot;]&#125;];</div><div class="line">       </div><div class="line">       // Domain 错误域：产生错误的地方（系统提供了一些定义的域）</div><div class="line">       /*</div><div class="line">        FOUNDATION_EXPORT NSString *const NSCocoaErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSPOSIXErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSOSStatusErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSMachErrorDomain;</div><div class="line">        */</div><div class="line">       NSString *domain = error.domain;</div><div class="line">       </div><div class="line">       // code：错误码</div><div class="line">       NSInteger code = error.code;</div><div class="line">       </div><div class="line">       // userInfo：错误信息（系统提供了很多定义的key）</div><div class="line">       NSDictionary *userInfo = error.userInfo;</div><div class="line">       </div><div class="line">       NSString *localizedDescription = userInfo[NSLocalizedDescriptionKey];</div><div class="line">       NSString *localizedFailureReason = userInfo[NSLocalizedFailureReasonErrorKey];</div><div class="line">       NSString *localizedRecoverySuggestion = userInfo[NSLocalizedRecoverySuggestionErrorKey];</div><div class="line">       NSArray *localizedRecoveryOptions = userInfo[NSLocalizedRecoveryOptionsErrorKey];</div></pre></td></tr></table></figure>
 </li>
 </ul>
-<h3 id="第五条：立即-NSCopying-协议"><a href="#第五条：立即-NSCopying-协议" class="headerlink" title="第五条：立即 NSCopying 协议"></a>第五条：立即 NSCopying 协议</h3><ul>
+<h3 id="第五条：理解-NSCopying-协议"><a href="#第五条：理解-NSCopying-协议" class="headerlink" title="第五条：理解 NSCopying 协议"></a>第五条：理解 NSCopying 协议</h3><ul>
 <li>若想让自己的类具有 <code>copy</code> 功能，那么要实现 NSCopying 协议：  <code>- (id)copyWithZone:(NSZone*)zone</code></li>
 <li>若想让自己的类具有 <code>mutableCopy</code> 功能，那么要实现 NSMutableCopying 协议：  <code>-(id)mutableCopyWithZone:(NSZone*)zone</code></li>
 <li>复制对象时需决定采用深拷贝还是浅拷贝，一般情况下应尽量考虑执行浅拷贝。</li>
@@ -1057,7 +1057,7 @@ method_exchangeImplementations(originalMethod, swppedMethod);
 </ul>
 <p>我们可以通过新编写一个方法，通过交换可以向类中新增或替换选择子，一般调试的时候才会在运行期修改方法实现，不宜滥用。</p>
 <ul>
-<li>每个实例都有一个指向 Class 对象的指针，用以表明其类型，而这些 Class 对象则构成了累的继承体系（isa）。</li>
+<li>每个实例都有一个指向 Class 对象的指针，用以表明其类型，而这些 Class 对象则构成了类的继承体系（isa）。</li>
 <li>如果对象类型无法再编译器确定，那么就应该使用类型查询方法来探知。</li>
 <li>尽量使用类型查询方法来确定对象的类型，而不是直接比较类对象，因为某些对象可能实现了消息转发功能。</li>
 </ul>

@@ -100,7 +100,7 @@
 
 通过@synthesize语法来指定实例变量的名称：@synthesize first">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1642566-c4389a0a0fe7c108.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-03-04T12:41:10.000Z">
+<meta property="og:updated_time" content="2017-03-12T02:40:22.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective Objective-C 2.0 第二章 对象、消息、运行期">
 <meta name="twitter:description" content="用 Objective-C 等面向对象语言编程时，“对象”就是“基本构造单元”，开发者可以通过对象来存储并传递数据，在对象之间传递数据并执行任务的过程就叫做“消息传递”（Messaging）。
@@ -424,7 +424,7 @@ method_exchangeImplementations(originalMethod, swppedMethod);
 </ul>
 <p>我们可以通过新编写一个方法，通过交换可以向类中新增或替换选择子，一般调试的时候才会在运行期修改方法实现，不宜滥用。</p>
 <ul>
-<li>每个实例都有一个指向 Class 对象的指针，用以表明其类型，而这些 Class 对象则构成了累的继承体系（isa）。</li>
+<li>每个实例都有一个指向 Class 对象的指针，用以表明其类型，而这些 Class 对象则构成了类的继承体系（isa）。</li>
 <li>如果对象类型无法再编译器确定，那么就应该使用类型查询方法来探知。</li>
 <li>尽量使用类型查询方法来确定对象的类型，而不是直接比较类对象，因为某些对象可能实现了消息转发功能。</li>
 </ul>
