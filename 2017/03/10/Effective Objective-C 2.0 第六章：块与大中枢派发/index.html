@@ -101,7 +101,7 @@
 
 栈块：定义块的时候，其所占的内存区域是分配在栈中的，且只在定义它的那个范围内有效。下面定义的 block 只在 if else 范围内有效，若编译器未覆写待执行的块，则程序正常，否则，程序崩溃。
 1234567891011   void (^block)();   if ( /* some condition */ ) &amp;#123;">
-<meta property="og:updated_time" content="2017-03-15T09:07:07.000Z">
+<meta property="og:updated_time" content="2017-03-15T09:08:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective Objective-C 2.0 第六章：块与大中枢派发">
 <meta name="twitter:description" content="第一条：理解‘块’这一概念
@@ -351,45 +351,62 @@
 </code></pre></li>
 </ol>
 <h3 id="第二条：使用-handler-块降低代码的分散程度"><a href="#第二条：使用-handler-块降低代码的分散程度" class="headerlink" title="第二条：使用 handler 块降低代码的分散程度"></a>第二条：使用 handler 块降低代码的分散程度</h3><ul>
-<li><p>下载网络数据时，如果使用代理方法，会使得代码分布不紧凑，而且如果有多个下载任务的话，还要在回调的代理中判断当前请求的类型。但是如果使用block的话，就可以让网络下载的代码和回调处理的代码写在一起，这样就可以同时解决上面的两个问题：  </p>
-</li>
-<li><p>可以将处理成功的代码放在一个块里，处理失败的代码放在另一个块中,这样写的好处是，我们可以将处理成功和失败的代码分开来写，看上去更加清晰。</p>
-</li>
+<li>下载网络数据时，如果使用代理方法，会使得代码分布不紧凑，而且如果有多个下载任务的话，还要在回调的代理中判断当前请求的类型。但是如果使用block的话，就可以让网络下载的代码和回调处理的代码写在一起，这样就可以同时解决上面的两个问题：  </li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line">@class EOCNetworkFetcher;</div><div class="line">typedef void(^EOCNetworkFetcherCompletionHandler)(NSData *data);</div><div class="line">typedef void(^EOCNetworkFetcherErrorHandler)(NSError *error);</div><div class="line">@interface EOCNetworkFetcher : NSObject</div><div class="line">- (id)initWithURL:(NSURL*)url;</div><div class="line">- (void)startWithCompletionHandler: (EOCNetworkFetcherCompletionHandler)completion failureHandler: (EOCNetworkFetcherErrorHandler)failure;</div><div class="line">@end</div><div class="line">EOCNetworkFetcher *fetcher =[[EOCNetworkFetcher alloc] initWithURL:url];</div><div class="line">[fetcher startWithCompletionHander:^(NSData *data)&#123;</div><div class="line">     // Handle success</div><div class="line">&#125;</div><div class="line"> failureHandler:^(NSError *error)&#123;</div><div class="line"> // Handle failure</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
 <ul>
-<li><p>我们还可以将 成功和失败的代码都放在同一个块里：这样做的好处是，如果及时下载失败或中断了，我们仍然可以取到当前所下载的data。而且，如果在需求上指出：下载成功后得到的数据很少，也视为失败，那么单一块的写法就很适用，因为它可以取得数据后（成功）再判断其是否是下载成功的。</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">	#import &lt;Foundation/Foundation.h&gt;</div><div class="line">	@class EOCNetworkFetcher;</div><div class="line">	typedef void(^EOCNetworkFetcherCompletionHandler)(NSData *data, NSError *error);</div><div class="line">	EOCNetworkFetcher *fetcher =[[EOCNetworkFetcher alloc] initWithURL:url];</div><div class="line">	[fetcher startWithCompletionHander:</div><div class="line">	^(NSData *data, NSError *error)&#123;</div><div class="line">		if (error) &#123;</div><div class="line">		     // Handle failure</div><div class="line">		&#125; else &#123;</div><div class="line">		     // Handle success</div><div class="line">		&#125;</div><div class="line">	&#125;];</div><div class="line">	</div><div class="line">	```  </div><div class="line">### 第三条：用块引用其所属对象时不要出现保留环</div><div class="line"></div><div class="line">- 如果块捕获的对象直接或间接地保留了块本身，那么就需要小心保留环问题:</div></pre></td></tr></table></figure>
-<p>  @implementation EOCClass {</p>
-<pre><code>EOCNetworkFetcher *_networkFetcher;
-NSData *_fetchedData;
-</code></pre><p>  }</p>
-<ul>
-<li><p>(void)downloadData {<br>   NSURL <em>url = [[NSURL alloc] initWithString:@”<a href="http://www.example.com/something.dat" target="_blank" rel="external">http://www.example.com/something.dat</a>“];<br>  _networkFetcher =[[EOCNetworkFetcher alloc] initWithURL:url];<br>  [_networkFetcher startWithCompletionHandler:^(NSData </em>data){</p>
-<pre><code> NSLog(@&quot;Request URL %@ finished&quot;, _networkFetcher.url);
-_fetchedData = data;
-</code></pre><p>  }];<br>}</p>
+<li>可以将处理成功的代码放在一个块里，处理失败的代码放在另一个块中,这样写的好处是，我们可以将处理成功和失败的代码分开来写，看上去更加清晰。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">	#import &lt;Foundation/Foundation.h&gt;</div><div class="line">	@class EOCNetworkFetcher;</div><div class="line">	typedef void(^EOCNetworkFetcherCompletionHandler)(NSData *data, NSError *error);</div><div class="line">	@interface EOCNetworkFetcher : NSObject</div><div class="line">	- (id)initWithURL:(NSURL*)url;</div><div class="line">	- (void)startWithCompletionHandler:(EOCNetworkFetcherCompletionHandler)completion;</div><div class="line">	@end</div><div class="line">	EOCNetworkFetcher *fetcher =[[EOCNetworkFetcher alloc] initWithURL:url];</div><div class="line">	[fetcher startWithCompletionHander:</div><div class="line">	^(NSData *data, NSError *error)&#123;</div><div class="line">		if (error) &#123;</div><div class="line">		     // Handle failure</div><div class="line">		&#125; else &#123;</div><div class="line">		     // Handle success</div><div class="line">		&#125;</div><div class="line">	&#125;];</div><div class="line">	</div><div class="line">	```  </div><div class="line">	</div><div class="line">- 我们还可以将 成功和失败的代码都放在同一个块里：这样做的好处是，如果及时下载失败或中断了，我们仍然可以取到当前所下载的data。而且，如果在需求上指出：下载成功后得到的数据很少，也视为失败，那么单一块的写法就很适用，因为它可以取得数据后（成功）再判断其是否是下载成功的。</div><div class="line">	</div><div class="line">### 第三条：用块引用其所属对象时不要出现保留环</div><div class="line"></div><div class="line">- 如果块捕获的对象直接或间接地保留了块本身，那么就需要小心保留环问题:</div></pre></td></tr></table></figure>
+<pre><code>@implementation EOCClass {
+     EOCNetworkFetcher *_networkFetcher;
+     NSData *_fetchedData;
+}
+- (void)downloadData {
+     NSURL *url = [[NSURL alloc] initWithString:@&quot;http://www.example.com/something.dat&quot;];
+    _networkFetcher =[[EOCNetworkFetcher alloc] initWithURL:url];
+    [_networkFetcher startWithCompletionHandler:^(NSData *data){
+             NSLog(@&quot;Request URL %@ finished&quot;, _networkFetcher.url);
+            _fetchedData = data;
+    }];
+}
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">- 在这里出现了保留环：块要设置_fetchedData变量，就需要捕获self变量。而self（EOCClass实例）通过实例变量保留了获取器_networkFetcher，而_networkFetcher又保留了块。  </div><div class="line">解决方案是：在快中去得到 data 后，将 _completionHandler 设置为 nil 打破保留环。</div></pre></td></tr></table></figure>
-<p>#import “EXONetworkFetcher.h”</p>
-<p>@interface EXONetworkFetcher ()</p>
-<p>@property (nonatomic, strong, readwrite) NSURL <em>url;<br>@property (nonatomic, copy) EXONetworkFetcherCompletionHandler completionHandler;<br>@property (nonatomic, strong) NSData </em>downloadData;</p>
-<p>@end</p>
-<p>@implementation EXONetworkFetcher</p>
-</li>
-<li><p>(instancetype)initWithURL:(NSURL*)url<br>{<br>  self = [super init];<br>  if (self) {</p>
-<pre><code>_url = url;
-</code></pre><p>  }<br>  return self;<br>}</p>
-</li>
-<li><p>(void)startWithCompletionHandler:(EXONetworkFetcherCompletionHandler) completion {<br>  self.completionHandler = completion;<br>  //start request<br>//    self.downloadData =<br>  if (_completionHandler) {</p>
-<pre><code>_completionHandler(_downloadData);
-</code></pre><p>  }<br>  _completionHandler = nil;<br>}</p>
-<p>@end</p>
+
+#import &quot;EXONetworkFetcher.h&quot;
+
+@interface EXONetworkFetcher ()
+
+@property (nonatomic, strong, readwrite) NSURL *url;
+@property (nonatomic, copy) EXONetworkFetcherCompletionHandler completionHandler;
+@property (nonatomic, strong) NSData *downloadData;
+
+@end
+
+@implementation EXONetworkFetcher
+
+- (instancetype)initWithURL:(NSURL*)url
+{
+    self = [super init];
+    if (self) {
+        _url = url;
+    }
+    return self;
+}
+
+- (void)startWithCompletionHandler:(EXONetworkFetcherCompletionHandler) completion {
+    self.completionHandler = completion;
+    //start request
+//    self.downloadData =
+    if (_completionHandler) {
+        _completionHandler(_downloadData);
+    }
+    _completionHandler = nil;
+}
+
+@end
+
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### 第四条：多用派发队列，少用同步锁</div><div class="line"></div><div class="line">- 多线程执行同一份代码，可能会造成数据不同步，作者建议使用 GCD 来为代码加锁的方式来解决。</div><div class="line"></div><div class="line">- 方案一：使用串行同步队列来将读写操作安排到同一个队列里</div></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-</ul>
-<p>_syncQueue = dispatch_queue_create(“com.effectiveobjectivec.syncQueue”, NULL);<br>//读取字符串</p>
+</code></pre><p>_syncQueue = dispatch_queue_create(“com.effectiveobjectivec.syncQueue”, NULL);<br>//读取字符串</p>
 <ul>
 <li>(NSString*)someString {<pre><code> __block NSString *localSomeString;
  dispatch_sync(_syncQueue, ^{
