@@ -99,7 +99,7 @@
 
 传统的for遍历
  1234567891011121314151617181920NSArray *anArray = /* ... */;for (int i = 0; i &amp;lt; anArra">
-<meta property="og:updated_time" content="2017-03-14T16:53:51.000Z">
+<meta property="og:updated_time" content="2017-03-15T00:35:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="EffectiveObjective-C2.0第七章：系统框架">
 <meta name="twitter:description" content="第一条：多用块枚举，少用 for 循环遍历 collection 有四种方式。最基本的办法就是 for 循环，其次是 NSEnumerrator 遍历法以及快速遍历法，最新、最先进的是“块枚举法”。
@@ -384,7 +384,7 @@
 </blockquote>
 <h3 id="第三条：精简-initialize-与-load-的实现代码"><a href="#第三条：精简-initialize-与-load-的实现代码" class="headerlink" title="第三条：精简 initialize 与 load 的实现代码"></a>第三条：精简 initialize 与 load 的实现代码</h3><h4 id="load-方法"><a href="#load-方法" class="headerlink" title="load 方法"></a>load 方法</h4><p>+(void) load;<br>每个类和分类在加入运行期系统时，都会调用load方法，而且仅仅调用一次。</p>
 <h4 id="initialize-方法"><a href="#initialize-方法" class="headerlink" title="initialize 方法"></a>initialize 方法</h4><p>+(void) initialize;<br>这个方法与load方法类似，区别是这个方法会在程序首次调用这个类的时候调用（惰性调用），而且只调用一次（绝对不能主动使用代码调用）。<br>值得注意的一点是，如果子类没有实现它，它的超类却实现了，那么就会运行超类的代码。</p>
-<h3 id="第四条：NSTimer-会保留其目标对象"><a href="#第四条：NSTimer-会保留其目标对象" class="headerlink" title="第四条：NSTimer 会保留其目标对象"></a>第四条：NSTimer 会保留其目标对象</h3>
+
       
     </div>
 
@@ -533,7 +533,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一条：多用块枚举，少用-for-循环"><span class="nav-number">1.</span> <span class="nav-text">第一条：多用块枚举，少用 for 循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二条：构建缓存时选用-NSCache-而非-NSDictionary"><span class="nav-number">2.</span> <span class="nav-text">第二条：构建缓存时选用 NSCache 而非 NSDictionary</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NSCache-胜过-NSDictionary-之处在于："><span class="nav-number">2.1.</span> <span class="nav-text">NSCache 胜过 NSDictionary 之处在于：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开发者可以操控缓存删减其内容的时机，有两个尺度可供调整："><span class="nav-number">2.2.</span> <span class="nav-text">开发者可以操控缓存删减其内容的时机，有两个尺度可供调整：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSPurgeableData"><span class="nav-number">2.3.</span> <span class="nav-text">NSPurgeableData</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三条：精简-initialize-与-load-的实现代码"><span class="nav-number">3.</span> <span class="nav-text">第三条：精简 initialize 与 load 的实现代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#load-方法"><span class="nav-number">3.1.</span> <span class="nav-text">load 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#initialize-方法"><span class="nav-number">3.2.</span> <span class="nav-text">initialize 方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四条：NSTimer-会保留其目标对象"><span class="nav-number">4.</span> <span class="nav-text">第四条：NSTimer 会保留其目标对象</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一条：多用块枚举，少用-for-循环"><span class="nav-number">1.</span> <span class="nav-text">第一条：多用块枚举，少用 for 循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二条：构建缓存时选用-NSCache-而非-NSDictionary"><span class="nav-number">2.</span> <span class="nav-text">第二条：构建缓存时选用 NSCache 而非 NSDictionary</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NSCache-胜过-NSDictionary-之处在于："><span class="nav-number">2.1.</span> <span class="nav-text">NSCache 胜过 NSDictionary 之处在于：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开发者可以操控缓存删减其内容的时机，有两个尺度可供调整："><span class="nav-number">2.2.</span> <span class="nav-text">开发者可以操控缓存删减其内容的时机，有两个尺度可供调整：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSPurgeableData"><span class="nav-number">2.3.</span> <span class="nav-text">NSPurgeableData</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三条：精简-initialize-与-load-的实现代码"><span class="nav-number">3.</span> <span class="nav-text">第三条：精简 initialize 与 load 的实现代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#load-方法"><span class="nav-number">3.1.</span> <span class="nav-text">load 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#initialize-方法"><span class="nav-number">3.2.</span> <span class="nav-text">initialize 方法</span></a></li></ol></li></ol></div>
             
 
           </div>
