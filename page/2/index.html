@@ -247,6 +247,538 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/03/Effective Objective-C 2.0 第三章 接口与API设计/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/03/Effective Objective-C 2.0 第三章 接口与API设计/" itemprop="url">
+                  Effective Objective-C 2.0 第三章 接口与API设计
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-03T08:58:11+08:00">
+                2017-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="第一条：用前缀避免命名空间冲突"><a href="#第一条：用前缀避免命名空间冲突" class="headerlink" title="第一条：用前缀避免命名空间冲突"></a>第一条：用前缀避免命名空间冲突</h3><ul>
+<li>Apple 宣称其保留使用所有 “两字母前缀” 的权利，所以自己选用的前缀应该是三个字母的。</li>
+<li>不仅是类名应用程序中所有的名称都应加前缀，类的实现文件中所有的<strong>纯 C 函数</strong>及<strong>全局变量</strong>，在编译好的目标文件中，这些名称是要算作顶级符号(top-level symbol)，这样的话，若在别处又创建一个同名的函数，就会出现 ‘重复符号错误’。</li>
+</ul>
+<h3 id="第二条：实现-description-方法"><a href="#第二条：实现-description-方法" class="headerlink" title="第二条：实现 description 方法"></a>第二条：实现 description 方法</h3><p><code>description</code>和<code>debugDescription</code>是 NSObject 协议中声明的两个方法，这两个方法的区别仅仅在于调试的位置不同，description是我们在程序中打 Log 会调用的方法，debugDescription 则是我们在断点调试时，在控制台使用 po 命令会调用的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (NSString*)description &#123;</div><div class="line">    return [NSString stringWithFormat:@&quot;&lt;%@:%p,%@&gt;&quot;,[self class],self,@&#123;@&quot;userFirstName&quot;:_userFirstName,@&quot;userLastName&quot;:_userLastName&#125;];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSString *)debugDescription</div><div class="line">&#123;</div><div class="line">    return [NSString stringWithFormat:@&quot;&lt;%@: %p&gt;&quot;, [self class], self];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="第三条：尽量使用不可变对象"><a href="#第三条：尽量使用不可变对象" class="headerlink" title="第三条：尽量使用不可变对象"></a>第三条：尽量使用不可变对象</h3><ul>
+<li>尽量创建不可变对象。</li>
+<li>若某属性仅可于对象内部修改，则在 “class-continuation 分类” 中将其由 <code>readonly</code> 属性扩展为 <code>readwrite</code> 属性。</li>
+<li>不要把可变的 collection（容器类）作为属性公开，而应提供相应的方法，以此修改对象中的可变 collection。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">@interface EXOPerson : NSObject</div><div class="line"></div><div class="line">@property (nonatomic, copy, readonly) NSString *userFirstName;</div><div class="line">@property (nonatomic, copy, readonly) NSString *userLastName;</div><div class="line">@property (nonatomic, strong, readonly) NSArray *userLike;</div><div class="line"></div><div class="line">- (instancetype)initWithFirstName:(NSString*)firstName WithLastName:(NSString*)lastName;</div><div class="line"></div><div class="line">//提供相应的方法，以此修改对象中的可变 collection</div><div class="line">- (void)addUserLike:(NSArray *)userLike;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import &quot;EXOPerson.h&quot;</div><div class="line"></div><div class="line">@interface EXOPerson ()</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userFirstName;</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userLastName;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXOPerson</div><div class="line"></div><div class="line">- (instancetype)initWithFirstName:(NSString*)firstName WithLastName:(NSString*)lastName</div><div class="line">&#123;</div><div class="line">    self = [super init];</div><div class="line">    if (self) &#123;</div><div class="line">        _userFirstName = [firstName copy];</div><div class="line">        _userLastName  = [lastName copy];</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line">- (void)addUserLike:(NSArray *)userLike &#123;</div><div class="line">    _userLike = [userLike copy];</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<h3 id="第四条：为私有方法加前缀"><a href="#第四条：为私有方法加前缀" class="headerlink" title="第四条：为私有方法加前缀"></a>第四条：为私有方法加前缀</h3><ul>
+<li>给私有方法的名称加上前缀，这样可以很容易的将其同公共的方法区分开来。（笔者喜欢用 p_ 为前缀） <code>- (void)p_privateMethod{}</code></li>
+<li>不要单用一个下划线做私有方法的前缀，因为这种做法是苹果公司预留的。</li>
+</ul>
+<h3 id="理解-Objective-C-的错误类型"><a href="#理解-Objective-C-的错误类型" class="headerlink" title="理解 Objective-C 的错误类型"></a>理解 Objective-C 的错误类型</h3><ul>
+<li>只有发生了可使整个应用程序崩溃的严重错误时，才应使用异常。</li>
+<li><p>在错误不那么严重的情况下，可指派委托方法来处理错误，也可以把错误信息放在<code>NSError</code>对象中，经由“输出参数”返回给调用者。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">NSError *error = [[NSError alloc]</div><div class="line">                         initWithDomain:NSCocoaErrorDomain</div><div class="line">                         code:9998</div><div class="line">                         userInfo:@&#123;NSLocalizedDescriptionKey:@&quot;错误描述&quot;,</div><div class="line">                         NSLocalizedFailureReasonErrorKey:@&quot;错误原因&quot;,</div><div class="line">                         NSLocalizedRecoverySuggestionErrorKey:@&quot;解决建议&quot;,</div><div class="line">                         NSLocalizedRecoveryOptionsErrorKey:@[@&quot;解决建议可选1&quot;,@&quot;解决建议可选2&quot;]&#125;];</div><div class="line">       </div><div class="line">       // Domain 错误域：产生错误的地方（系统提供了一些定义的域）</div><div class="line">       /*</div><div class="line">        FOUNDATION_EXPORT NSString *const NSCocoaErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSPOSIXErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSOSStatusErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSMachErrorDomain;</div><div class="line">        */</div><div class="line">       NSString *domain = error.domain;</div><div class="line">       </div><div class="line">       // code：错误码</div><div class="line">       NSInteger code = error.code;</div><div class="line">       </div><div class="line">       // userInfo：错误信息（系统提供了很多定义的key）</div><div class="line">       NSDictionary *userInfo = error.userInfo;</div><div class="line">       </div><div class="line">       NSString *localizedDescription = userInfo[NSLocalizedDescriptionKey];</div><div class="line">       NSString *localizedFailureReason = userInfo[NSLocalizedFailureReasonErrorKey];</div><div class="line">       NSString *localizedRecoverySuggestion = userInfo[NSLocalizedRecoverySuggestionErrorKey];</div><div class="line">       NSArray *localizedRecoveryOptions = userInfo[NSLocalizedRecoveryOptionsErrorKey];</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="第五条：理解-NSCopying-协议"><a href="#第五条：理解-NSCopying-协议" class="headerlink" title="第五条：理解 NSCopying 协议"></a>第五条：理解 NSCopying 协议</h3><ul>
+<li>若想让自己的类具有 <code>copy</code> 功能，那么要实现 NSCopying 协议：  <code>- (id)copyWithZone:(NSZone*)zone</code></li>
+<li>若想让自己的类具有 <code>mutableCopy</code> 功能，那么要实现 NSMutableCopying 协议：  <code>-(id)mutableCopyWithZone:(NSZone*)zone</code></li>
+<li>复制对象时需决定采用深拷贝还是浅拷贝，一般情况下应尽量考虑执行浅拷贝。</li>
+<li>如果你所写的对象需要深拷贝，那么可以考虑新增一个专门执行深拷贝的方法。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">#import &quot;EXOPerson.h&quot;</div><div class="line"></div><div class="line">@interface EXOPerson ()</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userFirstName;</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userLastName;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXOPerson</div><div class="line">&#123;</div><div class="line">    NSString *_fullName;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (instancetype)initWithFirstName:(NSString*)firstName WithLastName:(NSString*)lastName</div><div class="line">&#123;</div><div class="line">    self = [super init];</div><div class="line">    if (self) &#123;</div><div class="line">        _userFirstName = [firstName copy];</div><div class="line">        _userLastName  = [lastName copy];</div><div class="line">        _fullName = [NSString stringWithFormat:@&quot;%@%@&quot;,_userFirstName,_userLastName];</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">- (id)copyWithZone:(nullable NSZone *)zone &#123;</div><div class="line">    EXOPerson *copy = [[EXOPerson allocWithZone:zone] initWithFirstName:_userFirstName WithLastName:_userLastName];</div><div class="line">    //注意：这里使用-&gt;语法，因为_fullName 并非属性，只是在内部使用的实例变量</div><div class="line">    copy-&gt;_fullName = _fullName;</div><div class="line">    return copy;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">源对象类型</th>
+<th style="text-align:center">拷贝方法</th>
+<th style="text-align:right">副本对象类型</th>
+<th>是否产生新对象</th>
+<th>拷贝类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">NSString</td>
+<td style="text-align:center">copy</td>
+<td style="text-align:right">NSSting</td>
+<td>NO</td>
+<td>浅拷贝</td>
+</tr>
+<tr>
+<td style="text-align:left">NSMutableString</td>
+<td style="text-align:center">mutableCopy</td>
+<td style="text-align:right">NSMutableString</td>
+<td>YES</td>
+<td>深拷贝</td>
+</tr>
+</tbody>
+</table>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/01/Effective Objective-C 2.0 第二章 对象、消息、运行期/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/01/Effective Objective-C 2.0 第二章 对象、消息、运行期/" itemprop="url">
+                  Effective Objective-C 2.0 第二章 对象、消息、运行期
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-01T15:20:38+08:00">
+                2017-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>用 Objective-C 等面向对象语言编程时，“<strong>对象</strong>”就是“<strong>基本构造单元</strong>”，开发者可以通过对象来存储并传递数据，在对象之间传递数据并执行任务的过程就叫做“<strong>消息传递</strong>”（Messaging）。</p>
+<h3 id="第一条：理解“属性”这一概念"><a href="#第一条：理解“属性”这一概念" class="headerlink" title="第一条：理解“属性”这一概念"></a>第一条：理解“属性”这一概念</h3><p>“属性”（property）是Objective-C的一项特性，用于封装对象中的数据  </p>
+<ul>
+<li>通过<code>@synthesize</code>语法来指定实例变量的名称：<code>@synthesize firstName = _myFirstName</code>;</li>
+<li>通过<code>@dynamic</code>关键字，它会告诉编译器，不要自动创建实现属性所用的实例变量，也不要为其创建存取方法</li>
+<li>属性的特质：<ol>
+<li>原子性：在默认情况下，由编译器所合成的方法会通过锁定机制确保其原子性（atomicity），如果属性具备 <code>nonatomic</code> 特质，则不使用同步锁。</li>
+<li>读写权限：<code>readonly</code>（只读）你可以用此特质把某个属性对外公开为只读属性，然后在 “class-continuatione分类”重新定义为读写属性。</li>
+<li><code>assign</code> “设置方法”只会执行针对“纯量类型”（例如：<code>CGFloat or NSInteger</code>）的简单赋值操作。</li>
+<li><code>strong</code> 此特质表明属性定义了一种“拥有关系”。为这种属性设置新值时，设置方法会先保留新值，并释放旧值，然后再将新值设置上去。</li>
+<li><code>weak</code> 此特质同 <code>assign</code> 类似，然而在属性对象遭到摧毁时，属性的值也会清空（nil out）。</li>
+<li><code>unsafte_unretained</code> 侧特质的语义和 <code>assign</code> 相同，但它适用于对象类型，释放时，属性值不会自动清空。</li>
+<li><code>copy</code> 此特质所表达的所属关系与 <code>strong</code> 类似。然而设置方法并不保留新值，而是将其“拷贝”。当属性类型为 <code>NSString*</code>时，经常用此特质来保护其封装性。</li>
+</ol>
+</li>
+</ul>
+<h3 id="第二条：在对象内部尽量直接访问实例变量"><a href="#第二条：在对象内部尽量直接访问实例变量" class="headerlink" title="第二条：在对象内部尽量直接访问实例变量"></a>第二条：在对象内部尽量直接访问实例变量</h3><ul>
+<li>在对象内部读取数据时，应该直接通过实例变量来读，而写入数据时，则应该通过属性来写</li>
+<li>在初始化方法中应该直接访问实例变量，但是，在某些情况下却又必须在初始化方法中调用设置方法（如：如果待初始化的实例变量在超类中，而我们又无法再子类中直接访问此实例变量的话，那么就需要调用‘设置方法’了）。</li>
+<li>“<strong>惰性初始化</strong>”在这种情况下，必须通过“获取方法”来访问属性，否则，实例变量就永远不会初始化。</li>
+<li>若两个对象相等，则其哈希码（hash）也相等，但两个哈希相等的对象却未必相等。</li>
+</ul>
+<h3 id="第三条：-以“类簇模式”-隐藏实现细节"><a href="#第三条：-以“类簇模式”-隐藏实现细节" class="headerlink" title="第三条： 以“类簇模式” 隐藏实现细节"></a>第三条： 以“类簇模式” 隐藏实现细节</h3><p>“类簇”（class cluster）可以隐藏“<strong>抽象基类</strong>”背后的实现细节：<br>如： <code>+ (UIButton)buttonWithType:(UIButtonType)type;</code><br>该方法的所返回的对象，取决于所传入的按钮类型，使用者无需担心创建出来的按钮具体属于哪个子类</p>
+<p>创建类簇：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">typedef NS_ENUM(NSUInteger, EOCEmployeeType) &#123;</div><div class="line">    EOCEmployeeTypeDeveloper,</div><div class="line">    EOCEmployeeTypeDesigner,</div><div class="line">    EOCEmployeeTypeFinance,</div><div class="line">&#125; ;</div><div class="line"></div><div class="line">@interface EOCEmployee : NSObject</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EOCEmployee</div><div class="line"></div><div class="line">+ (EOCEmployee*)employeeWithType:(EOCEmployeeType)type &#123;</div><div class="line">	switch (type) &#123;</div><div class="line">		case EOCEmployeeTypeDeveloper:</div><div class="line">			return [EOCEmployeeTypeDeveloper new];</div><div class="line">			break;</div><div class="line">		case EOCEmployeeTypeDesigner:</div><div class="line">			return [EOCEmployeeTypeDesigner new];</div><div class="line">			break;	</div><div class="line">		case EOCEmployeeTypeFinance:</div><div class="line">			return [EOCEmployeeTypeFinance new];</div><div class="line">			break;	</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>规则： </p>
+<ul>
+<li>子类应该继承自类簇中的抽象基类。</li>
+<li>子类应该定义自己的数据存储方式。</li>
+<li>子类应当覆写超类文档中指明需要覆写的方法。</li>
+</ul>
+<h3 id="第四条-在既有类中使用关联对象存放自定义数据"><a href="#第四条-在既有类中使用关联对象存放自定义数据" class="headerlink" title="第四条: 在既有类中使用关联对象存放自定义数据"></a>第四条: 在既有类中使用关联对象存放自定义数据</h3><p>有时需要在对象中存放相关信息，这时通常会采用继承子类的方式，但是 有时候实例可能是由某种机制所创建（类簇）而开发者无法创建自己所写的子类实例，就使用“关联对象”<br>下列方法可以管理关联对象：</p>
+<ul>
+<li><code>void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy)</code>    此方法以给定的键和策略为某对象设置关联对象值</li>
+<li><code>id objc_getAssociatedObject(id object, const void *key)</code>  此方法根据给定的键从某对象中获取响应的关联对象值。 </li>
+<li><code>void objc_removeAssociatedObjects(id object)</code>  此方法移除指定对象的全部关联对象</li>
+<li>设置关联对象值时，通常使用静态全局变量做键。</li>
+<li>只有在其他做法不可行时才应选择关联对象，因为这种做法通常会引入难以查找的bug。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    UIButton *loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];</div><div class="line">    [loginBtn setFrame:CGRectMake(0.0, 0.0, 100.0, 44)];</div><div class="line">    [loginBtn setCenter:self.view.center];</div><div class="line">    [loginBtn setBackgroundColor:[UIColor purpleColor]];</div><div class="line">    [loginBtn addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];</div><div class="line">    [self.view addSubview:loginBtn];</div><div class="line">    //设置关联对象</div><div class="line">    objc_setAssociatedObject(loginBtn, (__bridge const void *)(EXOLoginManagerDidLoginNotification), @&quot;hello&quot;, OBJC_ASSOCIATION_RETAIN);</div><div class="line">&#125;</div><div class="line">- (void)login:(id)sender &#123;</div><div class="line">    //获取所关联的对象值   </div><div class="line">    NSString *name = objc_getAssociatedObject(sender, (__bridge const void *)(EXOLoginManagerDidLoginNotification));</div><div class="line">    </div><div class="line">    NSLog(@&quot;=======%@&quot;,name);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSString *)associatedObject_retain &#123;</div><div class="line">    return objc_getAssociatedObject(self, _cmd);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)setAssociatedObject_retain:(NSString *)associatedObject_retain &#123;</div><div class="line">    objc_setAssociatedObject(self, @selector(associatedObject_retain), associatedObject_retain, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>关联对象与被关联对象本身的存储并没有直接关系，它是存储在单独的哈希表中。</li>
+</ul>
+<h3 id="第五条：理解-objc-msgSend-的作用"><a href="#第五条：理解-objc-msgSend-的作用" class="headerlink" title="第五条：理解 objc_msgSend 的作用"></a>第五条：理解 objc_msgSend 的作用</h3><p>由于 Objective-C 是 C 的超集，所以最好先理解 C 语言的函数调用方式，C 语言使用”静态绑定（static binding）” ，也就是说，在编译期就决定运行时所调用的函数。</p>
+<ul>
+<li><code>id objc_msgSend(id self, SEL op, ...)</code>  <code>self</code>: 接收者  <code>op</code>:选择子 <code>...</code>：参数</li>
+<li><code>objc_msdSend_stret</code> 如果待发送的消息返回结构体，那么可交于此函数处理。</li>
+<li><code>objc_msgSend_fpret</code> 如果消息返回的是浮点数，那么可交由此函数处理,<code>objc_msgSend_fpret</code> 只能在i386处理器上运行,否则返回 Nan</li>
+<li><code>objc_msgSendSuper</code>     如果要给超类发消息，交于此函数处理，也有与上两个函数等效的函数。  </li>
+</ul>
+<p><code>objc_msgSend</code> 报错解决方案(Too many arguments to function call, expected 0, have 3)<br>选中项目 - Project - Build Settings - ENABLE_STRICT_OBJC_MSGSEND  将其设置为 NO 即可</p>
+<h3 id="第六条：理解消息转发机制"><a href="#第六条：理解消息转发机制" class="headerlink" title="第六条：理解消息转发机制"></a>第六条：理解消息转发机制</h3><p>若想令类能理解某条消息，我们必须以程序码实现出对应的方法才行。但是，在编译期间向类发送了其无法解读的消息并不会报错，因为在运行期间可以继续向类中添加方法，所以编译器在编译时还无法确知类中到底会不会有某个方法的实现，当对象接收到一个无法解读的消息时，就会启动‘消息转发’机制，此时可以告诉对象应该如何处理未知消息。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1642566-c4389a0a0fe7c108.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<hr>
+<p>消息转发分为两大阶段：</p>
+<ol>
+<li><p>动态方法解析：对象在收到无法解读的消息后，首先将调用其所属类的下列方法<br> <code>+ (BOOL)resolveInstanceMethod:(SEL)sel</code> 其返回值为 Boolean 类型，表示这个类能否新增加一个实例方法用以处理此选择子，若未实现的方法是类方法，那么运行期就会调用另一个方法 <code>+ (BOOL)resolveClassMethod:(SEL)sel</code> (使用这种办法的前提是：相关方法的实现代码已经写好，只等运行的时候动态插在类里面就可以)  </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (float)returnFloat &#123;</div><div class="line">   return 1.2f;</div><div class="line">&#125;</div><div class="line">+ (BOOL)resolveInstanceMethod:(SEL)sel &#123;</div><div class="line">   NSLog(@&quot;%s&quot;,__FUNCTION__);</div><div class="line">   NSString *methodString = NSStringFromSelector(sel);</div><div class="line">   if ([methodString isEqualToString:@&quot;creatFloatValue&quot;]) &#123;</div><div class="line">       class_addMethod([EXOLoginViewController class], sel, class_getMethodImplementation([EXOLoginViewController class], @selector(returnFloat)), &quot;i@:&quot;);</div><div class="line">       return YES;</div><div class="line">   &#125;</div><div class="line">   return [super resolveInstanceMethod:sel];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> `BOOL class_addMethod(Class cls, SEL name, IMP imp, </p>
+<pre><code>const char *types)`   
+</code></pre><p> types:</p>
+<ul>
+<li>比如：”v@:”意思就是这已是一个void类型的方法，没有参数传入。</li>
+<li>再比如 “i@:”就是说这是一个int类型的方法，没有参数传入。</li>
+<li>再再比如”i@:@”就是说这是一个int类型的方法，又一个参数传入。</li>
+</ul>
+</li>
+<li><p>完整的消息转发机制：  </p>
+<ul>
+<li><p>请接收者看看有没有其他对象能处理这条消息（“备援的接收者” replacement receiver） </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (id)forwardingTargetForSelector:(SEL)aSelector &#123;</div><div class="line">   NSString *methodString = NSStringFromSelector(aSelector);</div><div class="line">   if ([methodString isEqualToString:@&quot;creatFloatValue&quot;]) &#123;</div><div class="line">       </div><div class="line">       return [ForwardingTarget new];</div><div class="line">   &#125;</div><div class="line">   return nil;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@interface ForwardingTarget : NSObject</div><div class="line">- (float)creatFloatValue;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation ForwardingTarget</div><div class="line">- (float)creatFloatValue &#123;</div><div class="line">   	return 999.0f;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+
+
+- 启用完整的消息转发机制  
+首先创建 `NSInvovation` 对象，把尚未处理的那条消息有关的全部细节都封装与其中，比较有用的实现方式为：在触发消息前，先以某种方式改变消息内容，比如追加另外一个参数，或者改换选择子等。(?????)
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">	-(NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</div><div class="line">	&#123;</div><div class="line">    NSMethodSignature *signature = [super methodSignatureForSelector:aSelector];</div><div class="line">    if (!signature) &#123;</div><div class="line">        if([ForwardingTarget instancesRespondToSelector:aSelector])</div><div class="line">        &#123;</div><div class="line">            signature = [ForwardingTarget instanceMethodSignatureForSelector:aSelector];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return signature;</div><div class="line">&#125;</div><div class="line"></div><div class="line">	-(void)forwardInvocation:(NSInvocation *)anInvocation</div><div class="line">	&#123;</div><div class="line">    	if ([ForwardingTarget instancesRespondToSelector:anInvocation.selector]) &#123;</div><div class="line">        [anInvocation invokeWithTarget:[[ForwardingTarget alloc] 	init]];</div><div class="line">    	&#125;</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
+</code></pre><h3 id="第七条：用“方法调配技术”-调试-“黑盒方法”"><a href="#第七条：用“方法调配技术”-调试-“黑盒方法”" class="headerlink" title="第七条：用“方法调配技术” 调试 “黑盒方法”"></a>第七条：用“方法调配技术” 调试 “黑盒方法”</h3><p>类的方法列表会把选择子的名称映射到相关的方法实现之上，使得“动态消息派发系统”能够据此找到应该调用的方法。这些方法均已函数指针的形式来表示，这种指针叫 IMP，其原型如下 <code>id
+ (*IMP) (id,SEL,...)</code>  </p>
+<ul>
+<li><p>如何交换两个方法实现：</p>
+<pre><code> Method originalMethod = class_getInstanceMethod([NSString class], @selector(lowercaseString));
+
+Method swppedMethod   = class_getInstanceMethod([NSString class], @selector(uppercaseString));
+
+method_exchangeImplementations(originalMethod, swppedMethod);
+</code></pre></li>
+</ul>
+<p>我们可以通过新编写一个方法，通过交换可以向类中新增或替换选择子，一般调试的时候才会在运行期修改方法实现，不宜滥用。</p>
+<ul>
+<li>每个实例都有一个指向 Class 对象的指针，用以表明其类型，而这些 Class 对象则构成了类的继承体系（isa）。</li>
+<li>如果对象类型无法再编译器确定，那么就应该使用类型查询方法来探知。</li>
+<li>尽量使用类型查询方法来确定对象的类型，而不是直接比较类对象，因为某些对象可能实现了消息转发功能。</li>
+</ul>
+<p><a href="http://www.jianshu.com/p/e071206103a4" target="_blank" rel="external">让你快速上手Runtime</a></p>
+<p><a href="http://www.jianshu.com/p/1bde36ad9938" target="_blank" rel="external">Objective-C消息转发</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/01/Effective Objective-C 2.0 第一章 熟悉Objective-C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/01/Effective Objective-C 2.0 第一章 熟悉Objective-C/" itemprop="url">
+                  EffectiveObjective-C2.0第一章熟悉Objective-C
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-01T01:17:54+08:00">
+                2017-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="第一条：-了解-Objective-C-语言的起源"><a href="#第一条：-了解-Objective-C-语言的起源" class="headerlink" title="第一条： 了解 Objective-C 语言的起源"></a>第一条： 了解 Objective-C 语言的起源</h3><p>Objective-C 语言使用“消息结构”(message structure) 而非“函数调用”（function calling）。其关键的区别在于：消息结构的语言，其运行时所用的代码是由运行环境来决定；而使用函数调用的语言，则由编译器决定。   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">NSString *someString = @&quot;The string&quot;;</div><div class="line">NSString *anotherString = someString;</div></pre></td></tr></table></figure>
+<p>所有 Objective-C 的对象所占用的内存都必须分配在“<strong>堆空间</strong>”（heap space）中，而绝不会分配在“<strong>栈</strong>”（stack）上，上面两个变量指向同一内存地址。</p>
+<h3 id="第二条：-在类的头文件中尽量少引用其他头文件"><a href="#第二条：-在类的头文件中尽量少引用其他头文件" class="headerlink" title="第二条： 在类的头文件中尽量少引用其他头文件"></a>第二条： 在类的头文件中尽量少引用其他头文件</h3><p>除非有必要，否则不要引入头文件： </p>
+<ul>
+<li><strong>向前声明</strong>（forward declaring）并在实现文件中引用哪些类的头文件，这样可以减少类使用者所需引入头文件的数量，也解决了两个类互相引用的问题。</li>
+<li>若因为要实现属性、实例变量或者遵循协议而必须引入头文件，则应尽量将其移至“<strong>class-continuation</strong>”分类中。如果不行的话（<strong>什么情况下会不行？</strong>），就把协议单独放在一个头文件中，然后将其引用。</li>
+<li>若你写的类继承自某个超类，则必须引入哪个超类的头文件。</li>
+</ul>
+<h3 id="第三条：多用类型常量，少用-define预处理指令"><a href="#第三条：多用类型常量，少用-define预处理指令" class="headerlink" title="第三条：多用类型常量，少用#define预处理指令"></a>第三条：多用类型常量，少用#define预处理指令</h3><p><code>static const NSTimeInterval kAnimationDuration = 0.3;</code><br>用此方法定义的常量包含类型信息，其好处是清楚的描述了常量的含义。</p>
+<ul>
+<li>还要注意常量名称：若常量局限于某‘编译单元’（也就是实现文件）之内，则在前面加字母k；若常量在类之外可见，则通常以类名为前缀。  </li>
+<li>变量一定要同时使用 static 与 const 来声明，如果试图修改 const 修饰符所声明的变量，那么编译器就会报错。若声明此变量时不加 static，则编译器会为他创建一个‘外部符号’（external symbol），此时若另一个编译单元中也声明了同名变量，那么编译器就抛出一条错误信息。</li>
+<li>在头文件中使用 extern来声明全局常量，并在相关实现文件中定义其值。这种常量要出现在全局符号表中，所以其名称要加以区隔，通常用与之相关的类名做前缀。</li>
+</ul>
+<h3 id="第四条：用枚举表示状态、选项、状态吗"><a href="#第四条：用枚举表示状态、选项、状态吗" class="headerlink" title="第四条：用枚举表示状态、选项、状态吗"></a>第四条：用枚举表示状态、选项、状态吗</h3><ul>
+<li>定义选项的时候，若这些选项可以彼此组合，只要枚举定义的对，各选项之间可通过‘<strong>按位或操作符</strong>’来组合多个选项，并用‘<strong>按位与操作符</strong>’即可判断是否启用某选项；</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">typedef enum : NSUInteger &#123;</div><div class="line">    EOCConnectionStateDisconnected = 0,</div><div class="line">    EOCConnectionStateConnecting   = 1 &lt;&lt; 0,</div><div class="line">    EOCConnectionStateConnted      = 1 &lt;&lt; 1,</div><div class="line">&#125; EOCConnectionState;</div><div class="line"></div><div class="line">EOCConnectionState state = EOCConnectionStateConnecting | EOCConnectionStateConnted;</div><div class="line">if (state &amp; EOCConnectionStateConnted) &#123;</div><div class="line">	NSLog(@&quot;state 中包含 EOCConnectionStateConnted&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&amp;运算：相当于十进制 相同位做加法的1/2</div><div class="line">0101 &amp; 0011   结果：二进制0001    </div><div class="line">        </div><div class="line">|运算：相当于十进制 相同位做加法的1/2与不同位做加法求和</div><div class="line">0101 | 0011   结果：二进制0111    </div><div class="line">         </div><div class="line">^运算：相当于十进制不同位做加法</div><div class="line">0101 ^ 0011  结果：二进制0110</div></pre></td></tr></table></figure>
+<ul>
+<li>凡是需要按位或操作来组合的枚举都应使用 NS_OPTIONS 宏，若枚举不需要组合，则应使用NS_ENUM来定义（原因：若按C++编译 C++不允许将底层类型“隐式转换”为枚举类型本身）</li>
+<li>在处理枚举类型的 switch 语句中不要实现 default 分支。这样的话，加入新枚举之后，编译器就会提示开发者：switch 语句并未处理所有枚举。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/28/Node.js安装/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -535,7 +1067,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
