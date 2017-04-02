@@ -99,7 +99,7 @@ Dispatch Queue 按照追加的顺序（先进先出 FIFO，First-In-First-Out）
 Dispatch Queue 按照追加的顺序（先进先出 FIFO，First-In-First-Out）执行处理。在执行处理时存在两种 Dispatch Queue，一种是等待现在执行中处理的 Serial Dispatch Queue，另一种是不等待现在执行中处理的 Concurrent Dispatch Queue。 
 
 12345//创建串行队列dispatch">
-<meta property="og:updated_time" content="2017-04-01T10:00:25.000Z">
+<meta property="og:updated_time" content="2017-04-01T10:21:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS与OSX 多线程与内存管理第三章：GCD">
 <meta name="twitter:description" content="Dispatch Queue
@@ -401,6 +401,10 @@ Dispatch Queue 按照追加的顺序（先进先出 FIFO，First-In-First-Out）
 <h3 id="Dispatch-I-O"><a href="#Dispatch-I-O" class="headerlink" title="Dispatch I/O"></a>Dispatch I/O</h3><ul>
 <li>在读取较大文件时，如果将文件分成合适的大小并使用Global Dispatch Queue并列读取的话，应该会比一般的读取速度快不少。现今的输入/输出硬件已经可以做到一次使用多个线程更快地并列读取了。能实现这一功能的就是Dispatch I/O和Dispatch Data。<br>通过Dispatch I/O读写文件时，使用Global Dispatch Queue将一个文件按大小read/write。</li>
 </ul>
+<h3 id="Dispatch-Source-定时器"><a href="#Dispatch-Source-定时器" class="headerlink" title="Dispatch Source (定时器)"></a>Dispatch Source (定时器)</h3><ul>
+<li>NSTimer受runloop的影响，由于runloop需要处理很多任务，导致NSTimer的精度降低，在日常开发中，如果我们需要对定时器的精度要求很高的话，可以考虑dispatch_source_t去实现。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);</div><div class="line">//设置开始时间 2s 后，时间间隔 1s</div><div class="line">dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC, 1 * NSEC_PER_SEC);</div><div class="line">dispatch_source_set_event_handler(timer, ^&#123;</div><div class="line">    NSLog(@&quot;----self.timer---&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_resume(timer);</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -515,7 +519,7 @@ Dispatch Queue 按照追加的顺序（先进先出 FIFO，First-In-First-Out）
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -554,7 +558,7 @@ Dispatch Queue 按照追加的顺序（先进先出 FIFO，First-In-First-Out）
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatch-Queue"><span class="nav-number">1.</span> <span class="nav-text">Dispatch Queue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatch-after"><span class="nav-number">2.</span> <span class="nav-text">Dispatch_after</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatch-Group"><span class="nav-number">3.</span> <span class="nav-text">Dispatch Group</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-barrier-async"><span class="nav-number">4.</span> <span class="nav-text">dispatch_barrier_async</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-apply"><span class="nav-number">5.</span> <span class="nav-text">dispatch_apply</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-suspend-dispatch-resume"><span class="nav-number">6.</span> <span class="nav-text">dispatch_suspend / dispatch_resume</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatch-Semaphore"><span class="nav-number">7.</span> <span class="nav-text">Dispatch Semaphore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-once"><span class="nav-number">8.</span> <span class="nav-text">dispatch_once</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatch-I-O"><span class="nav-number">9.</span> <span class="nav-text">Dispatch I/O</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatch-Queue"><span class="nav-number">1.</span> <span class="nav-text">Dispatch Queue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatch-after"><span class="nav-number">2.</span> <span class="nav-text">Dispatch_after</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatch-Group"><span class="nav-number">3.</span> <span class="nav-text">Dispatch Group</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-barrier-async"><span class="nav-number">4.</span> <span class="nav-text">dispatch_barrier_async</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-apply"><span class="nav-number">5.</span> <span class="nav-text">dispatch_apply</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-suspend-dispatch-resume"><span class="nav-number">6.</span> <span class="nav-text">dispatch_suspend / dispatch_resume</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatch-Semaphore"><span class="nav-number">7.</span> <span class="nav-text">Dispatch Semaphore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch-once"><span class="nav-number">8.</span> <span class="nav-text">dispatch_once</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatch-I-O"><span class="nav-number">9.</span> <span class="nav-text">Dispatch I/O</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dispatch-Source-定时器"><span class="nav-number">10.</span> <span class="nav-text">Dispatch Source (定时器)</span></a></li></ol></div>
             
 
           </div>
