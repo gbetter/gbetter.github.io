@@ -109,8 +109,7 @@ Git 安装
 如果你正在使用Mac做开发，有两种安装Git的方法。
 一是安装homebrew，然后通过homebrew安装Git。先打开网站 http://brew.sh/。 拷贝对应脚本到终端下安装homebrew.然后在终端执行 brew install git命令。
 第二种方法更简单，也是推荐的方法，就是直接从Ap">
-<meta property="og:image" content="http://yoursite.com/source/img/493638855.jpg">
-<meta property="og:updated_time" content="2017-04-03T07:18:35.000Z">
+<meta property="og:updated_time" content="2017-04-03T11:09:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git分布式版本控制系统">
 <meta name="twitter:description" content="Git教程
@@ -122,7 +121,6 @@ Git 安装
 如果你正在使用Mac做开发，有两种安装Git的方法。
 一是安装homebrew，然后通过homebrew安装Git。先打开网站 http://brew.sh/。 拷贝对应脚本到终端下安装homebrew.然后在终端执行 brew install git命令。
 第二种方法更简单，也是推荐的方法，就是直接从Ap">
-<meta name="twitter:image" content="http://yoursite.com/source/img/493638855.jpg">
 
 
 
@@ -356,11 +354,33 @@ Git 安装
 <h3 id="Git-安装"><a href="#Git-安装" class="headerlink" title="Git 安装"></a>Git 安装</h3><ul>
 <li>如果你正在使用Mac做开发，有两种安装Git的方法。<ol>
 <li>一是安装homebrew，然后通过homebrew安装Git。先打开网站 <a href="http://brew.sh/。" target="_blank" rel="external">http://brew.sh/。</a> 拷贝对应脚本到终端下安装homebrew.然后在终端执行 brew install git命令。</li>
-<li>第二种方法更简单，也是推荐的方法，就是直接从AppStore安装Xcode，Xcode集成了Git，不过默认没有安装，你需要运行Xcode，选择菜单“Xcode”-&gt;“Preferences”，在弹出窗口中找到“Downloads”，选择“Command Line Tools”，点“Install”就可以完成安装了。<br><img src="/source/img/493638855.jpg" alt="img"></li>
+<li>第二种方法更简单，也是推荐的方法，就是直接从AppStore安装Xcode，Xcode集成了Git，不过默认没有安装，你需要运行Xcode，选择菜单“Xcode”-&gt;“Preferences”，在弹出窗口中找到“Downloads”，选择“Command Line Tools”，点“Install”就可以完成安装了。  </li>
 </ol>
 </li>
 </ul>
-<h3 id="Git-使用"><a href="#Git-使用" class="headerlink" title="Git 使用"></a>Git 使用</h3>
+<h3 id="Git-使用"><a href="#Git-使用" class="headerlink" title="Git 使用"></a>Git 使用</h3><h4 id="创建版本库"><a href="#创建版本库" class="headerlink" title="创建版本库"></a>创建版本库</h4><ul>
+<li>首先，选择一个合适的地方，创建一个空目录:(pwd 命令用于显示当前目录)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ mkdir learngit</div><div class="line">$ cd learngit</div><div class="line">$ pwd</div><div class="line">/Users/michael/learngit</div></pre></td></tr></table></figure>
+<ul>
+<li>第二步，通过 <code>git init</code>命令把这个目录变成Git可以管理的仓库：(<code>ls -ah</code>命令可以看到)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git init</div><div class="line">Initialized empty Git repository in /Users/michael/learngit/.git/</div><div class="line">$ ls -ah</div><div class="line">.	..	.git</div></pre></td></tr></table></figure>
+<ul>
+<li>添加文件到Git仓库，分两步：<ol>
+<li>第一步，使用命令git add <file>，注意，可反复多次使用，添加多个文件；</file></li>
+<li>第二步，使用命令git commit，完成。</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">localhost:learngit ZZY$ touch readme.txt</div><div class="line">localhost:learngit ZZY$ open readme.txt</div><div class="line">localhost:learngit ZZY$ git add readme.txt</div><div class="line">localhost:learngit ZZY$ git commit -m &quot;wrote a readme file&quot;</div><div class="line">[master (root-commit) c0690a4] wrote a readme file</div><div class="line"> 1 file changed, 3 insertions(+)</div><div class="line"> create mode 100644 readme.txt</div></pre></td></tr></table></figure>
+<blockquote>
+<p>git commit命令，-m后面输入的是本次提交的说明，可以输入任意内容，当然最好是有意义的<br>touch 命令，用于生成一个文件</p>
+</blockquote>
+<h4 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h4><ul>
+<li>掌握仓库当前的状态：使用 <code>git status</code> 告诉你有文件被修改过，用 <code>git diff</code> 可以查看修改内容。</li>
+</ul>
+
       
     </div>
 
@@ -399,6 +419,10 @@ Git 安装
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/05/HTML学习笔记一/" rel="prev" title="HTML学习笔记一">
+                HTML学习笔记一 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -470,7 +494,7 @@ Git 安装
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -509,7 +533,7 @@ Git 安装
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Git-简介"><span class="nav-number">1.</span> <span class="nav-text">Git 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git-安装"><span class="nav-number">2.</span> <span class="nav-text">Git 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git-使用"><span class="nav-number">3.</span> <span class="nav-text">Git 使用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Git-简介"><span class="nav-number">1.</span> <span class="nav-text">Git 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git-安装"><span class="nav-number">2.</span> <span class="nav-text">Git 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git-使用"><span class="nav-number">3.</span> <span class="nav-text">Git 使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建版本库"><span class="nav-number">3.1.</span> <span class="nav-text">创建版本库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常用命令"><span class="nav-number">3.2.</span> <span class="nav-text">常用命令</span></a></li></ol></li></ol></div>
             
 
           </div>

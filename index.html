@@ -247,6 +247,170 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/05/HTML学习笔记一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/05/HTML学习笔记一/" itemprop="url">
+                  HTML学习笔记一
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-05T10:03:59+08:00">
+                2017-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="HTML-基础"><a href="#HTML-基础" class="headerlink" title="HTML 基础"></a>HTML 基础</h3><h4 id="HTML-的基本结构"><a href="#HTML-的基本结构" class="headerlink" title="HTML 的基本结构"></a>HTML 的基本结构</h4><ol>
+<li>一个 HTML 文件是由一系列的元素和标签组成的，HITML 的标签分为单独标签和成对标签两种。在每个 HTML 标签中不区分大小写。</li>
+<li>当用一组 HTML 标签将一段文字包含在中间时，这段文字与包含文字的 HTML 标签被称为一个元素。</li>
+<li>文件的开始标签 <code>&lt;html&gt; 文件的全部内容 &lt;/html&gt;</code></li>
+<li>文件的头部标签 <code>&lt;head&gt; &lt;/head&gt;</code> 主要包含文件的标题、编码方式、URL等信息，如果不提供，可省略。</li>
+<li>文件主题标签 <code>&lt;body&gt;&lt;/body&gt;</code> 包含该网页的主体内容。</li>
+</ol>
+<h4 id="HTML-文件基本标记"><a href="#HTML-文件基本标记" class="headerlink" title="HTML 文件基本标记"></a>HTML 文件基本标记</h4><ol>
+<li>标题标记 <code>&lt;title&gt;...&lt;/title&gt;</code> 标记的内部就是标题的内容。</li>
+<li><p>元信息标记 <code>&lt;meta ...&gt;</code> 提供的信息，不显示在页面中，一般用于定义页面信息的名称、关键字、作者等， meta 元素的属性有两种：<code>name</code> 和 <code>http-equiv</code>：</p>
+<ol>
+<li>设置页面关键字，便于帮助搜索引擎对该网页进行查找和分类：<code>&lt;meta name=&quot;keyname&quot; content=&quot;关键字1,关键字2&quot;&gt;</code></li>
+<li>设置页面描述：<code>&lt;meta name=&quot;description&quot; content=&quot;对页面的描述语言&quot;&gt;</code></li>
+<li>设置编辑工具: <code>&lt;meta name=&quot;generator&quot; content=&quot;sublime&quot;&gt;</code></li>
+<li>设定作者信息：<code>&lt;meta name=&quot;author&quot; content=&quot;zhangsan&quot;&gt;</code></li>
+<li>限定搜索方式：<code>&lt;meta name=&quot;robots&quot; content=&quot;All/Index/Nofollow/Noindex/None&quot;&gt;</code> (All: 表示能搜索当前网页及其链接的网页；Index：表示能搜索当前网页；Nofollow：表示不能搜索当前网页链接的网页；Noindex：表示不能搜索当前页；None：表示都不能搜索)。</li>
+<li>设置网页文字及语言：<br><code>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html&quot; charset=&quot;utf-8&quot;&gt;</code> <br> <code>&lt;meta http-equiv=&quot;Content-Language&quot; content=&quot;en&quot;&gt;</code>。</li>
+<li>设置网页的定时跳转：<code>&lt;meta http-equiv=&quot;refresh&quot; content=&quot;跳转时间;url=链接地址&quot;&gt;</code> （跳转时间是以秒为单位）。</li>
+<li>设置有效期限：<code>&lt;meta http-equiv=&quot;expires&quot; content=&quot;Wed,14 september 2017 23:14:00 GMT&quot;&gt;</code> 到期的时间必须是 GMT 格式时间。</li>
+<li>禁止从缓存中调用：<br><code>&lt;meta http-equiv=&quot;cache-control&quot; content=&quot;no-cache&quot;&gt;</code> <br> <code>&lt;meta http-equiv=&quot;pragma&quot; content=&quot;no-cache&quot;&gt;</code></li>
+<li>删除过期的 cookie：<br> <code>&lt;meta http-equiv=&quot;set-cookie&quot; content=&quot;Wed,14 september 2017 23:20:00 GMT&quot;&gt;</code></li>
+<li>强制打开新的窗口：（可以防止自己的网页被当做一个frame页调用）<br> <code>&lt;meta http-equiv=&quot;windows-target&quot; content=&quot;_top&quot;&gt;</code> <br> 在该语法中，windows-target 表示新网页的打开方式，而<code>_top</code>表示打开的是一个独立页面。</li>
+<li>设置网页的过度效果：<br> <code>&lt;meta http-equiv=&quot;page-exist/page-enter(过渡事件)&quot; content=&quot;revealtrans(duration=3（时间）,transition=21（方式）)&quot;&gt;</code></li>
+</ol>
+</li>
+<li><p>基底网址标志<code>&lt;base&gt;</code> ：<br> <code>&lt;base href=&quot;链接地址&quot; target=&quot;新窗口的打开方式&quot;&gt;</code>      </p>
+<ul>
+<li><code>_parent</code>:在上一级窗口中打开，一般常用在分针的框架页中</li>
+<li><code>_blank</code>: 在新窗口中打开</li>
+<li><code>_self</code>: 在同一窗口打开，可省略</li>
+<li><code>_top</code>: 在浏览器的真嘎窗口打开，忽略任何框架</li>
+</ul>
+</li>
+<li>页面的主体标记<code>&lt;body&gt;</code>:<ul>
+<li><code>text</code>: 设定页面的文字颜色</li>
+<li><code>bgcolor</code>：设定页面的背景颜色</li>
+<li><code>backgroud</code>：设定页面的背景图片</li>
+<li><code>bgproperties</code>:设定页面的背景图片为固定，不随页面的滚动而滚动（<strong>值设置为 fixed 图片会固定在页面上</strong>）</li>
+<li><code>link</code>：设定页面默认的链接颜色</li>
+<li><code>alink</code>：设定鼠标正在单击时的链接颜色</li>
+<li><code>vlink</code>：设定访问过后的链接颜色</li>
+<li><code>topmargin</code>：设定页面的上边距</li>
+<li><code>leftmargin</code>：设定页面的左边距     </li>
+</ul>
+</li>
+<li>页面的注释标记： <code>&lt;!--注释的文字--&gt;</code></li>
+</ol>
+<h4 id="设计网页文本内容"><a href="#设计网页文本内容" class="headerlink" title="设计网页文本内容"></a>设计网页文本内容</h4>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/03/Git分布式版本控制系统/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -333,11 +497,33 @@
 <h3 id="Git-安装"><a href="#Git-安装" class="headerlink" title="Git 安装"></a>Git 安装</h3><ul>
 <li>如果你正在使用Mac做开发，有两种安装Git的方法。<ol>
 <li>一是安装homebrew，然后通过homebrew安装Git。先打开网站 <a href="http://brew.sh/。" target="_blank" rel="external">http://brew.sh/。</a> 拷贝对应脚本到终端下安装homebrew.然后在终端执行 brew install git命令。</li>
-<li>第二种方法更简单，也是推荐的方法，就是直接从AppStore安装Xcode，Xcode集成了Git，不过默认没有安装，你需要运行Xcode，选择菜单“Xcode”-&gt;“Preferences”，在弹出窗口中找到“Downloads”，选择“Command Line Tools”，点“Install”就可以完成安装了。<br><img src="/source/img/493638855.jpg" alt="img"></li>
+<li>第二种方法更简单，也是推荐的方法，就是直接从AppStore安装Xcode，Xcode集成了Git，不过默认没有安装，你需要运行Xcode，选择菜单“Xcode”-&gt;“Preferences”，在弹出窗口中找到“Downloads”，选择“Command Line Tools”，点“Install”就可以完成安装了。  </li>
 </ol>
 </li>
 </ul>
-<h3 id="Git-使用"><a href="#Git-使用" class="headerlink" title="Git 使用"></a>Git 使用</h3>
+<h3 id="Git-使用"><a href="#Git-使用" class="headerlink" title="Git 使用"></a>Git 使用</h3><h4 id="创建版本库"><a href="#创建版本库" class="headerlink" title="创建版本库"></a>创建版本库</h4><ul>
+<li>首先，选择一个合适的地方，创建一个空目录:(pwd 命令用于显示当前目录)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ mkdir learngit</div><div class="line">$ cd learngit</div><div class="line">$ pwd</div><div class="line">/Users/michael/learngit</div></pre></td></tr></table></figure>
+<ul>
+<li>第二步，通过 <code>git init</code>命令把这个目录变成Git可以管理的仓库：(<code>ls -ah</code>命令可以看到)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git init</div><div class="line">Initialized empty Git repository in /Users/michael/learngit/.git/</div><div class="line">$ ls -ah</div><div class="line">.	..	.git</div></pre></td></tr></table></figure>
+<ul>
+<li>添加文件到Git仓库，分两步：<ol>
+<li>第一步，使用命令git add <file>，注意，可反复多次使用，添加多个文件；</file></li>
+<li>第二步，使用命令git commit，完成。</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">localhost:learngit ZZY$ touch readme.txt</div><div class="line">localhost:learngit ZZY$ open readme.txt</div><div class="line">localhost:learngit ZZY$ git add readme.txt</div><div class="line">localhost:learngit ZZY$ git commit -m &quot;wrote a readme file&quot;</div><div class="line">[master (root-commit) c0690a4] wrote a readme file</div><div class="line"> 1 file changed, 3 insertions(+)</div><div class="line"> create mode 100644 readme.txt</div></pre></td></tr></table></figure>
+<blockquote>
+<p>git commit命令，-m后面输入的是本次提交的说明，可以输入任意内容，当然最好是有意义的<br>touch 命令，用于生成一个文件</p>
+</blockquote>
+<h4 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h4><ul>
+<li>掌握仓库当前的状态：使用 <code>git status</code> 告诉你有文件被修改过，用 <code>git diff</code> 可以查看修改内容。</li>
+</ul>
+
           
         
       
@@ -1759,161 +1945,6 @@ NSLog(@&quot;Finish executing block&quot;);
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/09/Effective Objective-C 2.0 第五章：内存管理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhenyue">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gbetter">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/09/Effective Objective-C 2.0 第五章：内存管理/" itemprop="url">
-                  Effective Objective-C 2.0 第五章：内存管理
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-09T09:34:48+08:00">
-                2017-03-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="第一条：在-dealloc-方法中释放引用并解除监听"><a href="#第一条：在-dealloc-方法中释放引用并解除监听" class="headerlink" title="第一条：在 dealloc 方法中释放引用并解除监听"></a>第一条：在 dealloc 方法中释放引用并解除监听</h3><ul>
-<li>应该在 dealloc 中释放对象所拥有的引用，ARC 会自动为所有的 Objective-C 对象添加释放代码，其他非 Objective-C 对象需手动释放（CoreFoundation）。</li>
-<li>把原来配置过的观测行为（KVC）或 NSNotificationCenter，一般应该在这里注销。</li>
-<li>在 dealloc 中不要调用属性的存取方法，可能有人覆写过这些方法，并于其中做一些无法再回收阶段安全执行的操作，属性可能处于“键值观察”（KVC）机制的监控之下。</li>
-<li>执行异步任务的方法不应该在 dealloc 里调用，正常执行的方法也不应该在调用，因为对象正处于回收的状态了。</li>
-<li>如果对象持有文件描述符等系统资源，应专门写一个方法来释放资源，并于其他使用者约定，用完资源后必须调用 close 方法。</li>
-</ul>
-<h3 id="第二条：自动释放-autoreleasepool"><a href="#第二条：自动释放-autoreleasepool" class="headerlink" title="第二条：自动释放 @autoreleasepool"></a>第二条：自动释放 @autoreleasepool</h3><ul>
-<li>使用弱引用避免保留环（weak）</li>
-<li>是么时候使用 @autoreleasepool<ol>
-<li>写基于命令行的程序时，就是没有UI框架，如 AppKit 等 Cocoa 框架时。</li>
-<li>写循环，循环中包含大量临时创建的对象。</li>
-<li>创建了新的线程。（非 Cocoa 程序创建线程时才需要）</li>
-<li>长时间在后台运行的任务。</li>
-</ol>
-</li>
-<li><p>利用 @autoreleasepool 优化内存占用</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">	//来自Apple文档，见参考</div><div class="line">NSArray *urls = &lt;# An array of file URLs #&gt;;</div><div class="line">for (NSURL *url in urls) &#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        NSError *error;</div><div class="line">        NSString *fileContents = [NSString stringWithContentsOfURL:url</div><div class="line">                                        encoding:NSUTF8StringEncoding error:&amp;error];</div><div class="line">        /* Process the string, creating and autoreleasing more objects. */</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="第三条：用“僵尸对象”调试内存管理问题"><a href="#第三条：用“僵尸对象”调试内存管理问题" class="headerlink" title="第三条：用“僵尸对象”调试内存管理问题"></a>第三条：用“僵尸对象”调试内存管理问题</h3><ul>
-<li>开启方式：编辑应用程序的 Scheme，在对话框左侧选择 ”Run“，然后切换至 “Diagnostics”分页，最后勾选 “Enable Zombie（[‘zɑmbi]    行尸走肉；蛇神；木讷呆板的人）     Objects” 选项。</li>
-<li>开启后，系统在回收对象时，可以不将其真的回收，而是把它转化为僵尸对象（系统会修改对象的 isa 指针，令其指向特殊的僵尸类，从而使该对象的僵尸对象可以相应所有的选择子）。</li>
-<li>响应方式为：打印一条包含消息内容及其接收者的消息，然后终止应用程序。</li>
-</ul>
-<h3 id="第四条：iOS-定时器-NSTimer-中的循环引用"><a href="#第四条：iOS-定时器-NSTimer-中的循环引用" class="headerlink" title="第四条：iOS 定时器 NSTimer 中的循环引用"></a>第四条：iOS 定时器 NSTimer 中的循环引用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">+ (NSTimer *)timerWithTimeInterval:(NSTimeInterval)ti target:(id)aTarget selector:(SEL)aSelector userInfo:(nullable id)userInfo repeats:(BOOL)yesOrNo;</div><div class="line">+ (NSTimer *)scheduledTimerWithTimeInterval:(NSTimeInterval)ti target:(id)aTarget selector:(SEL)aSelector userInfo:(nullable id)userInfo repeats:(BOOL)yesOrNo;</div></pre></td></tr></table></figure>
-<ul>
-<li>由于循环引用的起因是target，则可以包装一个 target，让 target 指向另一个对象，而不是当前调用的对象，即可解决循环引用。</li>
-<li>在使用 NSTimer 时，可以使用不带有 target 的类方法（block）。</li>
-<li><code>timerWithTimeInterval</code>需要加入<code>RunLoop</code> <code>scheduledTimerWithTimeInterval</code> 不用</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">方法一</div><div class="line">#import &quot;EXOTimerBlock.h&quot;</div><div class="line"></div><div class="line">@interface EXOTimerBlock()</div><div class="line"></div><div class="line">@property (nonatomic, assign)SEL selector;</div><div class="line">@property (nonatomic, strong)  NSTimer *timer;</div><div class="line">@property (nonatomic, weak)  id target;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXOTimerBlock</div><div class="line"></div><div class="line">+ (NSTimer* _Nonnull)EXOTimerWithTimeInterval:(NSTimeInterval)ti</div><div class="line">                                       target:(id _Nonnull)aTarget</div><div class="line">                                     selector:(SEL _Nonnull)aSelector</div><div class="line">                                     userInfo:(nullable id)userInfo</div><div class="line">                                      repeats:(BOOL)yesOrNo&#123;</div><div class="line">    </div><div class="line">    EXOTimerBlock *timerBlock = [[EXOTimerBlock alloc] init];</div><div class="line">    timerBlock.selector = aSelector;</div><div class="line">    timerBlock.target = aTarget;</div><div class="line">    timerBlock.timer = [NSTimer timerWithTimeInterval:ti target:timerBlock selector:@selector(EXOFire:) userInfo:userInfo repeats:yesOrNo];</div><div class="line">    return timerBlock.timer;</div><div class="line">&#125;</div><div class="line">- (void)EXOFire:(NSTimer*)timer &#123;</div><div class="line">    if (self.target) &#123;</div><div class="line">        [self.target performSelector:self.selector withObject:timer.userInfo];</div><div class="line">    &#125;else &#123;</div><div class="line">        [timer invalidate];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">方法二</div><div class="line"></div><div class="line">#import &quot;NSTimer+EXOBlock.h&quot;</div><div class="line">@implementation NSTimer (EXOBlock)</div><div class="line"></div><div class="line">+ (NSTimer*)EXOTimerWithTimeInterval:(NSTimeInterval)ti block:(nullable void(^)()) block userInfo:(id)userInfo repeats:(BOOL)yesOrNo &#123;</div><div class="line">    return [self timerWithTimeInterval:ti target:self selector:@selector(p_exoTimerSelector:) userInfo:[block copy] repeats:yesOrNo];</div><div class="line">&#125;</div><div class="line">+ (void)p_exoTimerSelector:(NSTimer*)timer&#123;</div><div class="line">    void (^block)() = [timer userInfo];</div><div class="line">    if (block) &#123;</div><div class="line">        block();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
-<h3 id="第五条：performselector-的内存泄漏问题"><a href="#第五条：performselector-的内存泄漏问题" class="headerlink" title="第五条：performselector 的内存泄漏问题"></a>第五条：performselector 的内存泄漏问题</h3><ul>
-<li>performSelector关于内存管理的执行原理是这样的：执行 [self performSelector:@selector(method1:) withObject:self afterDelay:3]; 的时候，系统会将self的引用计数加1，执行完这个方法时，还会将self的引用计数减1，<strong>当方法还没有执行的时候，要返回父视图释放当前视图的时候，self的计数没有减少到0，而导致无法调用dealloc方法，出现了内存泄露</strong>。</li>
-<li>解决办法就是取消那些还没有来得及执行的延时函数，代码很简单：<br><code>[NSObject cancelPreviousPerformRequestsWithTarget:self]</code><br>当然你也可以一个一个得这样用：<br><code>[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(method1:) object:nil]</code><br>加上了这个以后，dealloc方法就会被调用，问题解决！ </li>
-</ul>
-<p> </p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1963,7 +1994,7 @@ NSLog(@&quot;Finish executing block&quot;);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
