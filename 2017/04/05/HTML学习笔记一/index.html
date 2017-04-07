@@ -101,7 +101,7 @@
 当用一组 HTML 标签将一段文字包含在中间时，这段文字与包含文字的 HTML 标签被称为一个元素。
 文件的开始标签 &amp;lt;html&amp;gt; 文件的全部内容 &amp;lt;/html&amp;gt;
 文件的头部标签 &amp;lt;head&amp;gt;">
-<meta property="og:updated_time" content="2017-04-06T05:43:34.000Z">
+<meta property="og:updated_time" content="2017-04-07T16:37:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HTML学习笔记一">
 <meta name="twitter:description" content="HTML 基础HTML 的基本结构
@@ -380,7 +380,112 @@
 </li>
 <li>页面的注释标记： <code>&lt;!--注释的文字--&gt;</code></li>
 </ol>
-<h4 id="设计网页文本内容"><a href="#设计网页文本内容" class="headerlink" title="设计网页文本内容"></a>设计网页文本内容</h4>
+<h4 id="设计网页文本内容"><a href="#设计网页文本内容" class="headerlink" title="设计网页文本内容"></a>设计网页文本内容</h4><ol>
+<li>标题文本标记：<code>&lt;h1~6&gt;...&lt;/h1~h6&gt;</code> 共包含六中标记<ul>
+<li><code>align</code>    对齐方式：left、right、center</li>
+</ul>
+</li>
+<li>设置文字格式：<br><code>&lt;foot face=&quot;字体1,字体2...&quot; size=&quot;4&quot; color=&quot;#FF0000&quot;&gt;...&lt;/foot&gt;</code><ul>
+<li>face:字体，属性的值可以设置多个，默认使用第一种字体进行显示，以次类推。</li>
+<li>size：字号，文字的字号可以设置为1~7，也可以是+1~+7或者-1~-7，默认的字体是3号。</li>
+<li>color：颜色</li>
+</ul>
+</li>
+<li>粗体、斜体、下划线 - strong、em、u（b、i、cite）<ul>
+<li><code>&lt;strong&gt;粗体&lt;/strong&gt;</code>==<code>&lt;b&gt;粗体&lt;/b&gt;</code></li>
+<li><code>&lt;em&gt;斜体&lt;/em&gt;</code>==<code>&lt;i&gt;斜体&lt;/i&gt;</code></li>
+<li><code>&lt;u&gt;下划线&lt;/u&gt;</code>==<code>&lt;cite&gt;下划线&lt;/cite&gt;</code></li>
+<li><code>&lt;sup&gt;上标&lt;/sup&gt; &lt;sub&gt;下标&lt;/sub&gt;</code></li>
+<li><code>&lt;strike&gt;删除线&lt;/strike&gt;</code>==<code>&lt;del&gt;删除线&lt;/del&gt;</code></li>
+<li><code>&lt;code&gt;等宽文字&lt;/code&gt;</code>==<code>&lt;samp&gt;等宽文字&lt;/samp&gt;</code></li>
+<li><code>&amp;nbsp</code>：空格 <code>&amp;quot</code>：引号 <code>&amp;lt</code>:左尖括号 <code>&amp;gt</code>:右尖括号</li>
+<li><code>&amp;times</code>：乘号 <code>&amp;copy</code>:版权所有符 <code>&amp;ret</code>:已注册的符号(。・・)</li>
+</ul>
+</li>
+<li>设置段落格式： <code>&lt;p&gt;...&lt;/p&gt;</code>    <ul>
+<li>取消文字换行：<code>&lt;nobr&gt;不换行的文字&lt;/nobr&gt;</code></li>
+<li>换行标记：<code>&lt;br&gt;</code></li>
+<li>保留原始排版方式标记：<code>&lt;pre&gt;...&lt;/pre&gt;</code></li>
+<li>居中对齐标记:<code>&lt;center&gt;居中&lt;/center&gt;</code></li>
+<li>向右缩进标记：<code>&lt;blockquote&gt;&lt;/blockquote&gt;</code></li>
+</ul>
+</li>
+<li>水平线标记：<code>&lt;hr&gt;</code><ul>
+<li>设置水平线的宽度和高度：<code>&lt;hr width=&quot;80%&quot; size=3&gt;</code> width可以是确定的像素值或窗口宽度值的百分比，高度只能够是像素值.</li>
+<li>设置水平线的颜色: <code>&lt;hr colot=&quot;#FF0000&quot;&gt;</code></li>
+<li>设置水平线的对齐方式:<code>&lt;hr align=&quot;center&quot;&gt;</code></li>
+<li>去掉水平线的阴影:<code>&lt;hr noshade=&quot;noshade&quot;&gt;</code></li>
+</ul>
+</li>
+<li>文字标注标记：<code>&lt;ruby&gt;被说明的文字&lt;rt&gt;文字的标志&lt;/rt&gt;&lt;/ruby&gt;</code><br> <ruby>被说明的文字<rt>文字的标志</rt></ruby></li>
+<li>声明变量标记 var：<code>&lt;p&gt;&lt;var&gt;x&lt;/var&gt;=&lt;var&gt;y&lt;/var&gt;+6&lt;/p&gt;</code></li>
+<li>忽视HTML标记：<code>&lt;plaintext&gt;</code> 或者 <code>&lt;xmp&gt;</code></li>
+</ol>
+<h4 id="使用列表"><a href="#使用列表" class="headerlink" title="使用列表"></a>使用列表</h4><ol>
+<li><p>使用无序列表 ul：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;font size=&quot;+3&quot; color=&quot;#0066FF&quot;&gt;无序列表：&lt;/font&gt;</div><div class="line">&lt;ul type=&quot;circle&quot;&gt;</div><div class="line">	&lt;li type=&quot;square&quot;&gt;入门模式&lt;/li&gt;</div><div class="line">	&lt;li type=&quot;disc&quot;&gt;初级模式&lt;/li&gt;</div><div class="line">&lt;/ul&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用有序列表 ol：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;font size=&quot;+3&quot; color=&quot;#FF0000&quot;&gt;有序列表标记:&lt;/font&gt;</div><div class="line">&lt;ol type=&quot;A&quot; start=&quot;5&quot;&gt;</div><div class="line">	&lt;li&gt;穿越时光术&lt;/li&gt;</div><div class="line">	&lt;li&gt;隐形透明术&lt;/li&gt;</div><div class="line">	&lt;li&gt;青春不老术&lt;/li&gt;</div><div class="line">&lt;/ol&gt;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>type:类型（1、a、A、i、I）<br>start:起始数值（无论是数字、英文、罗马数字，起始数值只能是数字）</p>
+</blockquote>
+</li>
+<li><p>定义列表标记 dl：（主要用于解释名词）</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;font size=&quot;+3&quot; color=&quot;#00FFCC&quot;&gt;定义列表：&lt;/font&gt;</div><div class="line">&lt;dl&gt;</div><div class="line">	&lt;dt&gt;穿越时光术&lt;/dt&gt;&lt;dd&gt;你的时间在浪费发呆，胡思乱想，做白日梦；这类型的人个性很被动，想法天马行空，可只限于想而不实际行动。&lt;/dd&gt;&lt;br&gt;</div><div class="line">	&lt;dt&gt;隐形透明术&lt;/dt&gt;&lt;dd&gt;你的时间都浪费在看电视，上网瞎看一通：这种人内向不喜欢跟人实际的接触，凡事都跟人保持距离，不喜欢成为瞩目的焦点，宁愿躲在一边做自己的事情&lt;/dd&gt;</div><div class="line">&lt;/dl&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>菜单列表标记 menu：主要用于设计单列的菜单列表，效果与无需列表相同。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;font size=&quot;+3&quot; color=&quot;#3300FF&quot;&gt;菜单列表标记：&lt;/font&gt;</div><div class="line">&lt;menu&gt;</div><div class="line"> 	&lt;li type=&quot;square&quot;&gt;列表项1&lt;/li&gt;</div><div class="line"> 	&lt;li&gt;列表项2&lt;/li&gt;</div><div class="line"> 	&lt;li&gt;列表项3&lt;/li&gt;</div><div class="line"> 	&lt;li&gt;列表项4&lt;/li&gt;</div><div class="line">&lt;/menu&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>目录列表 dir：主要用于显示文件内容的目录大纲，通常用于设计一个压缩窄列的列表，如字典中的索引或单词表中的单词等。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;font size=&quot;+3&quot; color=&quot;#003300&quot;&gt;目录列表的使用:&lt;/font&gt;</div><div class="line">&lt;dir&gt;</div><div class="line">	&lt;li&gt;目录列表选项&lt;/li&gt;</div><div class="line">	&lt;li&gt;目录列表选项&lt;/li&gt;</div><div class="line">&lt;/dir&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>定义列表的嵌套：(在定义列表中，一个<code>&lt;dt&gt;</code>标记下可以有多个<code>&lt;dd&gt;</code>标记作为名词的解释和说明，以实现定义列表的嵌套。)</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;font size=&quot;+3&quot; color=&quot;#FF0000&quot;&gt;定义列表的嵌套:&lt;/font&gt;</div><div class="line">&lt;dl&gt;</div><div class="line">	&lt;dt&gt;赠孟浩然&lt;/dt&gt;&lt;br/&gt;</div><div class="line">	&lt;dd&gt;作者：李白&lt;/dd&gt;&lt;br/&gt;</div><div class="line">	&lt;dd&gt;诗体：五言律诗&lt;/dd&gt;&lt;br/&gt;</div><div class="line">	&lt;dd&gt;吾爱孟夫子，风流天下闻。&lt;/dd&gt;</div><div class="line">	&lt;dd&gt;吾爱孟夫子，风流天下闻。&lt;/dd&gt;</div><div class="line">&lt;/dl&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>无序列表和有序列表的嵌套：（最常见的列表嵌套模式，就是有序和无序列表的嵌套，可以重复使用<code>&lt;ol&gt;</code>和<code>&lt;ul&gt;</code>标记组合实现。）</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">ul type=&quot;circle&quot;&gt;</div><div class="line">	&lt;li type=&quot;square&quot;&gt;入门模式&lt;/li&gt;</div><div class="line">	&lt;li type=&quot;disc&quot;&gt;初级模式&lt;/li&gt;</div><div class="line">&lt;/ul&gt;</div><div class="line">&lt;ol type=&quot;A&quot; start=&quot;5&quot;&gt;</div><div class="line">	&lt;li&gt;穿越时光术&lt;/li&gt;</div><div class="line">	&lt;li&gt;隐形透明术&lt;/li&gt;</div><div class="line">&lt;/ol&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h4><ol>
+<li>相对链接的使用方法：<ul>
+<li>如果链接到同一目录，只需要输入链接文档的名称，如 5-1.html;</li>
+<li>如果链接到下一目录下，只需要输入目录名，然后加 “/“ ,再输入文件名，如mr/5-1.html;</li>
+<li>如果链接到上一级目录中的文件，则输入”../“，再输入目录名、文件名，如 ../mr/5-2.html;</li>
+</ul>
+</li>
+<li>除了绝对路径和相对路径外，还有一种称为根目录，根目录常常在大规模站点需要放置在几个服务器上，或者一个服务器上放置多个站点时使用，用法只需要以”/“开始表示根目录，之后是文件所在的目录名和文件名，如 /mr/5-1.html;</li>
+<li>超链接的建立：<br><code>&lt;a href=&quot;链接地址&quot; target=&quot;目标窗口的打开方式&quot;&gt;链接元素&lt;/a&gt;</code> <ul>
+<li><code>href</code>: 目标的链接地址</li>
+<li><code>target</code>: 目标窗口的打开方式(<code>_parent</code>、<code>_blank</code>、<code>_self</code>、<code>_top</code>)</li>
+</ul>
+</li>
+<li>书签链接：<ul>
+<li>建立书签:<code>&lt;a name=&quot;书签名称&quot;&gt;文字&lt;/a&gt;</code> (<strong>数千名称就是设置连接后要跳转的位置</strong>)    </li>
+<li>链接到同一页面的书签：<code>&lt;a href=&quot;#书签名称&quot;&gt;&lt;/a&gt;</code></li>
+<li>链接到不同页面的书签: <code>&lt;a href=&quot;链接的文件地址#书签名称&quot;&gt;&lt;/a&gt;</code> </li>
+</ul>
+</li>
+<li>脚本链接：<code>&lt;a href=&quot;javascrip...&quot;&gt;文字链接&lt;/a&gt;</code></li>
+<li>空连接：<code>&lt;a href=&quot;#&quot;&gt;文字链接&lt;/a&gt;</code></li>
+</ol>
+<h4 id="使用图像"><a href="#使用图像" class="headerlink" title="使用图像"></a>使用图像</h4><ol>
+<li><code>&lt;img src=&quot;图片地址&quot; width=&quot;宽度&quot; height=&quot;高度&quot; border=&quot;边框宽度&quot;&gt;</code></li>
+<li>图像间距 <code>&lt;img src=&quot;图像地址&quot; hspace=&quot;水平间距&quot; vspace=&quot;垂直间距&quot;&gt;</code></li>
+<li>图像的提示文字 <code>&lt;img src=&quot;图像地址&quot; alt=&quot;提示文字内容&quot;&gt;</code> (作用：1.如果图像下载完了，将鼠标放到上面会显示提示文字。2.如果图像没有被下载，在图像的位置就会显示提示文字。)</li>
+<li><p>图像相对于文字基准线的对齐方式(align):</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;font size=&quot;+4&quot; color=&quot;#FF66CC&quot;&gt;玫瑰的生长过程&lt;/font&gt;</div><div class="line">&lt;img src=&quot;图片路径&quot; width=&quot;100&quot; height=&quot;100&quot; align=&quot;top&quot;&gt;</div><div class="line">&lt;img src=&quot;图片路径&quot; width=&quot;100&quot; height=&quot;100&quot; align=&quot;middle&quot;&gt;</div><div class="line">&lt;img src=&quot;图片路径&quot; width=&quot;100&quot; height=&quot;100&quot; align=&quot;bottom&quot;&gt;</div><div class="line">&lt;img src=&quot;图片路径&quot; width=&quot;100&quot; height=&quot;100&quot; align=&quot;texttop&quot;&gt;</div><div class="line">&lt;img src=&quot;图片路径&quot; width=&quot;100&quot; height=&quot;100&quot; align=&quot;absmiddle&quot;&gt;</div><div class="line">&lt;img src=&quot;图片路径&quot; width=&quot;100&quot; height=&quot;100&quot; align=&quot;left&quot;&gt;</div><div class="line">&lt;img src=&quot;图片路径&quot; width=&quot;100&quot; height=&quot;100&quot; align=&quot;right&quot;&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>图像的超链接：  <code>&lt;a href=&quot;链接地址&quot; target=&quot;目标窗口的打开方式&quot;&gt;&lt;img src=&quot;图片文件的地址&quot;&gt;&lt;/a&gt;</code></p>
+</li>
+<li><p>设置图像的热区链接：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;img src=&quot;链接地址&quot; usemap=&quot;#映射图像名称&quot;&gt;</div><div class="line">&lt;map name=&quot;映射图像名称&quot; id=&quot;..&quot;&gt;</div><div class="line">	&lt;area shape=&quot;热区形状&quot; coords=&quot;热区坐标&quot; href=&quot;链接地址&quot; alt=&quot;描述&quot;&gt;</div><div class="line">	&lt;area shape=&quot;热区形状&quot; coords=&quot;热区坐标&quot; href=&quot;链接地址&quot; alt=&quot;描述&quot;&gt;</div><div class="line">&lt;/map&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>* 在该语法中先定义映射图像的名称，然后再引用这个映射图像。在`&lt;area&gt;`标记中定义了热区的位置和链接；
+* 其中 `shape` 用来定义热区的形状，可以取值为 `rect(矩形区域)`、`circle（圆形区域）`以及`poly（多边形区域）`；
+* `coords`参数用来设置热区坐标，对于不同的形状，`coords`设置的方式也不同，对于矩形区域rect来说，coords 包含4个参数，分别是 left、top、right、bottom；对于圆形区域 circle来说，coords包含3个参数，分别是 center-x、center-y、tadius，（可理解为圆心x、y和半径的值）；对于多边形poly，与多边形的形状有关。
+</code></pre>
       
     </div>
 
@@ -419,6 +524,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/08/HTML学习笔记二/" rel="prev" title="HTML学习笔记二">
+                HTML学习笔记二 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -490,7 +599,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -529,7 +638,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML-基础"><span class="nav-number">1.</span> <span class="nav-text">HTML 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HTML-的基本结构"><span class="nav-number">1.1.</span> <span class="nav-text">HTML 的基本结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HTML-文件基本标记"><span class="nav-number">1.2.</span> <span class="nav-text">HTML 文件基本标记</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设计网页文本内容"><span class="nav-number">1.3.</span> <span class="nav-text">设计网页文本内容</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML-基础"><span class="nav-number">1.</span> <span class="nav-text">HTML 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HTML-的基本结构"><span class="nav-number">1.1.</span> <span class="nav-text">HTML 的基本结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HTML-文件基本标记"><span class="nav-number">1.2.</span> <span class="nav-text">HTML 文件基本标记</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设计网页文本内容"><span class="nav-number">1.3.</span> <span class="nav-text">设计网页文本内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用列表"><span class="nav-number">1.4.</span> <span class="nav-text">使用列表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#超链接"><span class="nav-number">1.5.</span> <span class="nav-text">超链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用图像"><span class="nav-number">1.6.</span> <span class="nav-text">使用图像</span></a></li></ol></li></ol></div>
             
 
           </div>
