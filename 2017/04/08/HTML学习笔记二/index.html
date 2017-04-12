@@ -87,16 +87,34 @@
 
 
 
-<meta name="description" content="HTML 基础表格的应用">
+<meta name="description" content="HTML 基础表格的应用层标记-Div
+编辑表单
+使用表单标签：&amp;lt;form&amp;gt;
+
+action：处理动作，真正处理表单的数据脚本或程序在 action 属性里，这个值可以是程序或脚本的一个完整 URL；
+name：表单名称（不能包含特殊字符和空格）;
+method：用于定义处理程序从表单中获取信息的方式，它决定了表单中已收集的数据是用什么方法发送到服务器的。传送方式只有两种，即 get">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HTML学习笔记二">
 <meta property="og:url" content="http://yoursite.com/2017/04/08/HTML学习笔记二/index.html">
 <meta property="og:site_name" content="gbetter">
-<meta property="og:description" content="HTML 基础表格的应用">
-<meta property="og:updated_time" content="2017-04-07T16:37:53.000Z">
+<meta property="og:description" content="HTML 基础表格的应用层标记-Div
+编辑表单
+使用表单标签：&amp;lt;form&amp;gt;
+
+action：处理动作，真正处理表单的数据脚本或程序在 action 属性里，这个值可以是程序或脚本的一个完整 URL；
+name：表单名称（不能包含特殊字符和空格）;
+method：用于定义处理程序从表单中获取信息的方式，它决定了表单中已收集的数据是用什么方法发送到服务器的。传送方式只有两种，即 get">
+<meta property="og:updated_time" content="2017-04-12T15:36:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HTML学习笔记二">
-<meta name="twitter:description" content="HTML 基础表格的应用">
+<meta name="twitter:description" content="HTML 基础表格的应用层标记-Div
+编辑表单
+使用表单标签：&amp;lt;form&amp;gt;
+
+action：处理动作，真正处理表单的数据脚本或程序在 action 属性里，这个值可以是程序或脚本的一个完整 URL；
+name：表单名称（不能包含特殊字符和空格）;
+method：用于定义处理程序从表单中获取信息的方式，它决定了表单中已收集的数据是用什么方法发送到服务器的。传送方式只有两种，即 get">
 
 
 
@@ -321,7 +339,63 @@
       
 
       
-        <h3 id="HTML-基础"><a href="#HTML-基础" class="headerlink" title="HTML 基础"></a>HTML 基础</h3><h4 id="表格的应用"><a href="#表格的应用" class="headerlink" title="表格的应用"></a>表格的应用</h4>
+        <h3 id="HTML-基础"><a href="#HTML-基础" class="headerlink" title="HTML 基础"></a>HTML 基础</h3><h4 id="表格的应用"><a href="#表格的应用" class="headerlink" title="表格的应用"></a>表格的应用</h4><h4 id="层标记-Div"><a href="#层标记-Div" class="headerlink" title="层标记-Div"></a>层标记-Div</h4><ol>
+<li><h4 id="编辑表单"><a href="#编辑表单" class="headerlink" title="编辑表单"></a>编辑表单</h4></li>
+<li><p>使用表单标签：<code>&lt;form&gt;</code></p>
+<ul>
+<li><code>action</code>：处理动作，真正处理表单的数据脚本或程序在 action 属性里，这个值可以是程序或脚本的一个完整 URL；</li>
+<li><code>name</code>：表单名称（不能包含特殊字符和空格）;</li>
+<li><code>method</code>：用于定义处理程序从表单中获取信息的方式，它决定了表单中已收集的数据是用什么方法发送到服务器的。传送方式只有两种，即 get 或 post ；</li>
+<li><code>enctype</code>：编码方式，<code>text/plain</code>(以纯文本的形式传送)、<code>application/x-www-form-urlencoded</code>(默认的编码形式)、<code>multipart/form-data</code>(MIME编码，上传文件的表单必须选择该项)；</li>
+<li><p><code>target</code>：目标显示方式，<code>_blank/_parent/_self/_top</code>;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;mailto:mingri@qq.com&quot; name=&quot;regiter&quot; method=&quot;post&quot; enctype=&quot;text/plain&quot; target=&quot;_blank&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>文字字段:<code>text</code></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">	&lt;&lt;input type=&quot;text&quot; name=&quot;userName&quot; size=&quot;20&quot; placeholder=&quot;text&quot; value=&quot;default value&quot; maxlength=&quot;40&quot;&gt;</div><div class="line">	```	</div><div class="line">3. 密码域：`password`</div></pre></td></tr></table></figure>
+<p> <input type="password" name="userName" size="20" value="123456" maxlength="8"></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">4. 单选按钮：`radio`</div></pre></td></tr></table></figure>
+<p> <input type="radio" name="test" value="answerA" checked="checked">在沙滩上吃螃蟹A<br></p>
+<pre><code>&lt;input type=&quot;radio&quot; name=&quot;test&quot; value=&quot;answerB&quot;&gt;在沙滩上吃螃蟹B&lt;br&gt;
+</code></pre> <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">	&gt; `checked` 属性表示这一单选按钮默认被选中，只能设置一项单选按钮控件为 checked，`value` 设置用户选中该选项后，传送到处理程序中的值。 </div><div class="line">5. 复选框：`checkbox`</div></pre></td></tr></table></figure>
+<p> <form action="" name="fxk" method="post"></form></p>
+<pre><code>&lt;h4&gt;Question: 测验：你下几种方便面你最喜欢哪几种？&lt;/h4&gt;
+&lt;input type=&quot;checkbox&quot; name=&quot;test&quot; value=&quot;A1&quot; checked=&quot;checked&quot;&gt; 鲜虾鱼板面
+&lt;input type=&quot;checkbox&quot; name=&quot;test&quot; value=&quot;A2&quot;&gt;红烧牛肉面
+&lt;input type=&quot;checkbox&quot; name=&quot;test&quot; value=&quot;A3&quot;&gt;香菇炖鸡面
+&lt;input type=&quot;checkbox&quot; name=&quot;test&quot; value=&quot;A4&quot;&gt;番茄牛肉面
+</code></pre><p> </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">	</div><div class="line">6. 普通按钮：`button`</div></pre></td></tr></table></figure>
+<p> <input type="button" value="关闭当前窗口" name="close" onclick="window.close()"></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">7. 提交按钮：`submit`</div></pre></td></tr></table></figure>
+<p> <input type="submit" name="submit" value="提交表单"></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">8. 重置按钮：`reset`</div></pre></td></tr></table></figure>
+<p> <input type="reset" name="reset" value="重置表单"></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">	&gt; value 的值用于设置按钮上显示的文字</div><div class="line">9. 图像域：`image`</div></pre></td></tr></table></figure>
+<p> <input type="image" name="image1" src="http://pic.58pic.com/58pic/12/06/87/43R58PICm3U.jpg" size="40" height="40"></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">10. 隐藏域：`hidden`</div></pre></td></tr></table></figure>
+<p> <input type="hidden" name="form" value="invest"></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">	&gt; 表单中的隐藏域主要用来传递一些参数，而这些参数不需要再页面中显示，当用户提交表单的时候，隐藏域中的内容会一起提交给处理程序。</div><div class="line">11. 文件域：`file`</div><div class="line">	`请上传你的照片:&lt;input type=&quot;file&quot; name=&quot;file&quot;&gt;&lt;br&gt;`</div><div class="line">12. 列表、菜单标记</div><div class="line">	* `name`：菜单和列表的名称；</div><div class="line">	* `size`: 显示的选项数目；</div><div class="line">	* `multiple`：列表中的项目多选；</div><div class="line">	* `value`：选项值；</div><div class="line">	* `selected`：默认选项</div></pre></td></tr></table></figure>
+<p> 选择你喜欢的音乐:<br></p>
+<pre><code>&lt;select name=&quot;musicName&quot; size=&quot;5&quot; multiple=&quot;multiple&quot;&gt;
+    &lt;option value=&quot;rock&quot; selected=&quot;selected&quot;&gt;摇滚乐&lt;/option&gt;
+    &lt;option value=&quot;music1&quot;&gt;流行乐1&lt;/option&gt;
+    &lt;option value=&quot;music2&quot;&gt;流行乐2&lt;/option&gt;
+    &lt;option value=&quot;music3&quot;&gt;流行乐3&lt;/option&gt;
+&lt;/select&gt;
+</code></pre> <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">13. 文本域标记 `textarea`（在留言本中最为常见）</div><div class="line">	* `name`：文本域的名称；</div><div class="line">	* `rows`：文本域的行数；</div><div class="line">	* `cols`：文本域的列数；</div><div class="line">	* `value`：文本域的默认值；（测试时不好使）</div></pre></td></tr></table></figure>
+<p> 文本域标记:<br><br> <textarea name="liuyan" rows="5" cols="40" placeholder="请留言...">默认展示的内容</textarea></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">	 	</div><div class="line">#### 多媒体页面</div><div class="line"></div><div class="line">1. 滚动文字标签：`marquee`</div><div class="line">	* `direction`：滚动方向，分别为 up、down、left、right，默认为 left；</div><div class="line">	* `behavior`：滚动方式，scroll（循环滚动，默认效果）、slide（只滚动一次就停止）、alternate（来回交替进行滚动）；</div><div class="line">	* `scrollamount`：滚动速度属性；</div><div class="line">	* `scrolldelay`：滚动延迟属性，时间间隔单位是毫秒，滚动两步之间的时间间隔；</div><div class="line">	* `loop`：循环属性，用于设定循环次数；</div><div class="line">	* `width、height`：滚动范围属性；</div><div class="line">	* `bgcolor`：滚动背景颜色属性；</div><div class="line">	* `hspace、vspace`：滚动空间属性，在滚动文字的四周，可以设置水平和垂直范围（单位均为像素）；</div></pre></td></tr></table></figure>
+<p> <marquee behavior="alternate" direction="down" loop="100" scrollamount="3" width="500" height="100" bgcolor="#FF0000"><br> 奔跑吧第一行</marquee></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">	</div><div class="line">2. 添加背景音乐：`&lt;bgsound src=&quot;背景音乐地址&quot; loop=&quot;次数&quot;&gt;`</div><div class="line">	* `loop`：设置循环播放次数，如果希望无限次播放背景音乐，可将 `loop` 的值设置为 `true `；</div><div class="line"></div><div class="line">3. 添加多媒体文件：embed</div><div class="line">	* `autostart`：设置自动运行，true、false；</div><div class="line">	* `loop`：设置媒体文件的循环播放，true、false；</div><div class="line">	* `hidden`：隐藏面板，true、false；</div></pre></td></tr></table></figure>
+ <embed src="多媒体文件地址" width="播放界面宽度" height="播放界面高度">
+
+<p> <embed src="贝加尔湖畔.mp3" width="200" height="100" autostart="false" loop="true" hidden="true"><br> ```</p>
+</li>
+<li>除 AVI 媒体文件外，在网页中还可以嵌入 Flash、MPEG 等类型的媒体文件，方法与上相同；    </li>
+</ol>
+
       
     </div>
 
@@ -470,7 +544,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML-基础"><span class="nav-number">1.</span> <span class="nav-text">HTML 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#表格的应用"><span class="nav-number">1.1.</span> <span class="nav-text">表格的应用</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML-基础"><span class="nav-number">1.</span> <span class="nav-text">HTML 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#表格的应用"><span class="nav-number">1.1.</span> <span class="nav-text">表格的应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#层标记-Div"><span class="nav-number">1.2.</span> <span class="nav-text">层标记-Div</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编辑表单"><span class="nav-number">1.3.</span> <span class="nav-text">编辑表单</span></a></li></ol></li></ol></div>
             
 
           </div>

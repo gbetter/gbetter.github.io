@@ -101,7 +101,7 @@
 当用一组 HTML 标签将一段文字包含在中间时，这段文字与包含文字的 HTML 标签被称为一个元素。
 文件的开始标签 &amp;lt;html&amp;gt; 文件的全部内容 &amp;lt;/html&amp;gt;
 文件的头部标签 &amp;lt;head&amp;gt;">
-<meta property="og:updated_time" content="2017-04-07T16:37:47.000Z">
+<meta property="og:updated_time" content="2017-04-07T16:41:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HTML学习笔记一">
 <meta name="twitter:description" content="HTML 基础HTML 的基本结构
@@ -479,13 +479,16 @@
 <li><p>图像的超链接：  <code>&lt;a href=&quot;链接地址&quot; target=&quot;目标窗口的打开方式&quot;&gt;&lt;img src=&quot;图片文件的地址&quot;&gt;&lt;/a&gt;</code></p>
 </li>
 <li><p>设置图像的热区链接：</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;img src=&quot;链接地址&quot; usemap=&quot;#映射图像名称&quot;&gt;</div><div class="line">&lt;map name=&quot;映射图像名称&quot; id=&quot;..&quot;&gt;</div><div class="line">	&lt;area shape=&quot;热区形状&quot; coords=&quot;热区坐标&quot; href=&quot;链接地址&quot; alt=&quot;描述&quot;&gt;</div><div class="line">	&lt;area shape=&quot;热区形状&quot; coords=&quot;热区坐标&quot; href=&quot;链接地址&quot; alt=&quot;描述&quot;&gt;</div><div class="line">&lt;/map&gt;</div></pre></td></tr></table></figure>
+<ul>
+<li>在该语法中先定义映射图像的名称，然后再引用这个映射图像。在<code>&lt;area&gt;</code>标记中定义了热区的位置和链接；</li>
+<li>其中 <code>shape</code> 用来定义热区的形状，可以取值为 <code>rect(矩形区域)</code>、<code>circle（圆形区域）</code>以及<code>poly（多边形区域）</code>；</li>
+<li><p><code>coords</code>参数用来设置热区坐标，对于不同的形状，<code>coords</code>设置的方式也不同，对于矩形区域rect来说，coords 包含4个参数，分别是 left、top、right、bottom；对于圆形区域 circle来说，coords包含3个参数，分别是 center-x、center-y、tadius，（可理解为圆心x、y和半径的值）；对于多边形poly，与多边形的形状有关。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;img src=&quot;链接地址&quot; usemap=&quot;#映射图像名称&quot;&gt;</div><div class="line">&lt;map name=&quot;映射图像名称&quot; id=&quot;..&quot;&gt;</div><div class="line">	&lt;area shape=&quot;热区形状&quot; coords=&quot;热区坐标&quot; href=&quot;链接地址&quot; alt=&quot;描述&quot;&gt;</div><div class="line">	&lt;area shape=&quot;热区形状&quot; coords=&quot;热区坐标&quot; href=&quot;链接地址&quot; alt=&quot;描述&quot;&gt;</div><div class="line">&lt;/map&gt;</div></pre></td></tr></table></figure>
+</li>
+</ul>
 </li>
 </ol>
-<pre><code>* 在该语法中先定义映射图像的名称，然后再引用这个映射图像。在`&lt;area&gt;`标记中定义了热区的位置和链接；
-* 其中 `shape` 用来定义热区的形状，可以取值为 `rect(矩形区域)`、`circle（圆形区域）`以及`poly（多边形区域）`；
-* `coords`参数用来设置热区坐标，对于不同的形状，`coords`设置的方式也不同，对于矩形区域rect来说，coords 包含4个参数，分别是 left、top、right、bottom；对于圆形区域 circle来说，coords包含3个参数，分别是 center-x、center-y、tadius，（可理解为圆心x、y和半径的值）；对于多边形poly，与多边形的形状有关。
-</code></pre>
+
       
     </div>
 
