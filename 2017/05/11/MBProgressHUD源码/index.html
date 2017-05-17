@@ -1,0 +1,728 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="是什么？
+MBProgressHUD 是一个iOS插件类，在后台线程中完成工作时，显示带有指示符或标签的半透明 HUD。 HUD意味着替代未记录的私有 UIKit UIProgressHUD 以及一些其他功能。
+
+使用要求
+MBProgressHUD 适用于 iOS 6+，并要求 ARC 进行构建。它依赖于以下 Apple 框架：
+Foundation.framework
+UIKit.framew">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MBProgressHUD 源码">
+<meta property="og:url" content="http://yoursite.com/2017/05/11/MBProgressHUD源码/index.html">
+<meta property="og:site_name" content="gbetter">
+<meta property="og:description" content="是什么？
+MBProgressHUD 是一个iOS插件类，在后台线程中完成工作时，显示带有指示符或标签的半透明 HUD。 HUD意味着替代未记录的私有 UIKit UIProgressHUD 以及一些其他功能。
+
+使用要求
+MBProgressHUD 适用于 iOS 6+，并要求 ARC 进行构建。它依赖于以下 Apple 框架：
+Foundation.framework
+UIKit.framew">
+<meta property="og:updated_time" content="2017-05-17T05:53:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MBProgressHUD 源码">
+<meta name="twitter:description" content="是什么？
+MBProgressHUD 是一个iOS插件类，在后台线程中完成工作时，显示带有指示符或标签的半透明 HUD。 HUD意味着替代未记录的私有 UIKit UIProgressHUD 以及一些其他功能。
+
+使用要求
+MBProgressHUD 适用于 iOS 6+，并要求 ARC 进行构建。它依赖于以下 Apple 框架：
+Foundation.framework
+UIKit.framew">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/11/MBProgressHUD源码/"/>
+
+
+
+
+
+  <title> MBProgressHUD 源码 | gbetter </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">gbetter</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/11/MBProgressHUD源码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                MBProgressHUD 源码
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-11T09:36:28+08:00">
+                2017-05-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h3><ul>
+<li>MBProgressHUD 是一个iOS插件类，在后台线程中完成工作时，显示带有指示符或标签的半透明 HUD。 HUD意味着替代未记录的私有 UIKit UIProgressHUD 以及一些其他功能。</li>
+</ul>
+<h3 id="使用要求"><a href="#使用要求" class="headerlink" title="使用要求"></a>使用要求</h3><ul>
+<li>MBProgressHUD 适用于 iOS 6+，并要求 ARC 进行构建。它依赖于以下 Apple 框架：<ul>
+<li>Foundation.framework</li>
+<li>UIKit.framework</li>
+<li>CoreGraphics.framework     </li>
+</ul>
+</li>
+</ul>
+<h3 id="添加-MBProgressHUD-到你的项目"><a href="#添加-MBProgressHUD-到你的项目" class="headerlink" title="添加 MBProgressHUD 到你的项目"></a>添加 MBProgressHUD 到你的项目</h3><ul>
+<li><p>CocoaPods（推荐使用）</p>
+<ol>
+<li>将 MBProgressHUD 的 pod 条目添加到你的 Podfile：pod ‘MBProgressHUD’, ‘~&gt; 1.0.0’</li>
+<li>通过运行安装 pod(s) : pod install</li>
+<li>使用 MBProgressHUD 的地方需要加入： #import “MBProgressHUD.h”.</li>
+</ol>
+</li>
+<li><p>源文件</p>
+<ol>
+<li>直接将 MBProgressHUD.h 和 MBProgressHUD.m 源文件添加到项目中</li>
+<li>包含 MBProgressHUD 的地方需要加入： #import “MBProgressHUD.h”.</li>
+</ol>
+</li>
+<li><p>静态库</p>
+<ol>
+<li>下载最新的代码版本，生成 .a 静态库</li>
+<li>将 MBProgressHUD 添加到<code>目标依赖关系</code>(Target Dependencies list)列表中.</li>
+</ol>
+</li>
+</ul>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><ul>
+<li>使用 MBProgressHUD 的推荐方法是在主线程上进行设置，然后将要执行的任务旋转到新线程上</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[MBProgressHUD showHUDAddedTo:self.view animated:YES];</div><div class="line">dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^&#123;</div><div class="line">	// Do something...</div><div class="line">	dispatch_async(dispatch_get_main_queue(), ^&#123;</div><div class="line">		[MBProgressHUD hideHUDForView:self.view animated:YES];</div><div class="line">	&#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>你可以在任何的 View 或者 window 中使用 HUD，但是，避免将 HUD 添加到具有复杂视图的某些 UIKit 视图(如 UITableView 或 UICollectionView )中，可能会打破 HUD 显示。</li>
+<li>HUD 进度的使用：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];</div><div class="line">hud.mode = MBProgressHUDModeAnnularDeterminate;</div><div class="line">hud.labelText = @&quot;Loading&quot;;</div><div class="line">[self doSomethingInBackgroundWithProgressCallback:^(float progress) &#123;</div><div class="line">	hud.progress = progress;</div><div class="line">&#125; completionCallback:^&#123;</div><div class="line">	[hud hide:YES];</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<ul>
+<li>您也可以使用 NSProgress 对象，当通过该对象报告进度时，MBProgressHUD 将自动更新。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];</div><div class="line">hud.mode = MBProgressHUDModeAnnularDeterminate;</div><div class="line">hud.labelText = @&quot;Loading&quot;;</div><div class="line">NSProgress *progress = [self doSomethingInBackgroundCompletion:^&#123;</div><div class="line">	[hud hide:YES];</div><div class="line">&#125;];</div><div class="line">hud.progressObject = progress;</div></pre></td></tr></table></figure>
+<ul>
+<li>如果在主线程上执行一个长时间的任务，你需要延迟执行，从而给主线程足够的时间绘制 HUD</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[MBProgressHUD showHUDAddedTo:self.view animated:YES];</div><div class="line">dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);</div><div class="line">dispatch_after(popTime, dispatch_get_main_queue(), ^(void)&#123;</div><div class="line">	// Do something...</div><div class="line">	[MBProgressHUD hideHUDForView:self.view animated:YES];</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h3 id="许可"><a href="#许可" class="headerlink" title="许可"></a>许可</h3><ul>
+<li>该代码根据MIT许可证的条款和条件分发。</li>
+</ul>
+<hr>
+<h3 id="实现分析（v1-0-0）"><a href="#实现分析（v1-0-0）" class="headerlink" title="实现分析（v1.0.0）"></a>实现分析（v1.0.0）</h3><p><a href="https://knightsj.github.io/2017/01/17/MBProgressHUD%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" target="_blank" rel="external">参考：1. MBProgressHUD源码解析</a></p>
+<p><a href="http://southpeak.github.io/2015/03/24/sourcecode-mbprogresshud/" target="_blank" rel="external">参考：2. MBProgressHUD源码解析</a></p>
+<h4 id="枚举定义"><a href="#枚举定义" class="headerlink" title="枚举定义"></a>枚举定义</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">typedef NS_ENUM(NSInteger, MBProgressHUDMode) &#123;</div><div class="line">    ///使用UIActivityIndicatorView来显示进度，这是默认值</div><div class="line">    MBProgressHUDModeIndeterminate,</div><div class="line">    /// 使用圆环作为进度条(外侧有一个圆)</div><div class="line">    MBProgressHUDModeDeterminate,</div><div class="line">    /// 使用一个水平进度条</div><div class="line">    MBProgressHUDModeDeterminateHorizontalBar,</div><div class="line">    /// 使用圆环作为进度条(外侧没有圆)</div><div class="line">    MBProgressHUDModeAnnularDeterminate,</div><div class="line">    /// 显示一个自定义视图，通过这种方式，可以显示一个正确或错误的提示图</div><div class="line">    MBProgressHUDModeCustomView,</div><div class="line">    /// 只显示文本.</div><div class="line">    MBProgressHUDModeText</div><div class="line">&#125;;</div><div class="line"></div><div class="line">typedef NS_ENUM(NSInteger, MBProgressHUDAnimation) &#123;</div><div class="line">    /// 默认效果,只有透明度变化的动画效果</div><div class="line">    MBProgressHUDAnimationFade,</div><div class="line">    /// 透明度变化+形变效果 (其中MBProgressHUDAnimationZoom和MBProgressHUDAnimationZoomOut的枚举值都为1)</div><div class="line">    MBProgressHUDAnimationZoom,</div><div class="line">    /// 透明度变化+形变效果 (产生缩写的效果)</div><div class="line">    MBProgressHUDAnimationZoomOut,</div><div class="line">    /// 透明度变化+形变效果 (产生放大效果)</div><div class="line">    MBProgressHUDAnimationZoomIn</div><div class="line">&#125;;</div><div class="line"></div><div class="line">typedef NS_ENUM(NSInteger, MBProgressHUDBackgroundStyle) &#123;</div><div class="line">    /// Solid color background（固定背景颜色）</div><div class="line">    MBProgressHUDBackgroundStyleSolidColor,</div><div class="line">    /// 模糊的效果</div><div class="line">    MBProgressHUDBackgroundStyleBlur</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h4 id="MB-的组成"><a href="#MB-的组成" class="headerlink" title="MB 的组成"></a>MB 的组成</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">//包含内容的部分</div><div class="line">@property (strong, nonatomic, readonly) MBBackgroundView *bezelView;</div><div class="line"></div><div class="line">//整个HUD的背景, 放置在 bezelView 的后面.</div><div class="line">@property (strong, nonatomic, readonly) MBBackgroundView *backgroundView;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 一个自定义的View，其 mode 要被设置为 MBProgressHUDModeCustomView</div><div class="line"> * 该视图应实现intrinsicContentSize以进行适当的大小调整。 为了获得最佳效果，请使用大约37 x 37像素。.</div><div class="line"> */</div><div class="line">@property (strong, nonatomic, nullable) UIView *customView;</div><div class="line"></div><div class="line">//标签包含一个可选的短消息显示以下活动指标</div><div class="line">@property (strong, nonatomic, readonly) UILabel *label;</div><div class="line"></div><div class="line">//放置在 Label 的下方，可以显示多行简介</div><div class="line">@property (strong, nonatomic, readonly) UILabel *detailsLabel;</div><div class="line"></div><div class="line">//放置在 labels 的下方，当设置 target/action 的时候可以显示</div><div class="line">@property (strong, nonatomic, readonly) UIButton *button;</div></pre></td></tr></table></figure>
+<h4 id="MB-常用的属性设置"><a href="#MB-常用的属性设置" class="headerlink" title="MB 常用的属性设置"></a>MB 常用的属性设置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">//HUD 从触发到显示的时间 默认是 0 用于解决HUD显示时间过短的问题</div><div class="line">@property (assign, nonatomic) NSTimeInterval graceTime;</div><div class="line"></div><div class="line">//HUD 显示的最小时间 默认是 0S</div><div class="line">@property (assign, nonatomic) NSTimeInterval minShowTime;</div><div class="line"></div><div class="line">//隐藏时从其父视图中删除HUD Default NO</div><div class="line">@property (assign, nonatomic) BOOL removeFromSuperViewOnHide;</div><div class="line"></div><div class="line">//MBProgressHUD 的显示类型. 默认是 MBProgressHUDModeIndeterminate.</div><div class="line">@property (assign, nonatomic) MBProgressHUDMode mode;</div><div class="line"></div><div class="line">//用于设置HUD中内容的颜色，默认iOS7以前为白色之后为黑色</div><div class="line">@property (strong, nonatomic, nullable) UIColor *contentColor UI_APPEARANCE_SELECTOR;</div><div class="line"></div><div class="line">//动画类型</div><div class="line">@property (assign, nonatomic) MBProgressHUDAnimation animationType UI_APPEARANCE_SELECTOR;</div></pre></td></tr></table></figure>
+<h4 id="MB-常用的方法"><a href="#MB-常用的方法" class="headerlink" title="MB 常用的方法"></a>MB 常用的方法</h4><h5 id="类方法"><a href="#类方法" class="headerlink" title="类方法"></a>类方法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 创建一个新的 HUD, 并提供一个显示它的 view</div><div class="line"> */</div><div class="line">+ (instancetype)showHUDAddedTo:(UIView *)view animated:(BOOL)animated;</div><div class="line"></div><div class="line">/// @name Showing and hiding</div><div class="line"></div><div class="line">/**</div><div class="line"> * 找到view的 HUD ，并隐藏它.</div><div class="line"> */</div><div class="line">+ (BOOL)hideHUDForView:(UIView *)view animated:(BOOL)animated;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 在 view 中查找 MBProgressHUD 类型的子视图，并返回</div><div class="line"> */</div><div class="line">+ (nullable MBProgressHUD *)HUDForView:(UIView *)view;</div></pre></td></tr></table></figure>
+<h5 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 初始化</div><div class="line"> */</div><div class="line">- (instancetype)initWithView:(UIView *)view;</div><div class="line"></div><div class="line">/** </div><div class="line"> * 显示 HUD.</div><div class="line"> */</div><div class="line">- (void)showAnimated:(BOOL)animated;</div><div class="line"></div><div class="line">/** </div><div class="line"> * 隐藏 HUD</div><div class="line"> */</div><div class="line">- (void)hideAnimated:(BOOL)animated;</div><div class="line"></div><div class="line">/** </div><div class="line"> * 隐藏 HUD 在 delay 秒后</div><div class="line"> */</div><div class="line">- (void)hideAnimated:(BOOL)animated afterDelay:(NSTimeInterval)delay;</div></pre></td></tr></table></figure>
+<h5 id="MBBarProgressView-平行的进度"><a href="#MBBarProgressView-平行的进度" class="headerlink" title="MBBarProgressView 平行的进度"></a>MBBarProgressView 平行的进度</h5><ul>
+<li>属性</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 进度 (0.0 to 1.0)</div><div class="line"> */</div><div class="line">@property (nonatomic, assign) float progress;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 条边界线颜色.</div><div class="line"> * 默认是白色 [UIColor whiteColor].</div><div class="line"> */</div><div class="line">@property (nonatomic, strong) UIColor *lineColor;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 背景颜色.</div><div class="line"> * 默认是透明 [UIColor clearColor];</div><div class="line"> */</div><div class="line">@property (nonatomic, strong) UIColor *progressRemainingColor;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 进度条的颜色.</div><div class="line"> * 默认是白色 [UIColor whiteColor].</div><div class="line"> */</div><div class="line">@property (nonatomic, strong) UIColor *progressColor;</div></pre></td></tr></table></figure>
+<h5 id="MBBackgroundView-背景颜色"><a href="#MBBackgroundView-背景颜色" class="headerlink" title="MBBackgroundView 背景颜色"></a>MBBackgroundView 背景颜色</h5><ul>
+<li>属性</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 背景类型.</div><div class="line"> */</div><div class="line">@property (nonatomic) MBProgressHUDBackgroundStyle style;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 背景颜色</div><div class="line"> */</div><div class="line">@property (nonatomic, strong) UIColor *color;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/20/富兰克林的人生信条/" rel="next" title="富兰克林的人生信条">
+                <i class="fa fa-chevron-left"></i> 富兰克林的人生信条
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhenyue" />
+          <p class="site-author-name" itemprop="name">zhenyue</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#是什么？"><span class="nav-number">1.</span> <span class="nav-text">是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用要求"><span class="nav-number">2.</span> <span class="nav-text">使用要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加-MBProgressHUD-到你的项目"><span class="nav-number">3.</span> <span class="nav-text">添加 MBProgressHUD 到你的项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">4.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#许可"><span class="nav-number">5.</span> <span class="nav-text">许可</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现分析（v1-0-0）"><span class="nav-number">6.</span> <span class="nav-text">实现分析（v1.0.0）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#枚举定义"><span class="nav-number">6.1.</span> <span class="nav-text">枚举定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MB-的组成"><span class="nav-number">6.2.</span> <span class="nav-text">MB 的组成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MB-常用的属性设置"><span class="nav-number">6.3.</span> <span class="nav-text">MB 常用的属性设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MB-常用的方法"><span class="nav-number">6.4.</span> <span class="nav-text">MB 常用的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#类方法"><span class="nav-number">6.4.1.</span> <span class="nav-text">类方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#实例方法"><span class="nav-number">6.4.2.</span> <span class="nav-text">实例方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MBBarProgressView-平行的进度"><span class="nav-number">6.4.3.</span> <span class="nav-text">MBBarProgressView 平行的进度</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MBBackgroundView-背景颜色"><span class="nav-number">6.4.4.</span> <span class="nav-text">MBBackgroundView 背景颜色</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhenyue</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

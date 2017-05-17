@@ -247,6 +247,323 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/11/MBProgressHUD源码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/11/MBProgressHUD源码/" itemprop="url">
+                  MBProgressHUD 源码
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-11T09:36:28+08:00">
+                2017-05-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h3><ul>
+<li>MBProgressHUD 是一个iOS插件类，在后台线程中完成工作时，显示带有指示符或标签的半透明 HUD。 HUD意味着替代未记录的私有 UIKit UIProgressHUD 以及一些其他功能。</li>
+</ul>
+<h3 id="使用要求"><a href="#使用要求" class="headerlink" title="使用要求"></a>使用要求</h3><ul>
+<li>MBProgressHUD 适用于 iOS 6+，并要求 ARC 进行构建。它依赖于以下 Apple 框架：<ul>
+<li>Foundation.framework</li>
+<li>UIKit.framework</li>
+<li>CoreGraphics.framework     </li>
+</ul>
+</li>
+</ul>
+<h3 id="添加-MBProgressHUD-到你的项目"><a href="#添加-MBProgressHUD-到你的项目" class="headerlink" title="添加 MBProgressHUD 到你的项目"></a>添加 MBProgressHUD 到你的项目</h3><ul>
+<li><p>CocoaPods（推荐使用）</p>
+<ol>
+<li>将 MBProgressHUD 的 pod 条目添加到你的 Podfile：pod ‘MBProgressHUD’, ‘~&gt; 1.0.0’</li>
+<li>通过运行安装 pod(s) : pod install</li>
+<li>使用 MBProgressHUD 的地方需要加入： #import “MBProgressHUD.h”.</li>
+</ol>
+</li>
+<li><p>源文件</p>
+<ol>
+<li>直接将 MBProgressHUD.h 和 MBProgressHUD.m 源文件添加到项目中</li>
+<li>包含 MBProgressHUD 的地方需要加入： #import “MBProgressHUD.h”.</li>
+</ol>
+</li>
+<li><p>静态库</p>
+<ol>
+<li>下载最新的代码版本，生成 .a 静态库</li>
+<li>将 MBProgressHUD 添加到<code>目标依赖关系</code>(Target Dependencies list)列表中.</li>
+</ol>
+</li>
+</ul>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><ul>
+<li>使用 MBProgressHUD 的推荐方法是在主线程上进行设置，然后将要执行的任务旋转到新线程上</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[MBProgressHUD showHUDAddedTo:self.view animated:YES];</div><div class="line">dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^&#123;</div><div class="line">	// Do something...</div><div class="line">	dispatch_async(dispatch_get_main_queue(), ^&#123;</div><div class="line">		[MBProgressHUD hideHUDForView:self.view animated:YES];</div><div class="line">	&#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>你可以在任何的 View 或者 window 中使用 HUD，但是，避免将 HUD 添加到具有复杂视图的某些 UIKit 视图(如 UITableView 或 UICollectionView )中，可能会打破 HUD 显示。</li>
+<li>HUD 进度的使用：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];</div><div class="line">hud.mode = MBProgressHUDModeAnnularDeterminate;</div><div class="line">hud.labelText = @&quot;Loading&quot;;</div><div class="line">[self doSomethingInBackgroundWithProgressCallback:^(float progress) &#123;</div><div class="line">	hud.progress = progress;</div><div class="line">&#125; completionCallback:^&#123;</div><div class="line">	[hud hide:YES];</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<ul>
+<li>您也可以使用 NSProgress 对象，当通过该对象报告进度时，MBProgressHUD 将自动更新。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];</div><div class="line">hud.mode = MBProgressHUDModeAnnularDeterminate;</div><div class="line">hud.labelText = @&quot;Loading&quot;;</div><div class="line">NSProgress *progress = [self doSomethingInBackgroundCompletion:^&#123;</div><div class="line">	[hud hide:YES];</div><div class="line">&#125;];</div><div class="line">hud.progressObject = progress;</div></pre></td></tr></table></figure>
+<ul>
+<li>如果在主线程上执行一个长时间的任务，你需要延迟执行，从而给主线程足够的时间绘制 HUD</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[MBProgressHUD showHUDAddedTo:self.view animated:YES];</div><div class="line">dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);</div><div class="line">dispatch_after(popTime, dispatch_get_main_queue(), ^(void)&#123;</div><div class="line">	// Do something...</div><div class="line">	[MBProgressHUD hideHUDForView:self.view animated:YES];</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h3 id="许可"><a href="#许可" class="headerlink" title="许可"></a>许可</h3><ul>
+<li>该代码根据MIT许可证的条款和条件分发。</li>
+</ul>
+<hr>
+<h3 id="实现分析（v1-0-0）"><a href="#实现分析（v1-0-0）" class="headerlink" title="实现分析（v1.0.0）"></a>实现分析（v1.0.0）</h3><p><a href="https://knightsj.github.io/2017/01/17/MBProgressHUD%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" target="_blank" rel="external">参考：1. MBProgressHUD源码解析</a></p>
+<p><a href="http://southpeak.github.io/2015/03/24/sourcecode-mbprogresshud/" target="_blank" rel="external">参考：2. MBProgressHUD源码解析</a></p>
+<h4 id="枚举定义"><a href="#枚举定义" class="headerlink" title="枚举定义"></a>枚举定义</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">typedef NS_ENUM(NSInteger, MBProgressHUDMode) &#123;</div><div class="line">    ///使用UIActivityIndicatorView来显示进度，这是默认值</div><div class="line">    MBProgressHUDModeIndeterminate,</div><div class="line">    /// 使用圆环作为进度条(外侧有一个圆)</div><div class="line">    MBProgressHUDModeDeterminate,</div><div class="line">    /// 使用一个水平进度条</div><div class="line">    MBProgressHUDModeDeterminateHorizontalBar,</div><div class="line">    /// 使用圆环作为进度条(外侧没有圆)</div><div class="line">    MBProgressHUDModeAnnularDeterminate,</div><div class="line">    /// 显示一个自定义视图，通过这种方式，可以显示一个正确或错误的提示图</div><div class="line">    MBProgressHUDModeCustomView,</div><div class="line">    /// 只显示文本.</div><div class="line">    MBProgressHUDModeText</div><div class="line">&#125;;</div><div class="line"></div><div class="line">typedef NS_ENUM(NSInteger, MBProgressHUDAnimation) &#123;</div><div class="line">    /// 默认效果,只有透明度变化的动画效果</div><div class="line">    MBProgressHUDAnimationFade,</div><div class="line">    /// 透明度变化+形变效果 (其中MBProgressHUDAnimationZoom和MBProgressHUDAnimationZoomOut的枚举值都为1)</div><div class="line">    MBProgressHUDAnimationZoom,</div><div class="line">    /// 透明度变化+形变效果 (产生缩写的效果)</div><div class="line">    MBProgressHUDAnimationZoomOut,</div><div class="line">    /// 透明度变化+形变效果 (产生放大效果)</div><div class="line">    MBProgressHUDAnimationZoomIn</div><div class="line">&#125;;</div><div class="line"></div><div class="line">typedef NS_ENUM(NSInteger, MBProgressHUDBackgroundStyle) &#123;</div><div class="line">    /// Solid color background（固定背景颜色）</div><div class="line">    MBProgressHUDBackgroundStyleSolidColor,</div><div class="line">    /// 模糊的效果</div><div class="line">    MBProgressHUDBackgroundStyleBlur</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h4 id="MB-的组成"><a href="#MB-的组成" class="headerlink" title="MB 的组成"></a>MB 的组成</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">//包含内容的部分</div><div class="line">@property (strong, nonatomic, readonly) MBBackgroundView *bezelView;</div><div class="line"></div><div class="line">//整个HUD的背景, 放置在 bezelView 的后面.</div><div class="line">@property (strong, nonatomic, readonly) MBBackgroundView *backgroundView;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 一个自定义的View，其 mode 要被设置为 MBProgressHUDModeCustomView</div><div class="line"> * 该视图应实现intrinsicContentSize以进行适当的大小调整。 为了获得最佳效果，请使用大约37 x 37像素。.</div><div class="line"> */</div><div class="line">@property (strong, nonatomic, nullable) UIView *customView;</div><div class="line"></div><div class="line">//标签包含一个可选的短消息显示以下活动指标</div><div class="line">@property (strong, nonatomic, readonly) UILabel *label;</div><div class="line"></div><div class="line">//放置在 Label 的下方，可以显示多行简介</div><div class="line">@property (strong, nonatomic, readonly) UILabel *detailsLabel;</div><div class="line"></div><div class="line">//放置在 labels 的下方，当设置 target/action 的时候可以显示</div><div class="line">@property (strong, nonatomic, readonly) UIButton *button;</div></pre></td></tr></table></figure>
+<h4 id="MB-常用的属性设置"><a href="#MB-常用的属性设置" class="headerlink" title="MB 常用的属性设置"></a>MB 常用的属性设置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">//HUD 从触发到显示的时间 默认是 0 用于解决HUD显示时间过短的问题</div><div class="line">@property (assign, nonatomic) NSTimeInterval graceTime;</div><div class="line"></div><div class="line">//HUD 显示的最小时间 默认是 0S</div><div class="line">@property (assign, nonatomic) NSTimeInterval minShowTime;</div><div class="line"></div><div class="line">//隐藏时从其父视图中删除HUD Default NO</div><div class="line">@property (assign, nonatomic) BOOL removeFromSuperViewOnHide;</div><div class="line"></div><div class="line">//MBProgressHUD 的显示类型. 默认是 MBProgressHUDModeIndeterminate.</div><div class="line">@property (assign, nonatomic) MBProgressHUDMode mode;</div><div class="line"></div><div class="line">//用于设置HUD中内容的颜色，默认iOS7以前为白色之后为黑色</div><div class="line">@property (strong, nonatomic, nullable) UIColor *contentColor UI_APPEARANCE_SELECTOR;</div><div class="line"></div><div class="line">//动画类型</div><div class="line">@property (assign, nonatomic) MBProgressHUDAnimation animationType UI_APPEARANCE_SELECTOR;</div></pre></td></tr></table></figure>
+<h4 id="MB-常用的方法"><a href="#MB-常用的方法" class="headerlink" title="MB 常用的方法"></a>MB 常用的方法</h4><h5 id="类方法"><a href="#类方法" class="headerlink" title="类方法"></a>类方法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 创建一个新的 HUD, 并提供一个显示它的 view</div><div class="line"> */</div><div class="line">+ (instancetype)showHUDAddedTo:(UIView *)view animated:(BOOL)animated;</div><div class="line"></div><div class="line">/// @name Showing and hiding</div><div class="line"></div><div class="line">/**</div><div class="line"> * 找到view的 HUD ，并隐藏它.</div><div class="line"> */</div><div class="line">+ (BOOL)hideHUDForView:(UIView *)view animated:(BOOL)animated;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 在 view 中查找 MBProgressHUD 类型的子视图，并返回</div><div class="line"> */</div><div class="line">+ (nullable MBProgressHUD *)HUDForView:(UIView *)view;</div></pre></td></tr></table></figure>
+<h5 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 初始化</div><div class="line"> */</div><div class="line">- (instancetype)initWithView:(UIView *)view;</div><div class="line"></div><div class="line">/** </div><div class="line"> * 显示 HUD.</div><div class="line"> */</div><div class="line">- (void)showAnimated:(BOOL)animated;</div><div class="line"></div><div class="line">/** </div><div class="line"> * 隐藏 HUD</div><div class="line"> */</div><div class="line">- (void)hideAnimated:(BOOL)animated;</div><div class="line"></div><div class="line">/** </div><div class="line"> * 隐藏 HUD 在 delay 秒后</div><div class="line"> */</div><div class="line">- (void)hideAnimated:(BOOL)animated afterDelay:(NSTimeInterval)delay;</div></pre></td></tr></table></figure>
+<h5 id="MBBarProgressView-平行的进度"><a href="#MBBarProgressView-平行的进度" class="headerlink" title="MBBarProgressView 平行的进度"></a>MBBarProgressView 平行的进度</h5><ul>
+<li>属性</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 进度 (0.0 to 1.0)</div><div class="line"> */</div><div class="line">@property (nonatomic, assign) float progress;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 条边界线颜色.</div><div class="line"> * 默认是白色 [UIColor whiteColor].</div><div class="line"> */</div><div class="line">@property (nonatomic, strong) UIColor *lineColor;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 背景颜色.</div><div class="line"> * 默认是透明 [UIColor clearColor];</div><div class="line"> */</div><div class="line">@property (nonatomic, strong) UIColor *progressRemainingColor;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 进度条的颜色.</div><div class="line"> * 默认是白色 [UIColor whiteColor].</div><div class="line"> */</div><div class="line">@property (nonatomic, strong) UIColor *progressColor;</div></pre></td></tr></table></figure>
+<h5 id="MBBackgroundView-背景颜色"><a href="#MBBackgroundView-背景颜色" class="headerlink" title="MBBackgroundView 背景颜色"></a>MBBackgroundView 背景颜色</h5><ul>
+<li>属性</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 背景类型.</div><div class="line"> */</div><div class="line">@property (nonatomic) MBProgressHUDBackgroundStyle style;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 背景颜色</div><div class="line"> */</div><div class="line">@property (nonatomic, strong) UIColor *color;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/20/富兰克林的人生信条/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/20/富兰克林的人生信条/" itemprop="url">
+                  富兰克林的人生信条
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-20T16:31:02+08:00">
+                2017-04-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>节制：食不过饱，饮不过量；</li>
+<li>节言：于人于己不利的话不说，避免琐碎的闲聊；</li>
+<li>秩序：物件有所归，办事有定时；</li>
+<li>决心：该做的事情一定要做，决心要做的事情一定要做好；</li>
+<li>节俭：花钱要于人于己有利，绝不浪费；</li>
+<li>勤劳：珍惜时间，时间要花在有用的事情上，力戒无意义的举动；</li>
+<li>诚实：力戒虚伪欺诈，心存良知与公正，说话亦如此；</li>
+<li>正直：不做有损他人的事情，要做对人们有益的事情，这是你的义务；</li>
+<li>中庸：不走极端，别人对你的冒犯，若是正当，就要善于容忍；</li>
+<li>整洁：身体、衣物以及住所，要保持整洁；</li>
+<li>宁静：对待琐事，平常事或者不可避免之事，不可自扰；</li>
+<li>贞节：不要纵欲过度，有伤身体，切忌损害自己或者他人的安宁和名誉；</li>
+<li>谦虚：仿效耶稣与苏格拉底；</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/13/CSS学习笔记一/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1752,295 +2069,11 @@ NSLog(@&quot;Finish executing block&quot;);
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/15/iOS与OSX 多线程与内存管理第二章：Block/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhenyue">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gbetter">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/15/iOS与OSX 多线程与内存管理第二章：Block/" itemprop="url">
-                  iOS与OSX 多线程与内存管理第二章：Block
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-15T19:26:14+08:00">
-                2017-03-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Blocks-概要"><a href="#Blocks-概要" class="headerlink" title="Blocks 概要"></a>Blocks 概要</h3><ul>
-<li>Blocks 是 C 语言的扩展功能，其定义为：<strong>带有自动变量（局部变量）的匿名函数</strong>。</li>
-</ul>
-<h3 id="Blocks-的模式"><a href="#Blocks-的模式" class="headerlink" title="Blocks 的模式"></a>Blocks 的模式</h3><h4 id="Block-语法"><a href="#Block-语法" class="headerlink" title="Block 语法"></a>Block 语法</h4><ul>
-<li>完整的 Block 语法与一般的 C 语言函数定义相比，仅有两点不同：<strong>没有函数名</strong> 、<strong>带有 ^</strong>;</li>
-<li>完整的 Block 语法：<code>^ 返回值类型 参数列表 表达式</code>;</li>
-<li>省略返回值类型的 Block 语法：<code>^ 参数列表 表达式</code>;</li>
-<li>没有参数类型的 Block 语法：<code>^ 表达式</code>;</li>
-</ul>
-<p><code>^(int count){return count}</code></p>
-<h4 id="Block-类型变量"><a href="#Block-类型变量" class="headerlink" title="Block 类型变量"></a>Block 类型变量</h4><ul>
-<li>在 Block 语法下，可以将 Block 语法赋值给声明为 Block 类型的变量中；</li>
-<li><code>int (^block)(int)</code> 声明 Block 类型的变量与一般的 C 语言函数指针一样，仅仅是将声明函数指针类型变量的 “*” 变成 “^”；</li>
-<li>通过使用 typedef 声明 Block 类型的变量；</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">typedef int (^blk_t)(int);</div><div class="line">blk_t blk = ^(int count)&#123;return count+1&#125;;</div></pre></td></tr></table></figure>
-<h4 id="截获自动变量值"><a href="#截获自动变量值" class="headerlink" title="截获自动变量值"></a>截获自动变量值</h4><ul>
-<li>Block 定义为：<strong>带有自动变量值的匿名函数</strong>，其中的<strong>带有自动变量值</strong> 在 Block 中表现为 <strong>截获自动变量值</strong>；</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">int main()&#123;</div><div class="line">	int day = 256;</div><div class="line">	int val = 10;</div><div class="line">	void (^blk)(void) = ^&#123;printf(val)&#125;;</div><div class="line">	</div><div class="line">	val = 2;</div><div class="line">	blk();	//调用Block</div><div class="line">	return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>执行结果 val = 10 ，即 Block 表达式截获了自动变量的瞬间值，所以即使在其之后更改了变量的值，也不会影响 Block 执行时自动变量的值；</li>
-<li>若想在 Block 语法的表达式中，将值赋给在 Block 语法外声明的自动变量，需要在该自动变量上附加 __block 说明符；</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">NSMutableArray *arr = [NSMutableArray array];</div><div class="line">void (^block)() = ^&#123;</div><div class="line">    [arr addObject:@&quot;1&quot;];//✔️</div><div class="line">    arr = [NSMutableArray array];//❌</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>向数组中添加对象是没问题的，但是重新赋值数组会产生编译错误</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/15/iOS与OSX 多线程与内存管理第一章：自动引用计数机制/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhenyue">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gbetter">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/15/iOS与OSX 多线程与内存管理第一章：自动引用计数机制/" itemprop="url">
-                  iOS与OSX 多线程与内存管理第一章：自动引用计数机制
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-15T19:25:18+08:00">
-                2017-03-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="什么是自动引用计数"><a href="#什么是自动引用计数" class="headerlink" title="什么是自动引用计数"></a>什么是自动引用计数</h3><ul>
-<li>在 Objective-C 中采用 Automatic Reference Counting（ARC）机制，让编译器来进行内存的管理。</li>
-</ul>
-<h3 id="ARC-的实现"><a href="#ARC-的实现" class="headerlink" title="ARC 的实现"></a>ARC 的实现</h3><h4 id="strong-修饰符"><a href="#strong-修饰符" class="headerlink" title="__strong 修饰符"></a><code>__strong</code> 修饰符</h4><p><code>id __strong obj = [[NSObject alloc] init];</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">/*编译器的源码模拟*/</div><div class="line">id obj = objc_msgSend(NSObject, @selector(alloc));</div><div class="line">objc_msgSend(obj, @selector(init));</div><div class="line">objc_release(obj);</div></pre></td></tr></table></figure>
-<h4 id="weak-修饰符"><a href="#weak-修饰符" class="headerlink" title="__weak 修饰符"></a><code>__weak</code> 修饰符</h4><ul>
-<li>若附有 <code>__weak</code> 修饰符的变量所引用的对象被废弃，则将 nil 赋值给该变量。</li>
-<li>使用附有 <code>__weak</code> 修饰符的变量，即是使用注册到 autoreleasepool 中的对象。</li>
-</ul>
-<p><code>id __weak obj1 = obj;</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">/*编译器的模拟代码*/</div><div class="line">id obj1;  </div><div class="line">objc_initWeak(&amp;obj1, obj);  </div><div class="line">objc_destoryWeak(&amp;obj1);</div></pre></td></tr></table></figure>
-<ul>
-<li>weak表和引用计数表类似，都是通过hash表实现的。如果使用weak表，将被释放的对象地址作为key去检索，就能很高效的获取对应的指向该对象的类型为<strong>weak的指针变量的地址。同时很容易理解，一个对象可能有多个</strong>weak指针指向，因此一个对象地址key可能对应多个值。</li>
-<li>通过 <code>objc_initWeak</code> 函数初始化附有 __weak 修饰符的变量，在变量作用域结束时通过 <code>objc_destoryWeak</code> 函数释放该变量。</li>
-<li>在调用对象的release方法时，会在其中一步调用<code>objc_clear_deallocating</code>函数，该函数会执行以下操作：<ol>
-<li>以当前对象的地址作为key，从weak表中获取对应的值—-指向该对象的__weak类型的指针变量；</li>
-<li>将取到的所有指针变量的值赋值为nil；</li>
-<li>从weak表中删除该key对应的整条记录。</li>
-</ol>
-</li>
-<li>根据以上步骤，前面介绍过的<strong>weak关键字修饰的对象指针所指向的对象被释放时，指针被置为nil就可以实现了。同时由此可知，如果大量使用附有</strong>weak修饰符的变量会消耗响应的CPU资源，因此，应该尽量少使用__weak修饰符。</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2085,7 +2118,7 @@ NSLog(@&quot;Finish executing block&quot;);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
