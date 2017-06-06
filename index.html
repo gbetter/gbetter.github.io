@@ -325,7 +325,19 @@
         
           
             <p><a href="https://github.com/ivpusic/react-native-image-crop-picker" target="_blank" rel="external">react-native-image-crop-picker</a></p>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="请求参数"><a href="#请求参数" class="headerlink" title="请求参数"></a>请求参数</h4><p><img src="../../img/Snip20170606_1.png" alt="请求参数"></p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><ul>
+<li>从摄像头选取</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ImagePicker.openCamera(&#123;</div><div class="line">  width: 300,</div><div class="line">  height: 400,</div><div class="line">  cropping: true</div><div class="line">&#125;).then(image =&gt; &#123;</div><div class="line">  console.log(image);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>裁剪图片</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ImagePicker.openCropper(&#123;</div><div class="line">  path: &apos;my-file-path.jpg&apos;,</div><div class="line">  width: 300,</div><div class="line">  height: 400</div><div class="line">&#125;).then(image =&gt; &#123;</div><div class="line">  console.log(image);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>清理 Tmp</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ImagePicker.clean().then(() =&gt; &#123;</div><div class="line">  console.log(&apos;removed all tmp images from tmp directory&apos;);</div><div class="line">&#125;).catch(e =&gt; &#123;</div><div class="line">  alert(e);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h4 id="请求参数"><a href="#请求参数" class="headerlink" title="请求参数"></a>请求参数</h4><p><img src="../../img/Snip20170606_1.png" alt="请求参数"></p>
 <h4 id="返回对象"><a href="#返回对象" class="headerlink" title="返回对象"></a>返回对象</h4><p><img src="../../img/Snip20170606_2.png" alt="返回对象"></p>
 <h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm i react-native-image-crop-picker --save</div><div class="line">react-native link react-native-image-crop-picker</div></pre></td></tr></table></figure>
 <h4 id="iOS"><a href="#iOS" class="headerlink" title="iOS"></a>iOS</h4><ul>
