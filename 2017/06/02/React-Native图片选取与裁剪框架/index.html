@@ -92,10 +92,10 @@
 从图库选取
 选取一个图像并裁剪
 
+选取多个图像（default = 5）
 
-从摄像头选取
 
-1234567ImagePicker.openCamera(&amp;#123;  width: 300,  height: 400,  c">
+12345ImagePicker.openPicker(&amp;#123;  multiple: true&amp;#1">
 <meta property="og:type" content="article">
 <meta property="og:title" content="react-native 图片选取与裁剪框架">
 <meta property="og:url" content="http://yoursite.com/2017/06/02/React-Native图片选取与裁剪框架/index.html">
@@ -105,13 +105,13 @@
 从图库选取
 选取一个图像并裁剪
 
+选取多个图像（default = 5）
 
-从摄像头选取
 
-1234567ImagePicker.openCamera(&amp;#123;  width: 300,  height: 400,  c">
+12345ImagePicker.openPicker(&amp;#123;  multiple: true&amp;#1">
 <meta property="og:image" content="http://yoursite.com/../../img/Snip20170606_1.png">
 <meta property="og:image" content="http://yoursite.com/../../img/Snip20170606_2.png">
-<meta property="og:updated_time" content="2017-06-06T01:16:15.000Z">
+<meta property="og:updated_time" content="2017-06-06T01:17:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="react-native 图片选取与裁剪框架">
 <meta name="twitter:description" content="react-native-image-crop-picker
@@ -119,10 +119,10 @@
 从图库选取
 选取一个图像并裁剪
 
+选取多个图像（default = 5）
 
-从摄像头选取
 
-1234567ImagePicker.openCamera(&amp;#123;  width: 300,  height: 400,  c">
+12345ImagePicker.openPicker(&amp;#123;  multiple: true&amp;#1">
 <meta name="twitter:image" content="http://yoursite.com/../../img/Snip20170606_1.png">
 
 
@@ -351,8 +351,12 @@
         <p><a href="https://github.com/ivpusic/react-native-image-crop-picker" target="_blank" rel="external">react-native-image-crop-picker</a></p>
 <h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="导入文件"><a href="#导入文件" class="headerlink" title="导入文件"></a>导入文件</h4>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import ImagePicker from &apos;react-native-image-crop-picker&apos;;</div></pre></td></tr></table></figure>
 <h4 id="从图库选取"><a href="#从图库选取" class="headerlink" title="从图库选取"></a>从图库选取</h4><ul>
-<li>选取一个图像并裁剪</li>
+<li><p>选取一个图像并裁剪</p>
+</li>
+<li><p>选取多个图像（default = 5）</p>
+</li>
 </ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ImagePicker.openPicker(&#123;</div><div class="line">  multiple: true</div><div class="line">&#125;).then(images =&gt; &#123;</div><div class="line">  console.log(images);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <ul>
 <li>从摄像头选取</li>
 </ul>
