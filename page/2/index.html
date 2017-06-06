@@ -247,6 +247,443 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/17/iOS 并发编程之 Operation Queues /">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/17/iOS 并发编程之 Operation Queues /" itemprop="url">
+                  iOS并发编程之OperationQueues
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-17T10:14:05+08:00">
+                2017-03-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="http://blog.leichunfeng.com/blog/2015/07/29/ios-concurrency-programming-operation-queues/" target="_blank" rel="external">iOS 并发编程之 Operation Queues</a></p>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><h4 id="术语"><a href="#术语" class="headerlink" title="术语"></a>术语</h4><ul>
+<li>进程（process）：指的是一个正在运行中的可执行文件，每一个进程都拥有独立的虚拟内存空间和系统资源，包括端口权限等，且至少包含一个主线程和任意数量的辅助线程。另外，当一个进程的主线程退出时，这个进程就结束了。</li>
+<li>线程（thread）：指的是一个独立的代码执行路径。</li>
+<li>任务（task）：指的是我们需要执行的工作，是一个抽象的概念，用通俗点的话说，就是一段代码。</li>
+</ul>
+<h4 id="串行-VS-并发"><a href="#串行-VS-并发" class="headerlink" title="串行 VS 并发"></a>串行 VS 并发</h4><p>从本质上来讲，串行和并发的主要区别在于允许同时执行的任务数量，串行，指的是一次只能执行一个任务，必须等一个任务执行完成后才能执行下一个任务；并发，指的是允许多个任务同时执行。</p>
+<h4 id="同步-VS-异步"><a href="#同步-VS-异步" class="headerlink" title="同步 VS 异步"></a>同步 VS 异步</h4><p>同步和异步操作的主要区别在于是否等待操作的完成，亦即是否阻塞当前线程。同步操作会等待操作执行完成后继续执行接下来的代码，而异步操作则恰好相反，它会在调用后立即返回，不会等待操作的执行结果。</p>
+<h4 id="队列-VS-线程"><a href="#队列-VS-线程" class="headerlink" title="队列 VS 线程"></a>队列 VS 线程</h4><p>在 iOS 中，有两种不同类型的队列，分别是串行队列和并发队列。正如我们上面所说的，串行队列一次只能执行一个任务，而并发队列则可以允许多个任务同时执行。iOS 系统就是使用这些队列来进行任务调度的，它会根据调度任务的需要和系统当前的负载情况动态地创建和销毁线程，而不需要我们手动地管理。</p>
+<h3 id="iOS-的并发编程模型"><a href="#iOS-的并发编程模型" class="headerlink" title="iOS 的并发编程模型"></a>iOS 的并发编程模型</h3><h4 id="Operation-Queues-VS-GCD"><a href="#Operation-Queues-VS-GCD" class="headerlink" title="Operation Queues VS GCD"></a>Operation Queues VS GCD</h4><p>CGD 是苹果基于 C 语言开发的，一个用于多核编程的解决方案，主要用于优化应用程序以支持多核处理器以及其他对称多处理系统。而 Operation Queues 则是一个建立在 GCD 基础之上的，面向对象的解决方案，它使用起来比 GCD 更加灵活，功能更强大。</p>
+<ul>
+<li>Operation Queues：相对 GCD 来说，使用 Operation Queues 会增加一点点额外的开销，但是我们却换来了非常强大的灵活性和功能，我们可以给 operation 添加依赖关系、取消一个正在执行的 Operation 、暂停和恢复 Operation queue等</li>
+<li>GCD ：则是一种更轻量级的，以 FIFO 的顺序执行并发任务的方式，使用 GCD 时我们并不关心任务的调度情况，而让系统帮我们自动处理。但是 GCD 的短板也是非常明显的，比如我们想要给任务之间添加依赖关系、取消或者暂停一个正在执行的任务时就会变得非常棘手。</li>
+</ul>
+<h3 id="关于-Operation-对象"><a href="#关于-Operation-对象" class="headerlink" title="关于 Operation 对象"></a>关于 Operation 对象</h3><p>NSOperation 本身是一个抽象类，不能直接实例化，因此如果我们想要使用它来执行具体的任务的话，就必须创建子类或者使用系统预定义的两个子类，NSInvocationOperation 和 NSBlockOperation。</p>
+<h4 id="Operation-支持的特性"><a href="#Operation-支持的特性" class="headerlink" title="Operation 支持的特性"></a>Operation 支持的特性</h4><ul>
+<li>支持在 Operation 之间建立依赖关系，只有当一个 Operation 所依赖的所有的 Operation 都执行完成时，这个 Operation 才能开始执行;</li>
+<li>支持一个可选的 completion block ，这个 block 将会在 Operation 的主任务执行完成时被调用。</li>
+<li>支持通过 kvo 来观察 Operation 执行的状态变化。</li>
+<li>支持设置执行的优先级，从而影响 Operation 之间的相对执行顺序。</li>
+<li>支持取消操作，可以允许我们停止正在执行的 Operation。</li>
+</ul>
+<h4 id="创建-NSInvocationOperation-和-NSBlockOperation"><a href="#创建-NSInvocationOperation-和-NSBlockOperation" class="headerlink" title="创建 NSInvocationOperation 和 NSBlockOperation"></a>创建 NSInvocationOperation 和 NSBlockOperation</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">- (NSInvocationOperation *) invocationOperationWithData:(id)data &#123;</div><div class="line">    return [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(p_myRaskMethod:) object:data];</div><div class="line">&#125;</div><div class="line">- (NSBlockOperation*) blockOperationWithData:(id)data &#123;</div><div class="line">    NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:^&#123;</div><div class="line">        NSLog(@&quot;Finsh executing block1&quot;);</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    [blockOperation addExecutionBlock:^&#123;</div><div class="line">         NSLog(@&quot;Finsh executing block2&quot;);</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    [blockOperation addExecutionBlock:^&#123;</div><div class="line">         NSLog(@&quot;Finsh executing block3&quot;);</div><div class="line">    &#125;];</div><div class="line">    return blockOperation;</div><div class="line">&#125;</div><div class="line"></div><div class="line">#pragma mark - Method</div><div class="line">- (void)p_myRaskMethod:(id)data &#123;</div><div class="line">    NSLog(@&quot;%s&quot;,__func__);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="自定义-Operation-对象"><a href="#自定义-Operation-对象" class="headerlink" title="自定义 Operation 对象"></a>自定义 Operation 对象</h4><p>每一个 Operation 至少需要实现两个方法：</p>
+<ul>
+<li>一个自定义的初始化方法</li>
+<li>main 方法</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">@implementation EXOChildOperation</div><div class="line"></div><div class="line">- (instancetype)init</div><div class="line">&#123;</div><div class="line">    self = [super init];</div><div class="line">    if (self) &#123; &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)main &#123;</div><div class="line">    @try &#123;</div><div class="line">        if (self.isCancelled) return;</div><div class="line">        //要执行的任务</div><div class="line">        NSLog(@&quot;任务==Start-%@-%@&quot;,[NSThread currentThread],[NSThread mainThread]);</div><div class="line">        for (int i = 0; i &lt; 3; i++) &#123;</div><div class="line">            if (self.isCancelled) return;</div><div class="line">            sleep(2);   //模拟任务</div><div class="line">        &#125;</div><div class="line">        NSLog(@&quot;任务==完成&quot;);</div><div class="line">    &#125; @catch (NSException *exception) &#123;</div><div class="line">        NSLog(@&quot;%s%@&quot;,__func__,exception);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">``` </div><div class="line">&gt; 要相应 cancel 事件，需要在代码中定期检查 `isCanceled` 方法的返回值</div><div class="line"></div><div class="line">#### 配置并发执行的 Operation</div><div class="line">默认情况下，Operation 是同步执行的，在调用 `start` 方法的线程中执行他们的任务，如果 Operation 和 Operation queue 结合使用，operation queue 可以为**非并发**Operation 提供线程，因此 大部分的 Operation 仍然可以异步执行。</div><div class="line"></div><div class="line">需要重写的方法：</div><div class="line">- `start` 必须重写，特别注意不要在我们重写的 `start` 方法中调用父类的实现。</div><div class="line">- `main`	可选的，通常这个方法就是专门用来实现与该 operation 相关联的任务的。</div><div class="line">- `isExecuting`和`isFinished` 必须的， 此外，当这两个方法所代表的值发生变化时，我们需要生成相应的 KVO 通知，以便外界能够观察到这些状态的变化</div><div class="line">- `isAsynchronous` 必须的，这个方法的返回值用来标识一个 operation 是否是并发的 operation ，我们需要重写这个方法并返回 YES 。</div></pre></td></tr></table></figure>
+<p>//  配置 并发 的 Operation</p>
+<p>#import “EXOParallelOperation.h”</p>
+<p>@interface EXOParallelOperation (){<br>    BOOL executing; //是否执行中<br>    BOOL finished;  //是否完成<br>}</p>
+<p>@end</p>
+<p>@implementation EXOParallelOperation</p>
+<ul>
+<li><p>(instancetype)init<br>{<br>  self = [super init];<br>  if (self) {</p>
+<pre><code>executing = NO;
+finished  = NO;
+</code></pre><p>  }<br>  return self;<br>}</p>
+</li>
+<li><p>(void)start {<br>  if ([self isCancelled]) {</p>
+<pre><code>[self willChangeValueForKey:@&quot;isFinished&quot;];
+finished = YES;
+[self didChangeValueForKey:@&quot;isFinished&quot;];
+return;
+</code></pre><p>  }</p>
+<p>  [self willChangeValueForKey:@”isExecuting”];<br>  [NSThread detachNewThreadWithBlock:^{</p>
+<pre><code>[self main];
+</code></pre><p>  }];<br>  executing = YES;<br>  [self didChangeValueForKey:@”isExecuting”];<br>}</p>
+</li>
+<li><p>(BOOL)isExecuting {<br>  return executing;<br>}</p>
+</li>
+<li><p>(BOOL)isFinished {<br>  return finished;<br>}</p>
+</li>
+</ul>
+<p>/**<br> 是否并发执行</p>
+<p> @return Y 并发 N 非并发<br> */</p>
+<ul>
+<li><p>(BOOL)isAsynchronous {<br>  return YES;<br>}</p>
+</li>
+<li><p>(void)main {<br>  @try {</p>
+<pre><code>@autoreleasepool {
+    BOOL taskIsFinished = NO;
+    while (!taskIsFinished &amp;&amp; ![self isCancelled]) {
+        //自定义 操作
+        sleep(2);
+        taskIsFinished = YES;
+        NSLog(@&quot;currentThread = %@, main = %@&quot;,[NSThread currentThread],[NSThread mainThread]);
+    }
+    [self completeOperation];
+
+}
+</code></pre><p>  } @catch (NSException *exception) {</p>
+<p>  }<br>}</p>
+</li>
+<li><p>(void)completeOperation {<br>  [self willChangeValueForKey:@”isFinished”];<br>  [self willChangeValueForKey:@”isExecuting”];</p>
+<p>  executing = NO;<br>  finished = YES;</p>
+<p>  [self didChangeValueForKey:@”isExecuting”];<br>  [self didChangeValueForKey:@”isFinished”];<br>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt; 注意，有一个非常重要的点需要引起我们的注意，那就是即使一个 operation 是被 cancel 掉了，我们仍然需要手动触发 isFinished 的 KVO 通知。因为当一个 operation 依赖其他 operation 时，它会观察所有其他 operation 的 isFinished 的值的变化，只有当它依赖的所有 operation 的 isFinished 的值为 YES 时，这个 operation 才能够开始执行。因此，如果一个我们自定义的 operation 被取消了但却没有手动触发 isFinished 的 KVO 通知的话，那么所有依赖它的 operation 都不会执行。</div><div class="line"></div><div class="line">### 定制 Operation 对象的执行行为</div><div class="line"></div><div class="line">#### 配置依赖关系</div><div class="line">通过配置依赖关系，我们可以让不同的 Operation 串行执行，一个 operation 只有在它依赖的所有 operation 都执行完成后才能开始执行。</div></pre></td></tr></table></figure>
+</li>
+<li><p>(void)addDependency:(NSOperation *)op;</p>
+</li>
+<li>(void)removeDependency:(NSOperation *)op;<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; 就是不要在 operation 之间添加循环依赖，因为这样会导致这些 operation 都不会被执行。</div><div class="line">&gt; 我们应该在手动执行一个 operation 或将它添加到 operation queue 前配置好依赖关系，因为在之后添加的依赖关系可能会失效。</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>NSOperationQueue <em>operationQueue = [[NSOperationQueue alloc] init];<br>[operationQueue setMaxConcurrentOperationCount:2];  //设置最大并发数<br>EXOParallelOperation </em>operation = [[EXOParallelOperation alloc] init];<br>EXOChildOperation *operation2 = [[EXOChildOperation alloc] init];<br>//添加到 operation queue 前配置好依赖关系 operation2 依赖于 operation<br>[operation2 addDependency:operation];<br>[operationQueue addOperation:operation];<br>[operationQueue addOperation:operation2];<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">#### 修改Operation 在队列中的优先级</div><div class="line">对于添加到 Operation queue 中的 Operation 来说，决定它们执行顺序的第一要素是它们的 `isReady` 状态，其次是它们在队列中的优先级，Operation 的 `isReady` 状态取决于它们的依赖关系，而都在队列中的优先级则是 Operation 本身的属性。默认新创建的 Operation 的优先级都为 `normal` 的,**但是我们可以通过 `setQueuePriority:` 方法来提高或降低 Operation 在队列中的优先级**。</div><div class="line"></div><div class="line">需要注意的是：**队列的优先级只应用在相同的 Operation queue 中的 Operation 之间，不同的 Operation queue 不受此影响**。</div><div class="line"></div><div class="line">#### 修改 Operation 执行任务线程的优先级</div><div class="line"></div><div class="line">* 从 iOS4.0 开始，我们可以修改 operation 的执行任务线程的优先级，我们可以给 Operation 的线程指定一个从 `0.0` 到 `1.0` 的浮点数值，`0.0` 表示最低的优先级，`1.0` 表示最高的优先级，默认值为 `0.5` 。</div><div class="line">* 注意：**我们只能够在执行一个 Operation 或将其添加到 Operation queue 前，通过 Operation 的 `setThreadPriority:` 方法来修改它的线程优先级**。另外，我们指定的这个线程优先级只会影响 main 方法执行时所在线程的优先级。*所有其它的代码，包括 operation 的 completion block 所在的线程会一直以默认的线程优先级执行*。**因此，当我们自定义一个并发的 operation 类时，我们也需要在 start 方法中根据指定的值自行修改线程的优先级**</div><div class="line"></div><div class="line">#### 设置 Completion Block</div><div class="line">1. 一个 Operation 可以在它的主任务执行完成时回调一个 completion block。直接调用 Operation 的 `setCompletionBlock：` 方法即可。</div><div class="line">2. 注意，当一个 Operation 被取消时，它的 completion block 仍然会被调用，**所以我们需要在真正执行代码前检查一下 isCancelled 方法的返回值，如果有必要的话我们可以在 completion block 中使用 GCD 来保证从主线程更新 UI** </div><div class="line"></div><div class="line">### 执行 Operation 对象</div><div class="line">* 将 operation 添加到 Operation queue 中，让 Operation queue 来帮助我们自动执行；</div><div class="line">* 直接调用 `start` 方法手动执行 Operation；</div><div class="line"></div><div class="line">#### 添加 Operation 到 Operation queue 中</div><div class="line">`NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];`</div><div class="line"></div><div class="line">创建好 Operation queue 后，我们有三种方法添加 Operation 到 Operation queue 中：</div><div class="line"></div><div class="line">* `addOperation:` 添加一个 Operation 到 Operation queue 中；</div><div class="line">* `addOperation: waitUntilFinished:` 添加一组 Operation 到 Operation queue 中；</div><div class="line">* `addOperationWithBlock:` 直接添加一个 block 到 Operation queue 中，而不用创建一个 `NSBlockOperation` 对象；</div><div class="line"></div><div class="line">在大多数情况下，一个 operation 被添加到 operation queue 后不久就会执行，但是也有很多原因会使 operation queue 延迟执行入队的 operation 。比如，我们前面提到了的，如果一个 operation 所依赖的其他 operation 还没有执行完成时，这个 operation 就不能开始执行；再比如说 operation queue 被暂停执行或者已经达到了它最大可并发的 operation 数。下面的示例代码展示了这三种方法的基本用法：</div></pre></td></tr></table></figure></p>
+<ul>
+<li><p>(void)executeOperationUsingOperationQueue {<br>  NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];</p>
+<p>  NSInvocationOperation *invocationOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(taskMethod) object:nil];<br>  [operationQueue addOperation:invocationOperation];</p>
+<p>  NSBlockOperation *blockOperation1 = [NSBlockOperation blockOperationWithBlock:^{</p>
+<pre><code>NSLog(@&quot;Start executing blockOperation1, mainThread: %@, currentThread: %@&quot;, [NSThread mainThread], [NSThread currentThread]);
+sleep(3);
+NSLog(@&quot;Finish executing blockOperation1&quot;);
+</code></pre><p>  }];</p>
+<p>  NSBlockOperation *blockOperation2 = [NSBlockOperation blockOperationWithBlock:^{</p>
+<pre><code>NSLog(@&quot;Start executing blockOperation2, mainThread: %@, currentThread: %@&quot;, [NSThread mainThread], [NSThread currentThread]);
+sleep(3);
+NSLog(@&quot;Finish executing blockOperation2&quot;);
+</code></pre><p>  }];</p>
+<p>  [operationQueue addOperations:@[ blockOperation1, blockOperation2 ] waitUntilFinished:NO];</p>
+<p>  [operationQueue addOperationWithBlock:^{</p>
+<pre><code>NSLog(@&quot;Start executing block, mainThread: %@, currentThread: %@&quot;, [NSThread mainThread], [NSThread currentThread]);
+sleep(3);
+NSLog(@&quot;Finish executing block&quot;);
+</code></pre><p>  }];</p>
+<p>  [operationQueue waitUntilAllOperationsAreFinished];<br>}<br>``` </p>
+</li>
+</ul>
+<ul>
+<li>尽管 NSOperationQueue 类被设计成用来并发执行 operation 的，但是我们可以强制一个 operation queue 一次只执行一个 operation 。我们可以通过 <code>setMaxConcurrentOperationCount:</code> 方法来设置一个 operation queue 的最大并发的 operation 数。将值设置成 1 就可以实现让 operation queue 一次只执行一个 operation 的目的。</li>
+<li>operation 的执行顺序还是会受到其他因素的影响，比如 operation 的 <code>isReady</code> 状态、operation 的队列优先级等。 </li>
+<li>因此，一个穿行的 operation queue 与一个串行的 dispatch queue 还是有本质区别的，因为 dispatch queue 的执行顺序一直是 <code>FIFO</code> 的。如果 operation 的执行顺序对我们来说很重要，那么我们就应该在将 operation 添加到 operation queue 之前，就建立好它的依赖关系。</li>
+</ul>
+<h4 id="取消-Operation"><a href="#取消-Operation" class="headerlink" title="取消 Operation"></a>取消 Operation</h4><ul>
+<li>当一个 operation 被添加到 operation queue 中后，这个 operation 的所有权就属于这个 operation queue 了，并且不能被移除。</li>
+<li>唯一从 operation queue 中出队一个 operation 的方式就是调用它的 <code>cancel</code> 方法取消这个 operation ，或者调用 operation queue 的 <code>cancelAllOperations</code> 方法取消这个 Operation queue 中全部的 Operation。</li>
+<li>当一个 Operation 被取消后，这个 Operation 的 <code>isFinished</code> 状态也会变成 <code>YES</code>，这样做的好处是所有依赖它的 Operation 能接收到这个 <code>KVO</code> 通知，从而能够清除这个依赖关系。</li>
+</ul>
+<h4 id="等待-Operation-执行完成"><a href="#等待-Operation-执行完成" class="headerlink" title="等待 Operation 执行完成"></a>等待 Operation 执行完成</h4><ul>
+<li>我们可以调用 NSOperation 类的 <code>waitUntilFinished</code> 方法来阻塞当前线程，直到这个 Operation 执行完成。</li>
+<li>除了等待一个单独的 operation 执行完成外，我们也可以通过调用 NSOperationQueue 的<code>waitUntilAlloperationsAreFinished</code> 方法来等待 operation queue 中的所有 operation 执行完成。</li>
+<li>当我们在等待一个 operation queue 中的所有 operation 执行完成时，其他的线程仍然可以向这个 operation queue 中添加 operation ，从而延长我们的等待时间。</li>
+</ul>
+<h4 id="暂停和恢复-Operation-Queue"><a href="#暂停和恢复-Operation-Queue" class="headerlink" title="暂停和恢复 Operation Queue"></a>暂停和恢复 Operation Queue</h4><ul>
+<li>我们可以通过 Operation queue 的 <code>setSuspended:</code> 方法实现队列的暂停和恢复。</li>
+<li>暂停执行 operation queue <strong>并不能使正在执行的 operation 暂停执行，而只是简单地暂停调度新的 operation</strong>。</li>
+<li><strong>不能单独暂停执行一个 operation，除非直接 <code>cancel</code> 掉</strong>。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/15/iOS与OSX 多线程与内存管理第三章：GCD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/15/iOS与OSX 多线程与内存管理第三章：GCD/" itemprop="url">
+                  iOS与OSX 多线程与内存管理第三章：GCD
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-15T19:27:03+08:00">
+                2017-03-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Dispatch-Queue"><a href="#Dispatch-Queue" class="headerlink" title="Dispatch Queue"></a>Dispatch Queue</h3><ul>
+<li>Dispatch Queue 按照追加的顺序（先进先出 FIFO，First-In-First-Out）执行处理。在执行处理时存在两种 Dispatch Queue，<strong>一种是等待现在执行中处理的 Serial Dispatch Queue，另一种是不等待现在执行中处理的 Concurrent Dispatch Queue</strong>。 </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//创建串行队列</div><div class="line">dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.zzy.gcd.serialQueue&quot;, DISPATCH_QUEUE_SERIAL);</div><div class="line"></div><div class="line">//创建并发队列</div><div class="line">dispatch_queue_t concurrenyQueue = dispatch_queue_create(&quot;com.zzy.concurrentQueue&quot;, DISPATCH_QUEUE_CONCURRENT);</div></pre></td></tr></table></figure>
+<ul>
+<li>当多线程更新相同资源导致数据竞争时使用 Serial Dispatch Queue 。</li>
+<li>Main Dispatch Queue 是在主线程中执行的 Dispatch Queue，因为主线程只有一个，所以 Main Dispatch Queue 自然就是 Serial Dispatch Queue。</li>
+<li>Global Dispatch Queue 是所有的应用程序都能够使用的 Concurrent Dispatch Queue。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//Main Dispatch Queue 的获取方法</div><div class="line">dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">//Global Dispatch Queue 的获取方法</div><div class="line">dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div></pre></td></tr></table></figure>
+<ul>
+<li>使用 <code>dispatch_set_target_queue</code> 更改 Dispatch Queue 的执行优先级 <a href="http://www.cnblogs.com/denz/archive/2016/02/24/5214297.html" target="_blank" rel="external">用法</a></li>
+</ul>
+<h3 id="Dispatch-after"><a href="#Dispatch-after" class="headerlink" title="Dispatch_after"></a>Dispatch_after</h3><ul>
+<li>dispatch_after 并不是在指定的时间后执行处理，而只是在指定的时间追加处理到 Dispatch Queue。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 1ull * NSEC_PER_SEC);</div><div class="line">    dispatch_after(time, dispatch_get_main_queue(), ^&#123;</div><div class="line">        NSLog(@&quot;1 sec 将其添加到main队列&quot;);</div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
+<blockquote>
+<p><code>DISPATCH_TIME_NOW</code> 表示现在的时间、<code>NSEC_PER_SEC</code>和秒为乘积、<code>NSEC_PER_MSEC</code>和毫秒为乘积。</p>
+</blockquote>
+<h3 id="Dispatch-Group"><a href="#Dispatch-Group" class="headerlink" title="Dispatch Group"></a>Dispatch Group</h3><ul>
+<li>在追加到 Dispatch Queue 中的多个处理全部结束后想执行结束处理，第一种方式 使用 Serial Dispatch Queue ，将想要执行的处理全部追加到该 Serial Dispatch Queue 中并在最后追加结束处理，即可实现。 第二种方式 <strong>在使用 Concurrent Dispatch Queue 时或同时使用多个 Dispatch Queue 时，使用 Dispatch Group</strong>。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">dispatch_group_t group = dispatch_group_create();</div><div class="line">dispatch_group_async(group, queue, ^&#123;</div><div class="line">    NSLog(@&quot;block0&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_group_async(group, queue, ^&#123;</div><div class="line">    NSLog(@&quot;block1&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_group_notify(group, dispatch_get_main_queue(), ^&#123;</div><div class="line">    NSLog(@&quot;done&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>另外，在 Dispatch Group 中也可以使用 <code>dispatch_group_wait</code> 函数仅等待全部处理执行结束。</li>
+</ul>
+<p><code>dispatch_group_wait(group, DISPATCH_TIME_FOREVER);</code></p>
+<h3 id="dispatch-barrier-async"><a href="#dispatch-barrier-async" class="headerlink" title="dispatch_barrier_async"></a><code>dispatch_barrier_async</code></h3><ul>
+<li>在访问数据库或者文件的时候，写入操作不可与其它写入操作并行执行，但读取处理只是与读取处理并行执行，是没有问题的。</li>
+<li><code>dispatch_barrier_async</code> 函数会等待追加到 Concurrent Dispatch Queue 上的并行执行的处理全部结束后，再将指定的处理追加到该 Concurrent Dispatch Queue 中，在其执行完成之后，Concurrent Dispatch Queue 才又开始处理后续的并行执行。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">dispatch_async(queue, blk0_for_reading);</div><div class="line">dispatch_async(queue, blk1_for_reading);</div><div class="line">dispatch_async(queue, blk2_for_reading);</div><div class="line">dispatch_async(queue, blk3_for_reading);</div><div class="line">dispatch_barrier_async(queue, blk_for_writing);</div><div class="line">dispatch_async(queue, blk4_for_reading);</div><div class="line">dispatch_async(queue, blk5_for_reading);</div><div class="line">dispatch_async(queue, blk6_for_reading);</div></pre></td></tr></table></figure>
+<ul>
+<li><code>dispatch_barrier_async</code>和<code>dispatch_barrier_sync</code>的区别在于是否等待当前任务执行完成后再将后续的任务添加到 Dispatch Queue 中。</li>
+</ul>
+<h3 id="dispatch-apply"><a href="#dispatch-apply" class="headerlink" title="dispatch_apply"></a><code>dispatch_apply</code></h3><ul>
+<li>该函数按指定的次数将指定的 Block 追加到指定的 Dispatch Queue 中，并等待全部处理执行结束。 </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">dispatch_apply(5, queue, ^(size_t index) &#123;</div><div class="line">    NSLog(@&quot;index = %li&quot;,index);</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;done&quot;);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>该源代码的执行结果：（各个处理的时常不一定，但done必定在最后的位置上）</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">0</div><div class="line">2</div><div class="line">3</div><div class="line">1</div><div class="line">4</div><div class="line">done</div></pre></td></tr></table></figure>
+<ul>
+<li>另外，由于 <code>dispatch_apply</code> 函数也与 <code>dispatch_sync</code> 函数相同，会等待处理执行结束，<strong>因此推荐在 <code>dispatch_async</code>函数中非同步的执行 <code>dispatch_apply</code> 函数</strong>。</li>
+</ul>
+<h3 id="dispatch-suspend-dispatch-resume"><a href="#dispatch-suspend-dispatch-resume" class="headerlink" title="dispatch_suspend / dispatch_resume"></a><code>dispatch_suspend / dispatch_resume</code></h3><ul>
+<li>当追加大量处理到 Dispatch Queue 时，在追加处理的过程中，有时希望不执行已追加的处理。例如演算结果被 Block 截获时，一些处理会对这个演算结果造成影响。</li>
+<li><code>dispatch_suspend</code> 函数挂起指定的 Dispatch Queue <code>dispatch_suspend(queue);</code></li>
+<li><code>dispatch_resume</code> 函数恢复指定的 Dispatch Queue <code>dispatch_resume(queue);</code></li>
+<li>这些函数对已经执行的函数没有影响。挂起后，追加到队列中但尚未执行的处理在此之后停止执行。而恢复则使得这些处理能够继续执行。</li>
+</ul>
+<h3 id="Dispatch-Semaphore"><a href="#Dispatch-Semaphore" class="headerlink" title="Dispatch Semaphore"></a>Dispatch Semaphore</h3><ul>
+<li>当并行执行的处理更新数据时，会产生数据不一致的情况，有时程序还会异常结束。虽然使用 Serial Dispatch Queue 和 <code>dispatch_barrier_async</code> 函数可以避免这类问题，但有必要进行耕细粒度的排他控制。</li>
+<li>Dispatch Semaphore 是持有计数的信号，当计数为 0 时等待，计数为 1 或大于 1 时，减去 1 而不等待。</li>
+<li>主要有三个函数：<ol>
+<li>初始化信号量：  <code>dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);</code></li>
+<li>当信号量计数为 1 或大于 1 时，减去 1 而不等待，否则等待：   <code>dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</code></li>
+<li>将 Dispatch Semaphore 的计数 +1：  <code>dispatch_semaphore_signal(semaphore);</code></li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">/*</div><div class="line"> *  生成 Dispatch Semaphore</div><div class="line"> *</div><div class="line"> *  Dispatch Semaphore 的计数初始值设定为 “1” 以保证可访问 NSMutableArray 类 对象的线程同时只能有一个。</div><div class="line"> */</div><div class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);</div><div class="line">NSMutableArray *array = [[NSMutableArray alloc] init];</div><div class="line">for (int i = 0; i &lt; 10000; i++) &#123;</div><div class="line">    dispatch_async(queue, ^&#123;</div><div class="line">        /*</div><div class="line">         *  等待 Dispatch Semaphore</div><div class="line">         *  一直等待直到 Dispatch Semaphore 的计数值达到大于等于 1</div><div class="line">         */</div><div class="line">        </div><div class="line">        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">        </div><div class="line">        /*</div><div class="line">         *  由于 Dispatch Semaphore 的计数值大于等于 1</div><div class="line">         *  dispatch_semaphore_wait 使计数值减去 1 </div><div class="line">         *</div><div class="line">         *  执行到此时 Dispatch Semaphore 的计数恒为 “0”  </div><div class="line">         *  由于可访问 NSMutableArray 类对象的线程数只有1个，因此可安全的进行更新。</div><div class="line">         */</div><div class="line">        </div><div class="line">        [array addObject:[NSNumber numberWithInt:i]];</div><div class="line">        </div><div class="line">        /*</div><div class="line">         *  排他控制处理结束</div><div class="line">         *  通过 dispatch_semaphore_signal 函数将 Dispatch Semaphore 的计数 +1</div><div class="line">         *</div><div class="line">         **/</div><div class="line">        </div><div class="line">        dispatch_semaphore_signal(semaphore);</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="dispatch-once"><a href="#dispatch-once" class="headerlink" title="dispatch_once"></a><code>dispatch_once</code></h3><ul>
+<li><code>dispatch_once</code> 函数是保证在应用程序执行中只执行一次指定处理的 API。使用dispatch_once 可以简化代码并且彻底保证线程安全，开发者无需担心加锁或同步，而且执行效率更高。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">+(instancetype)sharedInstance&#123;   </div><div class="line">    static Singleton *sharedSingleton = nil;</div><div class="line">    static dispatch_once_t onceToken;</div><div class="line">    dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">        sharedSingleton = [[Singleton alloc] init];</div><div class="line">    &#125;);</div><div class="line">    return  sharedSingleton;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (instancetype)sharedInstance &#123;</div><div class="line">    static ViewController *controller = nil;</div><div class="line">    @synchronized (self) &#123;</div><div class="line">        if (!controller) &#123;</div><div class="line">            controller = [ViewController new];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return controller;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Dispatch-I-O"><a href="#Dispatch-I-O" class="headerlink" title="Dispatch I/O"></a>Dispatch I/O</h3><ul>
+<li>在读取较大文件时，如果将文件分成合适的大小并使用Global Dispatch Queue并列读取的话，应该会比一般的读取速度快不少。现今的输入/输出硬件已经可以做到一次使用多个线程更快地并列读取了。能实现这一功能的就是Dispatch I/O和Dispatch Data。<br>通过Dispatch I/O读写文件时，使用Global Dispatch Queue将一个文件按大小read/write。</li>
+</ul>
+<h3 id="Dispatch-Source-定时器"><a href="#Dispatch-Source-定时器" class="headerlink" title="Dispatch Source (定时器)"></a>Dispatch Source (定时器)</h3><ul>
+<li>NSTimer受runloop的影响，由于runloop需要处理很多任务，导致NSTimer的精度降低，在日常开发中，如果我们需要对定时器的精度要求很高的话，可以考虑dispatch_source_t去实现。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);</div><div class="line">//设置开始时间 2s 后，时间间隔 1s</div><div class="line">dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC, 1 * NSEC_PER_SEC);</div><div class="line">dispatch_source_set_event_handler(timer, ^&#123;</div><div class="line">    NSLog(@&quot;----self.timer---&quot;);</div><div class="line">&#125;);</div><div class="line">dispatch_resume(timer);</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/15/iOS与OSX 多线程与内存管理第二章：Block/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1534,365 +1971,6 @@ NSLog(@&quot;=====%@---%li&quot;,unRectangle.userDetail,(long)userAge);
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/01/Effective Objective-C 2.0 第二章 对象、消息、运行期/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhenyue">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gbetter">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/01/Effective Objective-C 2.0 第二章 对象、消息、运行期/" itemprop="url">
-                  Effective Objective-C 2.0 第二章 对象、消息、运行期
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-01T15:20:38+08:00">
-                2017-03-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>用 Objective-C 等面向对象语言编程时，“<strong>对象</strong>”就是“<strong>基本构造单元</strong>”，开发者可以通过对象来存储并传递数据，在对象之间传递数据并执行任务的过程就叫做“<strong>消息传递</strong>”（Messaging）。</p>
-<h3 id="第一条：理解“属性”这一概念"><a href="#第一条：理解“属性”这一概念" class="headerlink" title="第一条：理解“属性”这一概念"></a>第一条：理解“属性”这一概念</h3><p>“属性”（property）是Objective-C的一项特性，用于封装对象中的数据  </p>
-<ul>
-<li>通过<code>@synthesize</code>语法来指定实例变量的名称：<code>@synthesize firstName = _myFirstName</code>;</li>
-<li>通过<code>@dynamic</code>关键字，它会告诉编译器，不要自动创建实现属性所用的实例变量，也不要为其创建存取方法</li>
-<li>属性的特质：<ol>
-<li>原子性：在默认情况下，由编译器所合成的方法会通过锁定机制确保其原子性（atomicity），如果属性具备 <code>nonatomic</code> 特质，则不使用同步锁。</li>
-<li>读写权限：<code>readonly</code>（只读）你可以用此特质把某个属性对外公开为只读属性，然后在 “class-continuatione分类”重新定义为读写属性。</li>
-<li><code>assign</code> “设置方法”只会执行针对“纯量类型”（例如：<code>CGFloat or NSInteger</code>）的简单赋值操作。</li>
-<li><code>strong</code> 此特质表明属性定义了一种“拥有关系”。为这种属性设置新值时，设置方法会先保留新值，并释放旧值，然后再将新值设置上去。</li>
-<li><code>weak</code> 此特质同 <code>assign</code> 类似，然而在属性对象遭到摧毁时，属性的值也会清空（nil out）。</li>
-<li><code>unsafte_unretained</code> 侧特质的语义和 <code>assign</code> 相同，但它适用于对象类型，释放时，属性值不会自动清空。</li>
-<li><code>copy</code> 此特质所表达的所属关系与 <code>strong</code> 类似。然而设置方法并不保留新值，而是将其“拷贝”。当属性类型为 <code>NSString*</code>时，经常用此特质来保护其封装性。</li>
-</ol>
-</li>
-</ul>
-<h3 id="第二条：在对象内部尽量直接访问实例变量"><a href="#第二条：在对象内部尽量直接访问实例变量" class="headerlink" title="第二条：在对象内部尽量直接访问实例变量"></a>第二条：在对象内部尽量直接访问实例变量</h3><ul>
-<li>在对象内部读取数据时，应该直接通过实例变量来读，而写入数据时，则应该通过属性来写</li>
-<li>在初始化方法中应该直接访问实例变量，但是，在某些情况下却又必须在初始化方法中调用设置方法（如：如果待初始化的实例变量在超类中，而我们又无法再子类中直接访问此实例变量的话，那么就需要调用‘设置方法’了）。</li>
-<li>“<strong>惰性初始化</strong>”在这种情况下，必须通过“获取方法”来访问属性，否则，实例变量就永远不会初始化。</li>
-<li>若两个对象相等，则其哈希码（hash）也相等，但两个哈希相等的对象却未必相等。</li>
-</ul>
-<h3 id="第三条：-以“类簇模式”-隐藏实现细节"><a href="#第三条：-以“类簇模式”-隐藏实现细节" class="headerlink" title="第三条： 以“类簇模式” 隐藏实现细节"></a>第三条： 以“类簇模式” 隐藏实现细节</h3><p>“类簇”（class cluster）可以隐藏“<strong>抽象基类</strong>”背后的实现细节：<br>如： <code>+ (UIButton)buttonWithType:(UIButtonType)type;</code><br>该方法的所返回的对象，取决于所传入的按钮类型，使用者无需担心创建出来的按钮具体属于哪个子类</p>
-<p>创建类簇：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">typedef NS_ENUM(NSUInteger, EOCEmployeeType) &#123;</div><div class="line">    EOCEmployeeTypeDeveloper,</div><div class="line">    EOCEmployeeTypeDesigner,</div><div class="line">    EOCEmployeeTypeFinance,</div><div class="line">&#125; ;</div><div class="line"></div><div class="line">@interface EOCEmployee : NSObject</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EOCEmployee</div><div class="line"></div><div class="line">+ (EOCEmployee*)employeeWithType:(EOCEmployeeType)type &#123;</div><div class="line">	switch (type) &#123;</div><div class="line">		case EOCEmployeeTypeDeveloper:</div><div class="line">			return [EOCEmployeeTypeDeveloper new];</div><div class="line">			break;</div><div class="line">		case EOCEmployeeTypeDesigner:</div><div class="line">			return [EOCEmployeeTypeDesigner new];</div><div class="line">			break;	</div><div class="line">		case EOCEmployeeTypeFinance:</div><div class="line">			return [EOCEmployeeTypeFinance new];</div><div class="line">			break;	</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
-<p>规则： </p>
-<ul>
-<li>子类应该继承自类簇中的抽象基类。</li>
-<li>子类应该定义自己的数据存储方式。</li>
-<li>子类应当覆写超类文档中指明需要覆写的方法。</li>
-</ul>
-<h3 id="第四条-在既有类中使用关联对象存放自定义数据"><a href="#第四条-在既有类中使用关联对象存放自定义数据" class="headerlink" title="第四条: 在既有类中使用关联对象存放自定义数据"></a>第四条: 在既有类中使用关联对象存放自定义数据</h3><p>有时需要在对象中存放相关信息，这时通常会采用继承子类的方式，但是 有时候实例可能是由某种机制所创建（类簇）而开发者无法创建自己所写的子类实例，就使用“关联对象”<br>下列方法可以管理关联对象：</p>
-<ul>
-<li><code>void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy)</code>    此方法以给定的键和策略为某对象设置关联对象值</li>
-<li><code>id objc_getAssociatedObject(id object, const void *key)</code>  此方法根据给定的键从某对象中获取响应的关联对象值。 </li>
-<li><code>void objc_removeAssociatedObjects(id object)</code>  此方法移除指定对象的全部关联对象</li>
-<li>设置关联对象值时，通常使用静态全局变量做键。</li>
-<li>只有在其他做法不可行时才应选择关联对象，因为这种做法通常会引入难以查找的bug。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    UIButton *loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];</div><div class="line">    [loginBtn setFrame:CGRectMake(0.0, 0.0, 100.0, 44)];</div><div class="line">    [loginBtn setCenter:self.view.center];</div><div class="line">    [loginBtn setBackgroundColor:[UIColor purpleColor]];</div><div class="line">    [loginBtn addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];</div><div class="line">    [self.view addSubview:loginBtn];</div><div class="line">    //设置关联对象</div><div class="line">    objc_setAssociatedObject(loginBtn, (__bridge const void *)(EXOLoginManagerDidLoginNotification), @&quot;hello&quot;, OBJC_ASSOCIATION_RETAIN);</div><div class="line">&#125;</div><div class="line">- (void)login:(id)sender &#123;</div><div class="line">    //获取所关联的对象值   </div><div class="line">    NSString *name = objc_getAssociatedObject(sender, (__bridge const void *)(EXOLoginManagerDidLoginNotification));</div><div class="line">    </div><div class="line">    NSLog(@&quot;=======%@&quot;,name);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSString *)associatedObject_retain &#123;</div><div class="line">    return objc_getAssociatedObject(self, _cmd);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)setAssociatedObject_retain:(NSString *)associatedObject_retain &#123;</div><div class="line">    objc_setAssociatedObject(self, @selector(associatedObject_retain), associatedObject_retain, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>关联对象与被关联对象本身的存储并没有直接关系，它是存储在单独的哈希表中。</li>
-</ul>
-<h3 id="第五条：理解-objc-msgSend-的作用"><a href="#第五条：理解-objc-msgSend-的作用" class="headerlink" title="第五条：理解 objc_msgSend 的作用"></a>第五条：理解 objc_msgSend 的作用</h3><p>由于 Objective-C 是 C 的超集，所以最好先理解 C 语言的函数调用方式，C 语言使用”静态绑定（static binding）” ，也就是说，在编译期就决定运行时所调用的函数。</p>
-<ul>
-<li><code>id objc_msgSend(id self, SEL op, ...)</code>  <code>self</code>: 接收者  <code>op</code>:选择子 <code>...</code>：参数</li>
-<li><code>objc_msdSend_stret</code> 如果待发送的消息返回结构体，那么可交于此函数处理。</li>
-<li><code>objc_msgSend_fpret</code> 如果消息返回的是浮点数，那么可交由此函数处理,<code>objc_msgSend_fpret</code> 只能在i386处理器上运行,否则返回 Nan</li>
-<li><code>objc_msgSendSuper</code>     如果要给超类发消息，交于此函数处理，也有与上两个函数等效的函数。  </li>
-</ul>
-<p><code>objc_msgSend</code> 报错解决方案(Too many arguments to function call, expected 0, have 3)<br>选中项目 - Project - Build Settings - ENABLE_STRICT_OBJC_MSGSEND  将其设置为 NO 即可</p>
-<h3 id="第六条：理解消息转发机制"><a href="#第六条：理解消息转发机制" class="headerlink" title="第六条：理解消息转发机制"></a>第六条：理解消息转发机制</h3><p>若想令类能理解某条消息，我们必须以程序码实现出对应的方法才行。但是，在编译期间向类发送了其无法解读的消息并不会报错，因为在运行期间可以继续向类中添加方法，所以编译器在编译时还无法确知类中到底会不会有某个方法的实现，当对象接收到一个无法解读的消息时，就会启动‘消息转发’机制，此时可以告诉对象应该如何处理未知消息。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1642566-c4389a0a0fe7c108.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<hr>
-<p>消息转发分为两大阶段：</p>
-<ol>
-<li><p>动态方法解析：对象在收到无法解读的消息后，首先将调用其所属类的下列方法<br> <code>+ (BOOL)resolveInstanceMethod:(SEL)sel</code> 其返回值为 Boolean 类型，表示这个类能否新增加一个实例方法用以处理此选择子，若未实现的方法是类方法，那么运行期就会调用另一个方法 <code>+ (BOOL)resolveClassMethod:(SEL)sel</code> (使用这种办法的前提是：相关方法的实现代码已经写好，只等运行的时候动态插在类里面就可以)  </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (float)returnFloat &#123;</div><div class="line">   return 1.2f;</div><div class="line">&#125;</div><div class="line">+ (BOOL)resolveInstanceMethod:(SEL)sel &#123;</div><div class="line">   NSLog(@&quot;%s&quot;,__FUNCTION__);</div><div class="line">   NSString *methodString = NSStringFromSelector(sel);</div><div class="line">   if ([methodString isEqualToString:@&quot;creatFloatValue&quot;]) &#123;</div><div class="line">       class_addMethod([EXOLoginViewController class], sel, class_getMethodImplementation([EXOLoginViewController class], @selector(returnFloat)), &quot;i@:&quot;);</div><div class="line">       return YES;</div><div class="line">   &#125;</div><div class="line">   return [super resolveInstanceMethod:sel];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p> `BOOL class_addMethod(Class cls, SEL name, IMP imp, </p>
-<pre><code>const char *types)`   
-</code></pre><p> types:</p>
-<ul>
-<li>比如：”v@:”意思就是这已是一个void类型的方法，没有参数传入。</li>
-<li>再比如 “i@:”就是说这是一个int类型的方法，没有参数传入。</li>
-<li>再再比如”i@:@”就是说这是一个int类型的方法，又一个参数传入。</li>
-</ul>
-</li>
-<li><p>完整的消息转发机制：  </p>
-<ul>
-<li><p>请接收者看看有没有其他对象能处理这条消息（“备援的接收者” replacement receiver） </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (id)forwardingTargetForSelector:(SEL)aSelector &#123;</div><div class="line">   NSString *methodString = NSStringFromSelector(aSelector);</div><div class="line">   if ([methodString isEqualToString:@&quot;creatFloatValue&quot;]) &#123;</div><div class="line">       </div><div class="line">       return [ForwardingTarget new];</div><div class="line">   &#125;</div><div class="line">   return nil;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-</ol>
-<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@interface ForwardingTarget : NSObject</div><div class="line">- (float)creatFloatValue;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation ForwardingTarget</div><div class="line">- (float)creatFloatValue &#123;</div><div class="line">   	return 999.0f;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
-
-
-- 启用完整的消息转发机制  
-首先创建 `NSInvovation` 对象，把尚未处理的那条消息有关的全部细节都封装与其中，比较有用的实现方式为：在触发消息前，先以某种方式改变消息内容，比如追加另外一个参数，或者改换选择子等。(?????)
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">	-(NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</div><div class="line">	&#123;</div><div class="line">    NSMethodSignature *signature = [super methodSignatureForSelector:aSelector];</div><div class="line">    if (!signature) &#123;</div><div class="line">        if([ForwardingTarget instancesRespondToSelector:aSelector])</div><div class="line">        &#123;</div><div class="line">            signature = [ForwardingTarget instanceMethodSignatureForSelector:aSelector];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return signature;</div><div class="line">&#125;</div><div class="line"></div><div class="line">	-(void)forwardInvocation:(NSInvocation *)anInvocation</div><div class="line">	&#123;</div><div class="line">    	if ([ForwardingTarget instancesRespondToSelector:anInvocation.selector]) &#123;</div><div class="line">        [anInvocation invokeWithTarget:[[ForwardingTarget alloc] 	init]];</div><div class="line">    	&#125;</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
-</code></pre><h3 id="第七条：用“方法调配技术”-调试-“黑盒方法”"><a href="#第七条：用“方法调配技术”-调试-“黑盒方法”" class="headerlink" title="第七条：用“方法调配技术” 调试 “黑盒方法”"></a>第七条：用“方法调配技术” 调试 “黑盒方法”</h3><p>类的方法列表会把选择子的名称映射到相关的方法实现之上，使得“动态消息派发系统”能够据此找到应该调用的方法。这些方法均已函数指针的形式来表示，这种指针叫 IMP，其原型如下 <code>id
- (*IMP) (id,SEL,...)</code>  </p>
-<ul>
-<li><p>如何交换两个方法实现：</p>
-<pre><code> Method originalMethod = class_getInstanceMethod([NSString class], @selector(lowercaseString));
-
-Method swppedMethod   = class_getInstanceMethod([NSString class], @selector(uppercaseString));
-
-method_exchangeImplementations(originalMethod, swppedMethod);
-</code></pre></li>
-</ul>
-<p>我们可以通过新编写一个方法，通过交换可以向类中新增或替换选择子，一般调试的时候才会在运行期修改方法实现，不宜滥用。</p>
-<ul>
-<li>每个实例都有一个指向 Class 对象的指针，用以表明其类型，而这些 Class 对象则构成了类的继承体系（isa）。</li>
-<li>如果对象类型无法再编译器确定，那么就应该使用类型查询方法来探知。</li>
-<li>尽量使用类型查询方法来确定对象的类型，而不是直接比较类对象，因为某些对象可能实现了消息转发功能。</li>
-</ul>
-<p><a href="http://www.jianshu.com/p/e071206103a4" target="_blank" rel="external">让你快速上手Runtime</a></p>
-<p><a href="http://www.jianshu.com/p/1bde36ad9938" target="_blank" rel="external">Objective-C消息转发</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/01/Effective Objective-C 2.0 第一章 熟悉Objective-C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhenyue">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gbetter">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/01/Effective Objective-C 2.0 第一章 熟悉Objective-C/" itemprop="url">
-                  EffectiveObjective-C2.0第一章熟悉Objective-C
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-01T01:17:54+08:00">
-                2017-03-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="第一条：-了解-Objective-C-语言的起源"><a href="#第一条：-了解-Objective-C-语言的起源" class="headerlink" title="第一条： 了解 Objective-C 语言的起源"></a>第一条： 了解 Objective-C 语言的起源</h3><p>Objective-C 语言使用“消息结构”(message structure) 而非“函数调用”（function calling）。其关键的区别在于：消息结构的语言，其运行时所用的代码是由运行环境来决定；而使用函数调用的语言，则由编译器决定。   </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">NSString *someString = @&quot;The string&quot;;</div><div class="line">NSString *anotherString = someString;</div></pre></td></tr></table></figure>
-<p>所有 Objective-C 的对象所占用的内存都必须分配在“<strong>堆空间</strong>”（heap space）中，而绝不会分配在“<strong>栈</strong>”（stack）上，上面两个变量指向同一内存地址。</p>
-<h3 id="第二条：-在类的头文件中尽量少引用其他头文件"><a href="#第二条：-在类的头文件中尽量少引用其他头文件" class="headerlink" title="第二条： 在类的头文件中尽量少引用其他头文件"></a>第二条： 在类的头文件中尽量少引用其他头文件</h3><p>除非有必要，否则不要引入头文件： </p>
-<ul>
-<li><strong>向前声明</strong>（forward declaring）并在实现文件中引用哪些类的头文件，这样可以减少类使用者所需引入头文件的数量，也解决了两个类互相引用的问题。</li>
-<li>若因为要实现属性、实例变量或者遵循协议而必须引入头文件，则应尽量将其移至“<strong>class-continuation</strong>”分类中。如果不行的话（<strong>什么情况下会不行？</strong>），就把协议单独放在一个头文件中，然后将其引用。</li>
-<li>若你写的类继承自某个超类，则必须引入哪个超类的头文件。</li>
-</ul>
-<h3 id="第三条：多用类型常量，少用-define预处理指令"><a href="#第三条：多用类型常量，少用-define预处理指令" class="headerlink" title="第三条：多用类型常量，少用#define预处理指令"></a>第三条：多用类型常量，少用#define预处理指令</h3><p><code>static const NSTimeInterval kAnimationDuration = 0.3;</code><br>用此方法定义的常量包含类型信息，其好处是清楚的描述了常量的含义。</p>
-<ul>
-<li>还要注意常量名称：若常量局限于某‘编译单元’（也就是实现文件）之内，则在前面加字母k；若常量在类之外可见，则通常以类名为前缀。  </li>
-<li>变量一定要同时使用 static 与 const 来声明，如果试图修改 const 修饰符所声明的变量，那么编译器就会报错。若声明此变量时不加 static，则编译器会为他创建一个‘外部符号’（external symbol），此时若另一个编译单元中也声明了同名变量，那么编译器就抛出一条错误信息。</li>
-<li>在头文件中使用 extern来声明全局常量，并在相关实现文件中定义其值。这种常量要出现在全局符号表中，所以其名称要加以区隔，通常用与之相关的类名做前缀。</li>
-</ul>
-<h3 id="第四条：用枚举表示状态、选项、状态吗"><a href="#第四条：用枚举表示状态、选项、状态吗" class="headerlink" title="第四条：用枚举表示状态、选项、状态吗"></a>第四条：用枚举表示状态、选项、状态吗</h3><ul>
-<li>定义选项的时候，若这些选项可以彼此组合，只要枚举定义的对，各选项之间可通过‘<strong>按位或操作符</strong>’来组合多个选项，并用‘<strong>按位与操作符</strong>’即可判断是否启用某选项；</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">typedef enum : NSUInteger &#123;</div><div class="line">    EOCConnectionStateDisconnected = 0,</div><div class="line">    EOCConnectionStateConnecting   = 1 &lt;&lt; 0,</div><div class="line">    EOCConnectionStateConnted      = 1 &lt;&lt; 1,</div><div class="line">&#125; EOCConnectionState;</div><div class="line"></div><div class="line">EOCConnectionState state = EOCConnectionStateConnecting | EOCConnectionStateConnted;</div><div class="line">if (state &amp; EOCConnectionStateConnted) &#123;</div><div class="line">	NSLog(@&quot;state 中包含 EOCConnectionStateConnted&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&amp;运算：相当于十进制 相同位做加法的1/2</div><div class="line">0101 &amp; 0011   结果：二进制0001    </div><div class="line">        </div><div class="line">|运算：相当于十进制 相同位做加法的1/2与不同位做加法求和</div><div class="line">0101 | 0011   结果：二进制0111    </div><div class="line">         </div><div class="line">^运算：相当于十进制不同位做加法</div><div class="line">0101 ^ 0011  结果：二进制0110</div></pre></td></tr></table></figure>
-<ul>
-<li>凡是需要按位或操作来组合的枚举都应使用 NS_OPTIONS 宏，若枚举不需要组合，则应使用NS_ENUM来定义（原因：若按C++编译 C++不允许将底层类型“隐式转换”为枚举类型本身）</li>
-<li>在处理枚举类型的 switch 语句中不要实现 default 分支。这样的话，加入新枚举之后，编译器就会提示开发者：switch 语句并未处理所有枚举。</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1942,7 +2020,7 @@ method_exchangeImplementations(originalMethod, swppedMethod);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

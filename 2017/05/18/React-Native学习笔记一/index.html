@@ -1,0 +1,708 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="基础Flexbox 布局Layout with Flexbox
+
+Flexbox 可以指定一个 Component 子组的布局，用于适配不同尺寸的屏幕。
+Flexbox 在 React Native 中的工作方式与在网络中的 CSS 相同，但其默认值不同， flexDirection 默认是 column 不是 row，flex 的参数仅支持单个数字。
+
+Flex Direction
+使用 fle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React-Native">
+<meta property="og:url" content="http://yoursite.com/2017/05/18/React-Native学习笔记一/index.html">
+<meta property="og:site_name" content="gbetter">
+<meta property="og:description" content="基础Flexbox 布局Layout with Flexbox
+
+Flexbox 可以指定一个 Component 子组的布局，用于适配不同尺寸的屏幕。
+Flexbox 在 React Native 中的工作方式与在网络中的 CSS 相同，但其默认值不同， flexDirection 默认是 column 不是 row，flex 的参数仅支持单个数字。
+
+Flex Direction
+使用 fle">
+<meta property="og:updated_time" content="2017-06-06T00:54:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React-Native">
+<meta name="twitter:description" content="基础Flexbox 布局Layout with Flexbox
+
+Flexbox 可以指定一个 Component 子组的布局，用于适配不同尺寸的屏幕。
+Flexbox 在 React Native 中的工作方式与在网络中的 CSS 相同，但其默认值不同， flexDirection 默认是 column 不是 row，flex 的参数仅支持单个数字。
+
+Flex Direction
+使用 fle">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/18/React-Native学习笔记一/"/>
+
+
+
+
+
+  <title> React-Native | gbetter </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">gbetter</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/18/React-Native学习笔记一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                React-Native
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-18T09:00:14+08:00">
+                2017-05-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h3><h4 id="Flexbox-布局"><a href="#Flexbox-布局" class="headerlink" title="Flexbox 布局"></a>Flexbox 布局</h4><p><a href="http://facebook.github.io/react-native/docs/flexbox.html" target="_blank" rel="external">Layout with Flexbox</a></p>
+<ul>
+<li>Flexbox 可以指定一个 Component 子组的布局，用于适配不同尺寸的屏幕。</li>
+<li>Flexbox 在 React Native 中的工作方式与在网络中的 CSS 相同，但其默认值不同， flexDirection 默认是 column 不是 row，flex 的参数仅支持单个数字。</li>
+</ul>
+<h5 id="Flex-Direction"><a href="#Flex-Direction" class="headerlink" title="Flex Direction"></a>Flex Direction</h5><ul>
+<li>使用 flexDirection 来确定其布局的主轴，其 children 应该是 row（水平） 或者 column， 默认是 column(垂直).</li>
+</ul>
+<h5 id="Justify-Content"><a href="#Justify-Content" class="headerlink" title="Justify Content"></a>Justify Content</h5><ul>
+<li>将 justifyContent 添加到 component 的 style 中，将决定其 children 沿主轴上的分布，其可选项为：flex-start, center, flex-end, space-around, and space-between.</li>
+</ul>
+<h5 id="Align-Items"><a href="#Align-Items" class="headerlink" title="Align Items"></a>Align Items</h5><ul>
+<li>将 alignItems 添加到 component 的 style 中，将决定其 children 沿副主轴的对齐方式（若 主轴是 row 则辅助轴是 column)，其可选项为：flex-start, center, flex-end, and stretch.</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">import React, &#123; Component &#125; from &apos;react&apos;;</div><div class="line">import &#123; AppRegistry, View &#125; from &apos;react-native&apos;;</div><div class="line"></div><div class="line">class AlignItemsBasics extends Component &#123;</div><div class="line">  render() &#123;</div><div class="line">    return (</div><div class="line">      // Try setting `alignItems` to &apos;flex-start&apos;</div><div class="line">      // Try setting `justifyContent` to `flex-end`.</div><div class="line">      // Try setting `flexDirection` to `row`.</div><div class="line">      &lt;View style=&#123;&#123;</div><div class="line">        flex: 1,</div><div class="line">        flexDirection: &apos;column&apos;,</div><div class="line">        justifyContent: &apos;center&apos;,</div><div class="line">        alignItems: &apos;center&apos;,</div><div class="line">      &#125;&#125;&gt;</div><div class="line">        &lt;View style=&#123;&#123;width: 50, height: 50, backgroundColor: &apos;powderblue&apos;&#125;&#125; /&gt;</div><div class="line">        &lt;View style=&#123;&#123;width: 50, height: 50, backgroundColor: &apos;skyblue&apos;&#125;&#125; /&gt;</div><div class="line">        &lt;View style=&#123;&#123;width: 50, height: 50, backgroundColor: &apos;steelblue&apos;&#125;&#125; /&gt;</div><div class="line">      &lt;/View&gt;</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">AppRegistry.registerComponent(&apos;AwesomeProject&apos;, () =&gt; AlignItemsBasics);</div></pre></td></tr></table></figure>
+<h4 id="输入框的使用-TextInput"><a href="#输入框的使用-TextInput" class="headerlink" title="输入框的使用(TextInput)"></a>输入框的使用(TextInput)</h4><ul>
+<li><code>TextInput</code> 是一个基本的 Component 允许用户输入文本，当输入内容改变的时候会调用 <code>onChangeText</code> 函数，以及当文本内容被提交的手会调用 <code>onSubmitEditing</code> 函数。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">import React, &#123; Component &#125; from &apos;react&apos;;</div><div class="line">import &#123; AppRegistry, Text, TextInput, View &#125; from &apos;react-native&apos;;</div><div class="line"></div><div class="line">class PizzaTranslator extends Component &#123;</div><div class="line">  constructor(props) &#123;</div><div class="line">    super(props);</div><div class="line">    this.state = &#123;text: &apos;&apos;&#125;;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  render() &#123;</div><div class="line">    return (</div><div class="line">      &lt;View style=&#123;&#123;padding: 10&#125;&#125;&gt;</div><div class="line">        &lt;TextInput</div><div class="line">          style=&#123;&#123;height: 40&#125;&#125;</div><div class="line">          placeholder=&quot;Type here to translate!&quot;</div><div class="line">          onChangeText=&#123;(text) =&gt; this.setState(&#123;text&#125;)&#125;</div><div class="line">        /&gt;</div><div class="line">        &lt;Text style=&#123;&#123;padding: 10, fontSize: 42&#125;&#125;&gt;</div><div class="line">          &#123;this.state.text.split(&apos; &apos;).map((word) =&gt; word &amp;&amp; &apos;🍕&apos;).join(&apos; &apos;)&#125;</div><div class="line">        &lt;/Text&gt;</div><div class="line">      &lt;/View&gt;</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">AppRegistry.registerComponent(&apos;PizzaTranslator&apos;, () =&gt; PizzaTranslator);</div></pre></td></tr></table></figure>
+<h3 id="平台区分"><a href="#平台区分" class="headerlink" title="平台区分"></a>平台区分</h3><h4 id="扩展名区分平台"><a href="#扩展名区分平台" class="headerlink" title="扩展名区分平台"></a>扩展名区分平台</h4><ul>
+<li>针对不同的平台使用不同的扩展名， React-Native 会自动区分：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Button.ios.js</div><div class="line">Button.android.js</div></pre></td></tr></table></figure>
+<blockquote>
+<p>这样命名后的组件可以直接引用，而不用关系运行的平台</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import Button from &apos;./Component.Button&apos;;</div></pre></td></tr></table></figure>
+<h4 id="Platform-区分"><a href="#Platform-区分" class="headerlink" title="Platform 区分"></a>Platform 区分</h4><ul>
+<li>Platform 模块是 RN 提供的内部模块，主要用于平台区分。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">container: &#123;</div><div class="line">    flex: 1,</div><div class="line">    ...Platform.select(&#123;</div><div class="line">      ios: &#123;</div><div class="line">        backgroundColor: &apos;red&apos;,</div><div class="line">      &#125;,</div><div class="line">      android: &#123;</div><div class="line">        backgroundColor: &apos;blue&apos;,</div><div class="line">      &#125;,</div><div class="line">    &#125;),</div><div class="line">  &#125;,</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var Component = Platform.select(&#123;</div><div class="line">  ios: () =&gt; require(&apos;ComponentIOS&apos;),</div><div class="line">  android: () =&gt; require(&apos;ComponentAndroid&apos;),</div><div class="line">&#125;)();</div><div class="line"></div><div class="line">&lt;Component /&gt;;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>主要的使用方法为Platform.select, 框架会自动区分当前平台，进行组件选择</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">import &#123; Platform, StyleSheet &#125; from &apos;react-native&apos;;</div><div class="line"></div><div class="line">var styles = StyleSheet.create(&#123;</div><div class="line">  height: (Platform.OS === &apos;ios&apos;) ? 200 : 100,</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<pre><code>import { Platform } from &apos;react-native&apos;;
+
+if(Platform.Version === 21){
+  console.log(&apos;Running on Lollipop!&apos;);
+}
+</code></pre><blockquote>
+<p>Platform模块还有一个附加功能，即在android平台可以检测平台的版本号</p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/11/MBProgressHUD源码/" rel="next" title="MBProgressHUD 源码">
+                <i class="fa fa-chevron-left"></i> MBProgressHUD 源码
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/27/React-Native-Audio&Sound/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhenyue" />
+          <p class="site-author-name" itemprop="name">zhenyue</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础"><span class="nav-number">1.</span> <span class="nav-text">基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Flexbox-布局"><span class="nav-number">1.1.</span> <span class="nav-text">Flexbox 布局</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Flex-Direction"><span class="nav-number">1.1.1.</span> <span class="nav-text">Flex Direction</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Justify-Content"><span class="nav-number">1.1.2.</span> <span class="nav-text">Justify Content</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Align-Items"><span class="nav-number">1.1.3.</span> <span class="nav-text">Align Items</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#输入框的使用-TextInput"><span class="nav-number">1.2.</span> <span class="nav-text">输入框的使用(TextInput)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#平台区分"><span class="nav-number">2.</span> <span class="nav-text">平台区分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#扩展名区分平台"><span class="nav-number">2.1.</span> <span class="nav-text">扩展名区分平台</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Platform-区分"><span class="nav-number">2.2.</span> <span class="nav-text">Platform 区分</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhenyue</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
