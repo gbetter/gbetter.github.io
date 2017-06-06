@@ -247,6 +247,148 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/19/SDWebImage源码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/19/SDWebImage源码/" itemprop="url">
+                  SDWebImage源码
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-19T22:59:05+08:00">
+                2017-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="类"><a href="#类" class="headerlink" title="类"></a>类</h3><h4 id="UIImageView-WebCache-h"><a href="#UIImageView-WebCache-h" class="headerlink" title="UIImageView+WebCache.h"></a>UIImageView+WebCache.h</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url;</div><div class="line"></div><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">          placeholderImage:(nullable UIImage *)placeholder;</div><div class="line"></div><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">          placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                   options:(SDWebImageOptions)options;</div><div class="line"></div><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">                 completed:(nullable SDExternalCompletionBlock)completedBlock;</div><div class="line"></div><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">          placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                 completed:(nullable SDExternalCompletionBlock)completedBlock;</div><div class="line"></div><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">          placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                   options:(SDWebImageOptions)options</div><div class="line">                 completed:(nullable SDExternalCompletionBlock)completedBlock;</div><div class="line"></div><div class="line">- (void)sd_setImageWithPreviousCachedImageWithURL:(nullable NSURL *)url</div><div class="line">                                 placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                                          options:(SDWebImageOptions)options</div><div class="line">                                         progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                                        completed:(nullable SDExternalCompletionBlock)completedBlock;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>上面这些方法统一调用的是下面这个主方法</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">          placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                   options:(SDWebImageOptions)options</div><div class="line">                  progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                 completed:(nullable SDExternalCompletionBlock)completedBlock;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>此方法通过调用 <code>UIView+WebCache.h</code> 中的 <code>sd_internalSetImageWithURL：...</code>来实现。</p>
+</blockquote>
+<h4 id="UIView-WebCache-h"><a href="#UIView-WebCache-h" class="headerlink" title="UIView+WebCache.h"></a>UIView+WebCache.h</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">//返回请求的URL</div><div class="line">- (nullable NSURL *)sd_imageURL;</div><div class="line">//通过 SDWebImageManager 来获取请求的图片，可能在缓存中、可能需要下载</div><div class="line">- (void)sd_internalSetImageWithURL:(nullable NSURL *)url</div><div class="line">                  placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                           options:(SDWebImageOptions)options</div><div class="line">                      operationKey:(nullable NSString *)operationKey</div><div class="line">                     setImageBlock:(nullable SDSetImageBlock)setImageBlock</div><div class="line">                          progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                         completed:(nullable SDExternalCompletionBlock)completedBlock;</div><div class="line"></div><div class="line">//取消当前类的Image请求</div><div class="line">- (void)sd_cancelCurrentImageLoad;</div></pre></td></tr></table></figure>
+<h4 id="SDWebImageManager-h"><a href="#SDWebImageManager-h" class="headerlink" title="SDWebImageManager.h"></a>SDWebImageManager.h</h4><ul>
+<li>SDWebImageManager 通过 <code>sahredManager</code> 单例获取当前对象</li>
+<li>并在其初始化方法中获取到 <code>SDImageCache</code> 缓存 和<code>SDWebImageloader</code> 下载 两个对象</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (nonnull instancetype)init &#123;</div><div class="line">    SDImageCache *cache = [SDImageCache sharedImageCache];</div><div class="line">    SDWebImageDownloader *downloader = [SDWebImageDownloader sharedDownloader];</div><div class="line">    return [self initWithCache:cache downloader:downloader];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (nonnull instancetype)initWithCache:(nonnull SDImageCache *)cache downloader:(nonnull SDWebImageDownloader *)downloader &#123;</div><div class="line">    if ((self = [super init])) &#123;</div><div class="line">        _imageCache = cache;</div><div class="line">        _imageDownloader = downloader;</div><div class="line">        _failedURLs = [NSMutableSet new];</div><div class="line">        _runningOperations = [NSMutableArray new];</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>通过下列方法来获取图片： 通过 <code>_imageCache</code> 对象判断缓存中是否存在此图片，若有则返回，若没有则通过 <code>_imageDownloader</code> 对象去服务器下载此图片。         </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- (nullable id &lt;SDWebImageOperation&gt;)loadImageWithURL:(nullable NSURL *)url</div><div class="line">                                              options:(SDWebImageOptions)options</div><div class="line">                                             progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                                            completed:(nullable SDInternalCompletionBlock)completedBlock</div></pre></td></tr></table></figure>
+<h4 id="SDImageCache-h"><a href="#SDImageCache-h" class="headerlink" title="SDImageCache.h"></a>SDImageCache.h</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//获取当前对象</div><div class="line">+ (nonnull instancetype)sharedImageCache;</div><div class="line"></div><div class="line">//通过 key 在缓存中查找对应的图片</div><div class="line">- (nullable NSOperation *)queryCacheOperationForKey:(nullable NSString *)key done:(nullable SDCacheQueryCompletedBlock)doneBlock;</div></pre></td></tr></table></figure>
+<h4 id="SDWebImageDownloader-h"><a href="#SDWebImageDownloader-h" class="headerlink" title="SDWebImageDownloader.h"></a>SDWebImageDownloader.h</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//获取当前SDWebImageDownloader对象</div><div class="line">+ (nonnull instancetype)sharedDownloader</div><div class="line"></div><div class="line">//通过此方法从服务器下载图片</div><div class="line">- (nullable SDWebImageDownloadToken *)downloadImageWithURL:(nullable NSURL *)url</div><div class="line">                                                   options:(SDWebImageDownloaderOptions)options</div><div class="line">                                                  progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                                                 completed:(nullable SDWebImageDownloaderCompletedBlock)completedBlock</div></pre></td></tr></table></figure>
+<h4 id="SDWebImageDownloaderOperation-h"><a href="#SDWebImageDownloaderOperation-h" class="headerlink" title="SDWebImageDownloaderOperation.h"></a>SDWebImageDownloaderOperation.h</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//初始化一个 SDWebImageDownloaderOperation 对象</div><div class="line">- (nonnull instancetype)initWithRequest:(nullable NSURLRequest *)request</div><div class="line">                              inSession:(nullable NSURLSession *)session</div><div class="line">                                options:(SDWebImageDownloaderOptions)options NS_DESIGNATED_INITIALIZER;</div><div class="line"></div><div class="line">//添加 下载进度和下载完成的 block 回调</div><div class="line">- (nullable id)addHandlersForProgress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                            completed:(nullable SDWebImageDownloaderCompletedBlock)completedBlock;</div><div class="line"></div><div class="line">// 通过 token 取消当前下载</div><div class="line">- (BOOL)cancel:(nullable id)token;</div></pre></td></tr></table></figure>
+<h4 id="UIView-WebCacheOperation-h"><a href="#UIView-WebCacheOperation-h" class="headerlink" title="UIView+WebCacheOperation.h"></a>UIView+WebCacheOperation.h</h4><ul>
+<li>本类主要用于 operation 对象的管理,当一个对象（UIImageView）被重复请求时，将会把第一次的 operation cancel 掉，将新的 operation 加入到 operationDictionary 字典中。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//获取 NSMutableDictionary 类型的 operationDictionary</div><div class="line">- (SDOperationsDictionary *)operationDictionary;</div><div class="line"></div><div class="line">//通过 key 值将 operation 对象存入 operationDictionary 字典中</div><div class="line">- (void)sd_setImageLoadOperation:(nullable id)operation forKey:(nullable NSString *)key;</div><div class="line"></div><div class="line">//通过 key 标识 取消operation请求</div><div class="line">- (void)sd_cancelImageLoadOperationWithKey:(nullable NSString *)key;</div><div class="line"></div><div class="line">//通过 key 标识 将 operation 对象从operationDictionary字典中删除</div><div class="line">- (void)sd_removeImageLoadOperationWithKey:(nullable NSString *)key;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/17/iOS 并发编程之 Operation Queues /">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1798,179 +1940,6 @@ NSLog(@&quot;=====%@---%li&quot;,unRectangle.userDetail,(long)userAge);
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/03/Effective Objective-C 2.0 第三章 接口与API设计/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhenyue">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gbetter">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/03/Effective Objective-C 2.0 第三章 接口与API设计/" itemprop="url">
-                  Effective Objective-C 2.0 第三章 接口与API设计
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-03T08:58:11+08:00">
-                2017-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="第一条：用前缀避免命名空间冲突"><a href="#第一条：用前缀避免命名空间冲突" class="headerlink" title="第一条：用前缀避免命名空间冲突"></a>第一条：用前缀避免命名空间冲突</h3><ul>
-<li>Apple 宣称其保留使用所有 “两字母前缀” 的权利，所以自己选用的前缀应该是三个字母的。</li>
-<li>不仅是类名应用程序中所有的名称都应加前缀，类的实现文件中所有的<strong>纯 C 函数</strong>及<strong>全局变量</strong>，在编译好的目标文件中，这些名称是要算作顶级符号(top-level symbol)，这样的话，若在别处又创建一个同名的函数，就会出现 ‘重复符号错误’。</li>
-</ul>
-<h3 id="第二条：实现-description-方法"><a href="#第二条：实现-description-方法" class="headerlink" title="第二条：实现 description 方法"></a>第二条：实现 description 方法</h3><p><code>description</code>和<code>debugDescription</code>是 NSObject 协议中声明的两个方法，这两个方法的区别仅仅在于调试的位置不同，description是我们在程序中打 Log 会调用的方法，debugDescription 则是我们在断点调试时，在控制台使用 po 命令会调用的方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (NSString*)description &#123;</div><div class="line">    return [NSString stringWithFormat:@&quot;&lt;%@:%p,%@&gt;&quot;,[self class],self,@&#123;@&quot;userFirstName&quot;:_userFirstName,@&quot;userLastName&quot;:_userLastName&#125;];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSString *)debugDescription</div><div class="line">&#123;</div><div class="line">    return [NSString stringWithFormat:@&quot;&lt;%@: %p&gt;&quot;, [self class], self];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="第三条：尽量使用不可变对象"><a href="#第三条：尽量使用不可变对象" class="headerlink" title="第三条：尽量使用不可变对象"></a>第三条：尽量使用不可变对象</h3><ul>
-<li>尽量创建不可变对象。</li>
-<li>若某属性仅可于对象内部修改，则在 “class-continuation 分类” 中将其由 <code>readonly</code> 属性扩展为 <code>readwrite</code> 属性。</li>
-<li>不要把可变的 collection（容器类）作为属性公开，而应提供相应的方法，以此修改对象中的可变 collection。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">@interface EXOPerson : NSObject</div><div class="line"></div><div class="line">@property (nonatomic, copy, readonly) NSString *userFirstName;</div><div class="line">@property (nonatomic, copy, readonly) NSString *userLastName;</div><div class="line">@property (nonatomic, strong, readonly) NSArray *userLike;</div><div class="line"></div><div class="line">- (instancetype)initWithFirstName:(NSString*)firstName WithLastName:(NSString*)lastName;</div><div class="line"></div><div class="line">//提供相应的方法，以此修改对象中的可变 collection</div><div class="line">- (void)addUserLike:(NSArray *)userLike;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#import &quot;EXOPerson.h&quot;</div><div class="line"></div><div class="line">@interface EXOPerson ()</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userFirstName;</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userLastName;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXOPerson</div><div class="line"></div><div class="line">- (instancetype)initWithFirstName:(NSString*)firstName WithLastName:(NSString*)lastName</div><div class="line">&#123;</div><div class="line">    self = [super init];</div><div class="line">    if (self) &#123;</div><div class="line">        _userFirstName = [firstName copy];</div><div class="line">        _userLastName  = [lastName copy];</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line">- (void)addUserLike:(NSArray *)userLike &#123;</div><div class="line">    _userLike = [userLike copy];</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
-<h3 id="第四条：为私有方法加前缀"><a href="#第四条：为私有方法加前缀" class="headerlink" title="第四条：为私有方法加前缀"></a>第四条：为私有方法加前缀</h3><ul>
-<li>给私有方法的名称加上前缀，这样可以很容易的将其同公共的方法区分开来。（笔者喜欢用 p_ 为前缀） <code>- (void)p_privateMethod{}</code></li>
-<li>不要单用一个下划线做私有方法的前缀，因为这种做法是苹果公司预留的。</li>
-</ul>
-<h3 id="理解-Objective-C-的错误类型"><a href="#理解-Objective-C-的错误类型" class="headerlink" title="理解 Objective-C 的错误类型"></a>理解 Objective-C 的错误类型</h3><ul>
-<li>只有发生了可使整个应用程序崩溃的严重错误时，才应使用异常。</li>
-<li><p>在错误不那么严重的情况下，可指派委托方法来处理错误，也可以把错误信息放在<code>NSError</code>对象中，经由“输出参数”返回给调用者。</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">NSError *error = [[NSError alloc]</div><div class="line">                         initWithDomain:NSCocoaErrorDomain</div><div class="line">                         code:9998</div><div class="line">                         userInfo:@&#123;NSLocalizedDescriptionKey:@&quot;错误描述&quot;,</div><div class="line">                         NSLocalizedFailureReasonErrorKey:@&quot;错误原因&quot;,</div><div class="line">                         NSLocalizedRecoverySuggestionErrorKey:@&quot;解决建议&quot;,</div><div class="line">                         NSLocalizedRecoveryOptionsErrorKey:@[@&quot;解决建议可选1&quot;,@&quot;解决建议可选2&quot;]&#125;];</div><div class="line">       </div><div class="line">       // Domain 错误域：产生错误的地方（系统提供了一些定义的域）</div><div class="line">       /*</div><div class="line">        FOUNDATION_EXPORT NSString *const NSCocoaErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSPOSIXErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSOSStatusErrorDomain;</div><div class="line">        FOUNDATION_EXPORT NSString *const NSMachErrorDomain;</div><div class="line">        */</div><div class="line">       NSString *domain = error.domain;</div><div class="line">       </div><div class="line">       // code：错误码</div><div class="line">       NSInteger code = error.code;</div><div class="line">       </div><div class="line">       // userInfo：错误信息（系统提供了很多定义的key）</div><div class="line">       NSDictionary *userInfo = error.userInfo;</div><div class="line">       </div><div class="line">       NSString *localizedDescription = userInfo[NSLocalizedDescriptionKey];</div><div class="line">       NSString *localizedFailureReason = userInfo[NSLocalizedFailureReasonErrorKey];</div><div class="line">       NSString *localizedRecoverySuggestion = userInfo[NSLocalizedRecoverySuggestionErrorKey];</div><div class="line">       NSArray *localizedRecoveryOptions = userInfo[NSLocalizedRecoveryOptionsErrorKey];</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="第五条：理解-NSCopying-协议"><a href="#第五条：理解-NSCopying-协议" class="headerlink" title="第五条：理解 NSCopying 协议"></a>第五条：理解 NSCopying 协议</h3><ul>
-<li>若想让自己的类具有 <code>copy</code> 功能，那么要实现 NSCopying 协议：  <code>- (id)copyWithZone:(NSZone*)zone</code></li>
-<li>若想让自己的类具有 <code>mutableCopy</code> 功能，那么要实现 NSMutableCopying 协议：  <code>-(id)mutableCopyWithZone:(NSZone*)zone</code></li>
-<li>复制对象时需决定采用深拷贝还是浅拷贝，一般情况下应尽量考虑执行浅拷贝。</li>
-<li>如果你所写的对象需要深拷贝，那么可以考虑新增一个专门执行深拷贝的方法。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">#import &quot;EXOPerson.h&quot;</div><div class="line"></div><div class="line">@interface EXOPerson ()</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userFirstName;</div><div class="line">@property (nonatomic, copy, readwrite) NSString *userLastName;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation EXOPerson</div><div class="line">&#123;</div><div class="line">    NSString *_fullName;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (instancetype)initWithFirstName:(NSString*)firstName WithLastName:(NSString*)lastName</div><div class="line">&#123;</div><div class="line">    self = [super init];</div><div class="line">    if (self) &#123;</div><div class="line">        _userFirstName = [firstName copy];</div><div class="line">        _userLastName  = [lastName copy];</div><div class="line">        _fullName = [NSString stringWithFormat:@&quot;%@%@&quot;,_userFirstName,_userLastName];</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">- (id)copyWithZone:(nullable NSZone *)zone &#123;</div><div class="line">    EXOPerson *copy = [[EXOPerson allocWithZone:zone] initWithFirstName:_userFirstName WithLastName:_userLastName];</div><div class="line">    //注意：这里使用-&gt;语法，因为_fullName 并非属性，只是在内部使用的实例变量</div><div class="line">    copy-&gt;_fullName = _fullName;</div><div class="line">    return copy;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">源对象类型</th>
-<th style="text-align:center">拷贝方法</th>
-<th style="text-align:right">副本对象类型</th>
-<th>是否产生新对象</th>
-<th>拷贝类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">NSString</td>
-<td style="text-align:center">copy</td>
-<td style="text-align:right">NSSting</td>
-<td>NO</td>
-<td>浅拷贝</td>
-</tr>
-<tr>
-<td style="text-align:left">NSMutableString</td>
-<td style="text-align:center">mutableCopy</td>
-<td style="text-align:right">NSMutableString</td>
-<td>YES</td>
-<td>深拷贝</td>
-</tr>
-</tbody>
-</table>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2020,7 +1989,7 @@ NSLog(@&quot;=====%@---%li&quot;,unRectangle.userDetail,(long)userAge);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

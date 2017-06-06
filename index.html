@@ -247,6 +247,264 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/02/React-Native图片选取与裁剪框架/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhenyue">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gbetter">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/02/React-Native图片选取与裁剪框架/" itemprop="url">
+                  react-native 图片选取与裁剪框架
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-02T11:43:16+08:00">
+                2017-06-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="https://github.com/ivpusic/react-native-image-crop-picker" target="_blank" rel="external">react-native-image-crop-picker</a></p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="请求参数"><a href="#请求参数" class="headerlink" title="请求参数"></a>请求参数</h4><p><img src="../../img/Snip20170606_1.png" alt="请求参数"></p>
+<h4 id="返回对象"><a href="#返回对象" class="headerlink" title="返回对象"></a>返回对象</h4><p><img src="../../img/Snip20170606_2.png" alt="返回对象"></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm i react-native-image-crop-picker --save</div><div class="line">react-native link react-native-image-crop-picker</div></pre></td></tr></table></figure>
+<h4 id="iOS"><a href="#iOS" class="headerlink" title="iOS"></a>iOS</h4><ul>
+<li><p>在 Xcode 的 Info.plist 中添加： </p>
+<ol>
+<li>NSPhotoLibraryUsageDescription        //相册</li>
+<li>NSCameraUsageDescription            //摄像头</li>
+<li>NSMicrophoneUsageDescription        //麦克风</li>
+</ol>
+</li>
+<li><p>cocoapods 用户</p>
+<ol>
+<li><code>Add platform :ios, &#39;8.0&#39; to Podfile (!important)</code></li>
+<li><code>Add pod &#39;RSKImageCropper&#39; and pod &#39;QBImagePickerController&#39; to Podfile</code></li>
+</ol>
+</li>
+<li><p>非 cocoapods 用户</p>
+<ol>
+<li><code>Under Deployment Info set Deployment Target to 8.0</code></li>
+<li><code>Under Embedded Binaries click + and add RSKImageCropper.framework and QBImagePicker.framework</code></li>
+</ol>
+</li>
+</ul>
+<h4 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h4><ul>
+<li>Make sure you are using Gradle 2.2.x (project build.gradle)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">    ...</div><div class="line">    dependencies &#123;</div><div class="line">        classpath &apos;com.android.tools.build:gradle:2.2.3&apos;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>Add useSupportLibrary (app build.gradle)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    ...</div><div class="line"></div><div class="line">    defaultConfig &#123;</div><div class="line">        ...</div><div class="line">        vectorDrawables.useSupportLibrary = true</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><code>[Optional] If you want to use camera picker in your project, add following to AndroidManifest.xml</code></li>
+<li><code>&lt;uses-permission android:name=&quot;android.permission.CAMERA&quot;/&gt;</code></li>
+</ul>
+<h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><pre><code>import React, {Component} from &apos;react&apos;;
+import {
+  TouchableHighlight,
+  ListView,
+  View,
+  StyleSheet,
+  Image,
+  Text,
+} from &apos;react-native&apos;;
+import {StackNavigator} from &apos;react-navigation&apos;;
+import ImagePicker from &apos;react-native-image-crop-picker&apos;;
+
+export default class JLPersonCenter extends Component {
+
+  constructor(){
+    super();
+    const ds=new ListView.DataSource({rowHasChanged:(r1, r2) =&gt; r1 !== r2});
+    this.state={
+      dataSource: ds.cloneWithRows([&apos;修改密码&apos;,&apos;意见反馈&apos;,&apos;关于&apos;]),
+      headerPath: require(&apos;../Source/HomeHeader.jpg&apos;),
+    };
+  }
+
+  _renderRow(rowData: string, sectionID: number, rowID: number, highlightRow: (sectionID: number, rowID: number) =&gt; void){
+    return(
+      &lt;View style={styles.rowStyle}&gt;
+        &lt;Text style={styles.rowText}&gt;{rowData}&lt;/Text&gt;
+      &lt;/View&gt;
+    );
+  }
+
+  _renderSeparator(){
+    return(
+      &lt;View
+        style={{height: 0.5, marginLeft: 5,marginRight: 5, backgroundColor: 'gray'}}&gt;
+      &lt;/View&gt;
+    );
+  }
+
+  _renderHeader(){
+    return(
+      &lt;View style={styles.headerStyle}&gt;
+        &lt;TouchableHighlight style={{borderRadius: 40}} underlayColor=&apos;#C4C3C5&apos; onPress={() =&gt; {
+          this._exchangeHeaderImage();
+        }}&gt;
+        &lt;Image
+          source={this.state.headerPath}
+          style={{width: 80, height: 80,borderRadius: 40, borderWidth: 2, borderColor: '#EDECF0'}}
+        /&gt;
+        &lt;/TouchableHighlight&gt;
+        &lt;Text style={{fontSize: 15, textAlign: 'center', color: '#EDECF0',paddingTop: 5}}&gt;欧阳雨露&lt;/Text&gt;
+      &lt;/View&gt;
+    );
+  }
+
+  // 更换头像
+  _exchangeHeaderImage(){
+    ImagePicker.openPicker({
+      cropping: true,
+      cropperCircleOverlay: true,
+      width: 160,
+      height: 160,
+    }).then(image =&gt; {
+      this.setState({headerPath:{uri: image.path}});
+    });
+  }
+
+  render(){
+    return(
+      &lt;ListView
+        removeClippedSubviews={false}
+        dataSource={this.state.dataSource}
+        renderRow={this._renderRow.bind(this)}
+        renderSeparator={this._renderSeparator}
+        renderHeader={this._renderHeader.bind(this)}
+      /&gt;
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  icon: {
+    width: 26,
+    height: 26,
+  },
+  headerStyle: {
+    flex: 1,
+    height: 160,
+    backgroundColor:&apos;#5EBA6A&apos;,
+    justifyContent: &apos;center&apos;,
+    alignItems: &apos;center&apos;,
+  },
+  rowStyle: {
+    flex: 1,
+    flexDirection: &apos;column&apos;,
+    padding: 5,
+    height: 45,
+    backgroundColor: &apos;#F6F6F6&apos;,
+  },
+  rowText: {
+    flex: 1,
+    lineHeight: 35,
+  },
+});
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/01/YYKit使用记录/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1848,148 +2106,6 @@ if(Platform.Version === 21){
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/19/SDWebImage源码/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhenyue">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gbetter">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/19/SDWebImage源码/" itemprop="url">
-                  SDWebImage源码
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-19T22:59:05+08:00">
-                2017-03-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="类"><a href="#类" class="headerlink" title="类"></a>类</h3><h4 id="UIImageView-WebCache-h"><a href="#UIImageView-WebCache-h" class="headerlink" title="UIImageView+WebCache.h"></a>UIImageView+WebCache.h</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url;</div><div class="line"></div><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">          placeholderImage:(nullable UIImage *)placeholder;</div><div class="line"></div><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">          placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                   options:(SDWebImageOptions)options;</div><div class="line"></div><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">                 completed:(nullable SDExternalCompletionBlock)completedBlock;</div><div class="line"></div><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">          placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                 completed:(nullable SDExternalCompletionBlock)completedBlock;</div><div class="line"></div><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">          placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                   options:(SDWebImageOptions)options</div><div class="line">                 completed:(nullable SDExternalCompletionBlock)completedBlock;</div><div class="line"></div><div class="line">- (void)sd_setImageWithPreviousCachedImageWithURL:(nullable NSURL *)url</div><div class="line">                                 placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                                          options:(SDWebImageOptions)options</div><div class="line">                                         progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                                        completed:(nullable SDExternalCompletionBlock)completedBlock;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>上面这些方法统一调用的是下面这个主方法</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (void)sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">          placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                   options:(SDWebImageOptions)options</div><div class="line">                  progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                 completed:(nullable SDExternalCompletionBlock)completedBlock;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>此方法通过调用 <code>UIView+WebCache.h</code> 中的 <code>sd_internalSetImageWithURL：...</code>来实现。</p>
-</blockquote>
-<h4 id="UIView-WebCache-h"><a href="#UIView-WebCache-h" class="headerlink" title="UIView+WebCache.h"></a>UIView+WebCache.h</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">//返回请求的URL</div><div class="line">- (nullable NSURL *)sd_imageURL;</div><div class="line">//通过 SDWebImageManager 来获取请求的图片，可能在缓存中、可能需要下载</div><div class="line">- (void)sd_internalSetImageWithURL:(nullable NSURL *)url</div><div class="line">                  placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                           options:(SDWebImageOptions)options</div><div class="line">                      operationKey:(nullable NSString *)operationKey</div><div class="line">                     setImageBlock:(nullable SDSetImageBlock)setImageBlock</div><div class="line">                          progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                         completed:(nullable SDExternalCompletionBlock)completedBlock;</div><div class="line"></div><div class="line">//取消当前类的Image请求</div><div class="line">- (void)sd_cancelCurrentImageLoad;</div></pre></td></tr></table></figure>
-<h4 id="SDWebImageManager-h"><a href="#SDWebImageManager-h" class="headerlink" title="SDWebImageManager.h"></a>SDWebImageManager.h</h4><ul>
-<li>SDWebImageManager 通过 <code>sahredManager</code> 单例获取当前对象</li>
-<li>并在其初始化方法中获取到 <code>SDImageCache</code> 缓存 和<code>SDWebImageloader</code> 下载 两个对象</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (nonnull instancetype)init &#123;</div><div class="line">    SDImageCache *cache = [SDImageCache sharedImageCache];</div><div class="line">    SDWebImageDownloader *downloader = [SDWebImageDownloader sharedDownloader];</div><div class="line">    return [self initWithCache:cache downloader:downloader];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (nonnull instancetype)initWithCache:(nonnull SDImageCache *)cache downloader:(nonnull SDWebImageDownloader *)downloader &#123;</div><div class="line">    if ((self = [super init])) &#123;</div><div class="line">        _imageCache = cache;</div><div class="line">        _imageDownloader = downloader;</div><div class="line">        _failedURLs = [NSMutableSet new];</div><div class="line">        _runningOperations = [NSMutableArray new];</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>通过下列方法来获取图片： 通过 <code>_imageCache</code> 对象判断缓存中是否存在此图片，若有则返回，若没有则通过 <code>_imageDownloader</code> 对象去服务器下载此图片。         </li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- (nullable id &lt;SDWebImageOperation&gt;)loadImageWithURL:(nullable NSURL *)url</div><div class="line">                                              options:(SDWebImageOptions)options</div><div class="line">                                             progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                                            completed:(nullable SDInternalCompletionBlock)completedBlock</div></pre></td></tr></table></figure>
-<h4 id="SDImageCache-h"><a href="#SDImageCache-h" class="headerlink" title="SDImageCache.h"></a>SDImageCache.h</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//获取当前对象</div><div class="line">+ (nonnull instancetype)sharedImageCache;</div><div class="line"></div><div class="line">//通过 key 在缓存中查找对应的图片</div><div class="line">- (nullable NSOperation *)queryCacheOperationForKey:(nullable NSString *)key done:(nullable SDCacheQueryCompletedBlock)doneBlock;</div></pre></td></tr></table></figure>
-<h4 id="SDWebImageDownloader-h"><a href="#SDWebImageDownloader-h" class="headerlink" title="SDWebImageDownloader.h"></a>SDWebImageDownloader.h</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//获取当前SDWebImageDownloader对象</div><div class="line">+ (nonnull instancetype)sharedDownloader</div><div class="line"></div><div class="line">//通过此方法从服务器下载图片</div><div class="line">- (nullable SDWebImageDownloadToken *)downloadImageWithURL:(nullable NSURL *)url</div><div class="line">                                                   options:(SDWebImageDownloaderOptions)options</div><div class="line">                                                  progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                                                 completed:(nullable SDWebImageDownloaderCompletedBlock)completedBlock</div></pre></td></tr></table></figure>
-<h4 id="SDWebImageDownloaderOperation-h"><a href="#SDWebImageDownloaderOperation-h" class="headerlink" title="SDWebImageDownloaderOperation.h"></a>SDWebImageDownloaderOperation.h</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//初始化一个 SDWebImageDownloaderOperation 对象</div><div class="line">- (nonnull instancetype)initWithRequest:(nullable NSURLRequest *)request</div><div class="line">                              inSession:(nullable NSURLSession *)session</div><div class="line">                                options:(SDWebImageDownloaderOptions)options NS_DESIGNATED_INITIALIZER;</div><div class="line"></div><div class="line">//添加 下载进度和下载完成的 block 回调</div><div class="line">- (nullable id)addHandlersForProgress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                            completed:(nullable SDWebImageDownloaderCompletedBlock)completedBlock;</div><div class="line"></div><div class="line">// 通过 token 取消当前下载</div><div class="line">- (BOOL)cancel:(nullable id)token;</div></pre></td></tr></table></figure>
-<h4 id="UIView-WebCacheOperation-h"><a href="#UIView-WebCacheOperation-h" class="headerlink" title="UIView+WebCacheOperation.h"></a>UIView+WebCacheOperation.h</h4><ul>
-<li>本类主要用于 operation 对象的管理,当一个对象（UIImageView）被重复请求时，将会把第一次的 operation cancel 掉，将新的 operation 加入到 operationDictionary 字典中。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//获取 NSMutableDictionary 类型的 operationDictionary</div><div class="line">- (SDOperationsDictionary *)operationDictionary;</div><div class="line"></div><div class="line">//通过 key 值将 operation 对象存入 operationDictionary 字典中</div><div class="line">- (void)sd_setImageLoadOperation:(nullable id)operation forKey:(nullable NSString *)key;</div><div class="line"></div><div class="line">//通过 key 标识 取消operation请求</div><div class="line">- (void)sd_cancelImageLoadOperationWithKey:(nullable NSString *)key;</div><div class="line"></div><div class="line">//通过 key 标识 将 operation 对象从operationDictionary字典中删除</div><div class="line">- (void)sd_removeImageLoadOperationWithKey:(nullable NSString *)key;</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2039,7 +2155,7 @@ if(Platform.Version === 21){
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
